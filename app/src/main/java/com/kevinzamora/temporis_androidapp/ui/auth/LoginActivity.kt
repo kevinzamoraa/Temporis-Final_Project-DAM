@@ -1,4 +1,4 @@
-package com.kevinzamora.temporis_androidapp.ui.auth.login
+package com.kevinzamora.temporis_androidapp.ui.auth
 
 import android.Manifest
 import android.content.Context
@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.kevinzamora.temporis_androidapp.ui.auth.login.RegisterFragment
 import com.kevinzamora.temporis_androidapp.MainActivity
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.model.User
@@ -29,6 +28,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.PermissionRequestErrorListener
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.kevinzamora.temporis_androidapp.ui.auth.Login.ForgottenPassword
+import com.kevinzamora.temporis_androidapp.ui.auth.login.RegisterFragment
 import java.util.*
 
 class LoginActivity : AppCompatActivity() {

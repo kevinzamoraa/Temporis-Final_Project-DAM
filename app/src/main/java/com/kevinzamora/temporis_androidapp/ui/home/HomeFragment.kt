@@ -1,108 +1,56 @@
 package com.kevinzamora.temporis_androidapp.ui.home
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.kevinzamora.temporis_androidapp.databinding.FragmentHomeBinding
-import com.kevinzamora.temporis_androidapp.model.Timer
-import com.kevinzamora.temporis_androidapp.ui.timer.TimerAdapter
-import com.kevinzamora.temporis_androidapp.viewmodel.TimerViewModel
+import com.kevinzamora.temporis_androidapp.model.Post
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
-    private lateinit var adapter: TimerAdapter
-    private val timerViewModel: TimerViewModel by viewModels()
-    private var editingTimerId: String? = null
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+
+    // Lógica de Firebase aquí
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        // Configurar RecyclerView
-        adapter = TimerAdapter()
-        binding.recyclerViewTimers.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewTimers.adapter = adapter
-
-        // Crear nuevo temporizador o editar existente
-        binding.buttonCreateTimer.setOnClickListener {
-            val name = binding.editTextTimerName.text.toString().trim()
-            val duration = binding.editTextTimerDuration.text.toString().toIntOrNull()
-
-            if (name.isNotEmpty() && duration != null) {
-                val id = editingTimerId
-                if (id == null) {
-                    // Crear nuevo temporizador
-                    timerViewModel.addTimer(name, duration)
-                    Toast.makeText(requireContext(), "Temporizador creado", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Editar: buscamos el timer original y conservamos sus campos
-                    val originalTimer = timerViewModel.timers.value?.find { it.id == id }
-
-                    if (originalTimer != null) {
-                        val updatedTimer = Timer().apply {
-                            this.id = originalTimer.id
-                            this.name = name
-                            this.duration = duration
-                            this.isActive = originalTimer.isActive
-                            this.createdAt = originalTimer.createdAt
-                            this.uid = originalTimer.uid
-                        }
-
-                        timerViewModel.updateTimer(updatedTimer)
-                        Toast.makeText(requireContext(), "Temporizador actualizado", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(requireContext(), "Error: temporizador no encontrado", Toast.LENGTH_SHORT).show()
-                    }
-
-                    editingTimerId = null
-                    binding.buttonCreateTimer.text = "Crear temporizador"
-                }
-
-                binding.editTextTimerName.text.clear()
-                binding.editTextTimerDuration.text.clear()
-            } else {
-                Toast.makeText(requireContext(), "Introduce nombre y duración válidos", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        adapter.onEditClick = { timer ->
-            editingTimerId = timer.id
-            binding.editTextTimerName.setText(timer.name)
-            binding.editTextTimerDuration.setText(timer.duration.toString())
-            binding.buttonCreateTimer.text = "Actualizar temporizador"
-        }
-
-        adapter.onDeleteClick = { timer ->
-            AlertDialog.Builder(requireContext())
-                .setTitle("Eliminar temporizador")
-                .setMessage("¿Estás seguro de que quieres eliminar este temporizador?")
-                .setPositiveButton("Sí") { _, _ ->
-                    timerViewModel.deleteTimer(timer.id)
-                    Toast.makeText(requireContext(), "Temporizador eliminado", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
-        }
-
-        adapter.onPlayClick = { timer ->
-            Toast.makeText(requireContext(), "Temporizador iniciado: ${timer.name}", Toast.LENGTH_SHORT).show()
-        }
-
-        // Observar los temporizadores
-        timerViewModel.timers.observe(viewLifecycleOwner, Observer { timers ->
-            adapter.submitList(timers)
-        })
+        setupRecyclerView()
+        loadPostsFromFirestore()
 
         return binding.root
+    }
+
+    private fun setupRecyclerView() {
+        binding.recyclerPosts.layoutManager = LinearLayoutManager(requireContext())
+        // Aquí asignamos el adaptador, cuando lo tenemos listo
+    }
+
+    private fun loadPostsFromFirestore() {
+        db.collection("posts")
+            .get()
+            .addOnSuccessListener { documents ->
+                val postList = mutableListOf<Post>()
+                for (document in documents) {
+                    val post = document.toObject(Post::class.java)
+                    post.id = document.id
+                    postList.add(post)
+                }
+                // Aquí actualizamos el adaptador con la lista postList
+            }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/navigation_timers"
+        android:name="com.kevinzamora.temporis_androidapp.ui.timers.TimersFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.kevinzamora.temporis_androidapp.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"

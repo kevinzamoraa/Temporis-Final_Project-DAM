@@ -12,7 +12,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.kevinzamora.temporis_androidapp.R
 import com.google.firebase.auth.FirebaseAuth
-import com.kevinzamora.temporis_androidapp.ui.auth.login.LoginActivity
+import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 import java.util.regex.Pattern
 
 

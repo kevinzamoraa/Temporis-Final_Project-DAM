@@ -3,22 +3,14 @@ package com.kevinzamora.temporis_androidapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.ads.mediationtestsuite.activities.HomeActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.kevinzamora.temporis_androidapp.databinding.ActivityMainBinding
-import com.kevinzamora.temporis_androidapp.ui.auth.login.LoginActivity
-
+import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,69 +20,65 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 1. Inflar el layout y configurar Firebase
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        auth = FirebaseAuth.getInstance()
 
-        auth = FirebaseAuth.getInstance() // IMPORTANTE
-
+        // 2. Inicializar la vista del menú ANTES de cualquier uso
         val navView: BottomNavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.navigation_home, R.id.dashboardFragment3, R.id.logout)
-        )
+        // 3. Configurar el NavController de forma segura
+        try {
+            val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+            val navController = navHostFragment.navController
 
-        navView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    navController.navigate(R.id.navigation_home)
-                    true
+            // Vinculamos inicialmente
+            navView.setupWithNavController(navController)
+
+            // 4. Configurar el Listener manual para las restricciones de acceso
+            navView.setOnItemSelectedListener { item ->
+                val currentUser = auth.currentUser
+
+                when (item.itemId) {
+                    R.id.navigation_home -> {
+                        navController.navigate(R.id.navigation_home)
+                        true
+                    }
+                    R.id.navigation_timers -> {
+                        if (currentUser != null) {
+                            navController.navigate(R.id.navigation_timers)
+                        } else {
+                            mostrarAvisoYSirveLogin("ver tus temporizadores")
+                        }
+                        true
+                    }
+                    R.id.navigation_stats -> {
+                        if (currentUser != null) {
+                            navController.navigate(R.id.navigation_stats)
+                        } else {
+                            mostrarAvisoYSirveLogin("ver tus estadísticas")
+                        }
+                        true
+                    }
+                    R.id.navigation_settings -> {
+                        navController.navigate(R.id.navigation_settings)
+                        true
+                    }
+                    else -> false
                 }
-
-                R.id.dashboardFragment3 -> {
-                    navController.navigate(R.id.dashboardFragment3)
-                    true
-                }
-
-                R.id.logout -> {
-                    Toast.makeText(this, "Cerrando sesión...", Toast.LENGTH_SHORT).show()
-                    FirebaseAuth.getInstance().signOut()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    true
-                }
-
-                else -> false
             }
+
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error al inicializar navegación: ${e.message}")
         }
+    }
 
-      /*  if (auth.currentUser != null) {
-            binding.btnLogout.visibility = View.VISIBLE
-        } else {
-            binding.btnLogout.visibility = View.GONE
-        }
-
-        binding.btnLogout.setOnClickListener {
-            // 1. Cerrar sesión de Firebase
-            FirebaseAuth.getInstance().signOut()
-
-            // 2. Cerrar sesión de Google
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-
-            val googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-            googleSignInClient.signOut().addOnCompleteListener(this) {
-                // 3. Redirigir al login
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
-            }
-        }*/
-
+    // Función auxiliar para redirigir al login
+    private fun mostrarAvisoYSirveLogin(motivo: String) {
+        Toast.makeText(this, "Inicia sesión para $motivo", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        startActivity(intent)
     }
 }
