@@ -15,7 +15,19 @@
         android:id="@+id/navigation_timers"
         android:name="com.kevinzamora.temporis_androidapp.ui.timers.TimersFragment"
         android:label="@string/title_home"
+        tools:layout="@layout/fragment_timers" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.kevinzamora.temporis_androidapp.ui.home.HomeFragment"
+        android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_timers"
+        android:name="com.kevinzamora.temporis_androidapp.ui.timers.TimersFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_timers" />
 
     <fragment
         android:id="@+id/navigation_notifications"
