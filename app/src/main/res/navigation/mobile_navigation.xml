@@ -31,9 +31,9 @@
 
     <fragment
         android:id="@+id/dashboardFragment3"
-        android:name="com.kevinzamora.temporis_androidapp.ui.dashboard.DashboardFragment"
+        android:name="com.kevinzamora.temporis_androidapp.ui.profile.ProfileFragment"
         android:label="Perfil de usuario"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_forgotten_password"

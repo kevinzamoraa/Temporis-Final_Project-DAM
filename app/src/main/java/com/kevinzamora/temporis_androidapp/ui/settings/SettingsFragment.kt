@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentSettingsBinding
@@ -23,18 +24,17 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun setupClickListeners() {
-        // Botón Cerrar Sesión
+        binding.btnProfile.setOnClickListener {
+            findNavController().navigate(R.id.dashboardFragment3) // Usa el ID de tu mobile_navigation
+        }
+
+        binding.btnGeneralSettings.setOnClickListener {
+            // Por ahora un Toast o crea un fragmento vacío
+            Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
+        }
+
         binding.btnLogout.setOnClickListener {
             cerrarSesion()
-        }
-
-        // Placeholders para las otras opciones
-        binding.btnProfile.setOnClickListener {
-            Toast.makeText(requireContext(), "Perfil próximamente", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.btnAppInfo.setOnClickListener {
-            Toast.makeText(requireContext(), "Temporis v1.0", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -57,4 +57,5 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onDestroyView()
         _binding = null
     }
+
 }

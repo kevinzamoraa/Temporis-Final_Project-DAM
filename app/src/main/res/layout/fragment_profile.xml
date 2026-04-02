@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.profile.ProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -72,6 +72,17 @@
                 android:layout_height="wrap_content"
                 android:text="Guardar cambios"
                 android:layout_marginTop="16dp" />
+
+            <!-- Botón para borrar usuario -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteAccount"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Borrar mi cuenta"
+                android:textColor="#F44336"
+                android:layout_marginTop="8dp" />
+
         </LinearLayout>
     </ScrollView>
 
