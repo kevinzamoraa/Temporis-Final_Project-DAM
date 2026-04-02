@@ -1,13 +1,14 @@
 package com.kevinzamora.temporis_androidapp.ui.home
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.kevinzamora.temporis_androidapp.model.Post
+import com.kevinzamora.temporis_androidapp.repository.PostRepository
 
 class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
+    private val repository = PostRepository()
+
+    // Obtenemos los posts directamente del repositorio
+    val posts: LiveData<List<Post>> = repository.getPosts()
 }

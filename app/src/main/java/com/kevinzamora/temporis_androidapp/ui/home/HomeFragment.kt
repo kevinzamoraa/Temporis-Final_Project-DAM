@@ -5,18 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.firestore.FirebaseFirestore
+import com.kevinzamora.temporis_androidapp.adapter.PostAdapter // Asegúrate de que esta ruta es correcta
 import com.kevinzamora.temporis_androidapp.databinding.FragmentHomeBinding
-import com.kevinzamora.temporis_androidapp.model.Post
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    // Lógica de Firebase aquí
-    private val db = FirebaseFirestore.getInstance()
+    // Inicializamos el ViewModel de forma delegada
+    private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var postAdapter: PostAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,28 +26,26 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
-        loadPostsFromFirestore()
+        observeViewModel()
 
         return binding.root
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerPosts.layoutManager = LinearLayoutManager(requireContext())
-        // Aquí asignamos el adaptador, cuando lo tenemos listo
+        // Inicializamos el adaptador con una lista vacía
+        postAdapter = PostAdapter(emptyList())
+
+        binding.recyclerPosts.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = postAdapter
+        }
     }
 
-    private fun loadPostsFromFirestore() {
-        db.collection("posts")
-            .get()
-            .addOnSuccessListener { documents ->
-                val postList = mutableListOf<Post>()
-                for (document in documents) {
-                    val post = document.toObject(Post::class.java)
-                    post.id = document.id
-                    postList.add(post)
-                }
-                // Aquí actualizamos el adaptador con la lista postList
-            }
+    private fun observeViewModel() {
+        // Escuchamos los cambios en la lista de posts del ViewModel
+        homeViewModel.posts.observe(viewLifecycleOwner) { listaDePosts ->
+            postAdapter.updateData(listaDePosts)
+        }
     }
 
     override fun onDestroyView() {
