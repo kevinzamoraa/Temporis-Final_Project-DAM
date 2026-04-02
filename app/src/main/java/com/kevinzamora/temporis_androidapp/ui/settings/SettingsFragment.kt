@@ -33,6 +33,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
         }
 
+        binding.btnAccessibility.setOnClickListener {
+        // Por ahora un Toast o crea un fragmento vacío
+        Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
+    }
+
+        binding.btnAppInfo.setOnClickListener {
+            // Por ahora un Toast o crea un fragmento vacío
+            Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
+        }
+
         binding.btnLogout.setOnClickListener {
             cerrarSesion()
         }
