@@ -8,39 +8,36 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.kevinzamora.temporis_androidapp.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="Inicio"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_timers"
         android:name="com.kevinzamora.temporis_androidapp.ui.timers.TimersFragment"
-        android:label="@string/title_home"
+        android:label="Temporizadores"
         tools:layout="@layout/fragment_timers" />
+
+    <fragment
+        android:id="@+id/navigation_stats"
+        android:name="com.kevinzamora.temporis_androidapp.ui.stats.StatsFragment"
+        android:label="Estadísticas"
+        tools:layout="@layout/fragment_stats" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.kevinzamora.temporis_androidapp.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.kevinzamora.temporis_androidapp.ui.settings.SettingsFragment"
+        android:label="Configuración"
+        tools:layout="@layout/fragment_settings" />
 
-    <fragment
-        android:id="@+id/navigation_timers"
-        android:name="com.kevinzamora.temporis_androidapp.ui.timers.TimersFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_timers" />
-
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.kevinzamora.temporis_androidapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
-    <fragment
-        android:id="@+id/navigation_forgotten_password"
-        android:name="com.kevinzamora.temporis_androidapp.ui.auth.forgotten_password.ForgotPasswordFragment"
-        android:label="ForgottenPassword" />
     <fragment
         android:id="@+id/dashboardFragment3"
         android:name="com.kevinzamora.temporis_androidapp.ui.dashboard.DashboardFragment"
         android:label="Perfil de usuario"
         tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_forgotten_password"
+        android:name="com.kevinzamora.temporis_androidapp.ui.auth.forgotten_password.ForgotPasswordFragment"
+        android:label="Recuperar Contraseña" />
+
 </navigation>

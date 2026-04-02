@@ -26,15 +26,17 @@
             android:layout_height="64dp"
             android:text="Perfil de Usuario"
             android:gravity="start|center_vertical"
-            app:icon="@drawable/ic_home" /> <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_accessibility"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_marginTop="8dp"
-        android:text="Accesibilidad"
-        android:gravity="start|center_vertical"
-        app:icon="@drawable/ic_watch" />
+            app:icon="@drawable/ic_home" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_accessibility"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="8dp"
+            android:text="Accesibilidad"
+            android:gravity="start|center_vertical"
+            app:icon="@drawable/ic_watch" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_general_settings"
@@ -55,6 +57,20 @@
             android:text="Info de la Aplicación"
             android:gravity="start|center_vertical"
             app:icon="@drawable/ic_hamburger_menu" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="Cerrar Sesión"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/purple_500"
+            app:icon="@drawable/ic_home"
+            app:iconTint="@color/white" />
 
     </LinearLayout>
 </ScrollView>
