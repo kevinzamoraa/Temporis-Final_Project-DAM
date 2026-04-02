@@ -20,6 +20,7 @@ import com.google.firebase.firestore.SetOptions
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentProfileBinding
 import com.kevinzamora.temporis_androidapp.model.User
+import com.kevinzamora.temporis_androidapp.repository.UserRepository
 import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -30,6 +31,7 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+    private val userRepository = UserRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -101,30 +103,32 @@ class ProfileFragment : Fragment() {
         val newPhotoUrl = binding.etProfileUrl.text.toString()
         val newUsername = binding.etUsername.text.toString()
 
-        // Creamos el objeto User para Firestore
         val userUpdates = User().apply {
-            this.uid = uid
-            this.username = newUsername
-            this.displayName = newDisplayName
-            this.profilePhotoUrl = newPhotoUrl
-            this.email = binding.etEmail.text.toString()
+            setUid(uid)
+            setUsername(newUsername)
+            setDisplayName(newDisplayName)
+            setProfilePhotoUrl(newPhotoUrl)
+            setEmail(binding.etEmail.text.toString())
         }
 
         lifecycleScope.launch {
-            try {
-                // Guardar en Firestore
-                db.collection("users").document(uid).set(userUpdates, SetOptions.merge()).await()
-
-                // Guardar en Firebase Auth (Sincronización de perfil oficial)
-                val profileUpdates = userProfileChangeRequest {
-                    displayName = newDisplayName
-                    photoUri = Uri.parse(newPhotoUrl)
+            // 1. Guardar en Firestore a través del repositorio
+            userRepository.saveUser(userUpdates).collect { result ->
+                result.onSuccess {
+                    // 2. Si Firestore tiene éxito, sincronizamos con Firebase Auth
+                    try {
+                        val profileUpdates = userProfileChangeRequest {
+                            displayName = newDisplayName
+                            photoUri = Uri.parse(newPhotoUrl)
+                        }
+                        auth.currentUser?.updateProfile(profileUpdates)?.await()
+                        if (isAdded) Toast.makeText(context, "Perfil y Nube actualizados", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        Log.e("AuthUpdate", "Error sincronizando Auth: ${e.message}")
+                    }
+                }.onFailure { e ->
+                    if (isAdded) Toast.makeText(context, "Error en Firestore: ${e.message}", Toast.LENGTH_LONG).show()
                 }
-                auth.currentUser?.updateProfile(profileUpdates)?.await()
-
-                if (isAdded) Toast.makeText(context, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                if (isAdded) Toast.makeText(context, "Error al guardar: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

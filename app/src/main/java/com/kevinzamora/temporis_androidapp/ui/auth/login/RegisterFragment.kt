@@ -11,17 +11,21 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kevinzamora.temporis_androidapp.repository.UserRepository
 import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 class RegisterFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private val userRepository = UserRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,40 +112,44 @@ class RegisterFragment : Fragment() {
     }
 
     private fun registrar(username: String, email: String, contra: String) {
-        // Verificamos si el nombre de usuario está disponible
-        firestore.collection("users")
-            .whereEqualTo("username", username)
-            .get()
+        val db = FirebaseFirestore.getInstance()
+
+        // Verificamos disponibilidad de username
+        db.collection("users").whereEqualTo("username", username).get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    // Si no existe, procedemos con el registro
-                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, contra)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
+                    // Si el nombre está libre, creamos el usuario en Auth
+                    auth.createUserWithEmailAndPassword(email, contra)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
                                 val uid = auth.uid.toString()
-                                val photo = "https://img.freepik.com/premium-vector/gamer-man_961307-25037.jpg?semt=ais_hybrid&w=740"
-                                val user = User(uid, username, email, username, photo)
+                                val defaultPhoto = "https://img.freepik.com/premium-vector/gamer-man_961307-25037.jpg?semt=ais_hybrid&w=740"
 
-                                // Guardamos el usuario en Firestore
-                                firestore.collection("users").document(uid).set(user)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(context, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show()
-                                        val intent = Intent(activity, LoginActivity::class.java)
-                                        activity?.startActivity(intent)
+                                // Creamos el objeto User
+                                val newUser = User(uid, username, email, username, defaultPhoto).apply {
+                                    setRol(1) // Asignamos un rol por defecto
+                                }
+
+                                // REGLA DE ORO: Usar el repositorio para la réplica
+                                lifecycleScope.launch {
+                                    userRepository.saveUser(newUser).collect { result ->
+                                        result.onSuccess {
+                                            if (isAdded) {
+                                                Toast.makeText(context, "Cuenta creada y sincronizada", Toast.LENGTH_SHORT).show()
+                                                startActivity(Intent(activity, LoginActivity::class.java))
+                                            }
+                                        }.onFailure { e ->
+                                            Toast.makeText(context, "Error réplica Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(context, "Error al guardar en Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
+                                }
                             } else {
-                                Toast.makeText(context, "Error al crear cuenta: ${it.exception?.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Error Auth: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
                 } else {
-                    Toast.makeText(context, "Nombre de usuario ya está en uso", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Username no disponible", Toast.LENGTH_SHORT).show()
                 }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(context, "Error al verificar nombre de usuario: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 

@@ -10,7 +10,8 @@ import kotlinx.coroutines.tasks.await
 class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) {
     private val usersCollection = db.collection("users")
 
-    fun getUser(userId: String): Flow<Result<User>> = flow {
+    // Obtener usuario
+    fun getUser(userId: String): Flow<Result<User?>> = flow {
         try {
             val snapshot = usersCollection.document(userId).get().await()
             val user = snapshot.toObject(User::class.java)
@@ -20,25 +21,20 @@ class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getIn
         }
     }
 
-    private fun emit(value: Result<User?>) {
-
-    }
-
-    fun createUser(user: User): Flow<Result<Boolean>> = flow {
+    // Función UNIFICADA para crear o actualizar (Réplica eficiente)
+    fun saveUser(user: User): Flow<Result<Boolean>> = flow {
         try {
-            usersCollection.document(user.uid).set(user).await()
-            emit(Result.success(true))
-        } catch (e: Exception) {
-            emit(Result.failure(e))
-        }
-    }
-
-    fun updateUser(user: User): Flow<Result<Boolean>> = flow {
-        try {
+            // Usamos SetOptions.merge() para no borrar campos extra (como rol o QrCode)
+            // si solo estamos actualizando el nombre o la foto.
             usersCollection.document(user.uid).set(user, SetOptions.merge()).await()
             emit(Result.success(true))
         } catch (e: Exception) {
             emit(Result.failure(e))
         }
+    }
+
+    // Función para borrar los datos de Firestore
+    suspend fun deleteUserFirestore(userId: String) {
+        usersCollection.document(userId).delete().await()
     }
 }
