@@ -85,7 +85,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-basement:17.5.0")
 
-    implementation("com.google.android.gms:play-services-ads:18.2.0")
+    implementation("com.google.android.gms:play-services-ads:25.1.0")
 
     implementation("com.google.firebase:firebase-auth:18.0.0")
     implementation("com.google.firebase:firebase-database:18.0.0")
@@ -93,6 +93,8 @@ dependencies {
 
     implementation("com.karumi:dexter:6.0.0")
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:20.3.0")
