@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_timers" />
 
     <fragment
-        android:id="@+id/navigation_stats"
-        android:name="com.kevinzamora.temporis_androidapp.ui.stats.StatsFragment"
+        android:id="@+id/navigation_statistics"
+        android:name="com.kevinzamora.temporis_androidapp.ui.statistics.StatisticsFragment"
         android:label="Estadísticas"
-        tools:layout="@layout/fragment_stats" />
+        tools:layout="@layout/fragment_statistics" />
 
     <fragment
         android:id="@+id/navigation_settings"
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/dashboardFragment3"
-        android:name="com.kevinzamora.temporis_androidapp.ui.profile.ProfileFragment"
+        android:name="com.kevinzamora.temporis_androidapp.ui.profile.StatisticsFragment"
         android:label="Perfil de usuario"
         tools:layout="@layout/fragment_profile" />
 

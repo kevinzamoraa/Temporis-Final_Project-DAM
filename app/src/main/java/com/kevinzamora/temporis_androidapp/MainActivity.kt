@@ -57,9 +57,9 @@ class MainActivity : AppCompatActivity() {
                         }
                         true
                     }
-                    R.id.navigation_stats -> {
+                    R.id.navigation_statistics -> {
                         if (currentUser != null) {
-                            navController.navigate(R.id.navigation_stats)
+                            navController.navigate(R.id.navigation_statistics)
                         } else {
                             mostrarAvisoYSirveLogin("ver tus estadísticas")
                         }

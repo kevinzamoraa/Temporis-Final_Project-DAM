@@ -24,9 +24,9 @@ import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class ProfileFragment : Fragment() {
+class AccessibilityFragment : Fragment() {
 
-    private var _binding: FragmentProfileBinding? = null
+    /*private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
@@ -85,7 +85,7 @@ class ProfileFragment : Fragment() {
                     binding.etEmail.setText(it.email)
                     binding.etProfileUrl.setText(it.profilePhotoUrl)
 
-                    Glide.with(this@ProfileFragment)
+                    Glide.with(this@StatisticsFragment)
                         .load(it.profilePhotoUrl)
                         .placeholder(R.drawable.ic_default_profile)
                         .circleCrop()
@@ -168,5 +168,5 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
+    }*/
 }
