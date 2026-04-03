@@ -12,13 +12,14 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kevinzamora.temporis_androidapp.databinding.FragmentTimersBinding
 import com.kevinzamora.temporis_androidapp.model.Timer
-import com.kevinzamora.temporis_androidapp.ui.timer.TimerAdapter
+import com.kevinzamora.temporis_androidapp.adapter.TimerAdapter
 import com.kevinzamora.temporis_androidapp.viewmodel.TimerViewModel
 
 class TimersFragment : Fragment() {
 
-    // CAMBIO AQUÍ: Usamos FragmentTimersBinding
-    private lateinit var binding: FragmentTimersBinding
+    private var _binding: FragmentTimersBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var adapter: TimerAdapter
     private val timerViewModel: TimerViewModel by viewModels()
     private var editingTimerId: String? = null
@@ -27,70 +28,111 @@ class TimersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // CAMBIO AQUÍ: Inflamos fragment_timers en lugar de fragment_home
-        binding = FragmentTimersBinding.inflate(inflater, container, false)
+        _binding = FragmentTimersBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        // Configurar RecyclerView
-        adapter = TimerAdapter()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        setupObservers()
+        setupClickListeners()
+    }
+
+    private fun setupRecyclerView() {
+        // CORRECCIÓN: Pasamos los 4 parámetros obligatorios al constructor
+        adapter = TimerAdapter(
+            timerList = emptyList(),
+            onPlayClick = { timer ->
+                Toast.makeText(requireContext(), "Iniciando: ${timer.name}", Toast.LENGTH_SHORT).show()
+            },
+            onEditClick = { timer ->
+                prepararEdicion(timer)
+            },
+            onDeleteClick = { timer ->
+                mostrarDialogoEliminar(timer)
+            }
+        )
+
         binding.recyclerViewTimers.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimers.adapter = adapter
+    }
 
-        // Lógica de botones (se mantiene igual porque los IDs ahora coincidirán con fragment_timers.xml)
+    private fun setupClickListeners() {
         binding.buttonCreateTimer.setOnClickListener {
             val name = binding.editTextTimerName.text.toString().trim()
             val duration = binding.editTextTimerDuration.text.toString().toIntOrNull()
 
             if (name.isNotEmpty() && duration != null) {
-                val id = editingTimerId
-                if (id == null) {
+                if (editingTimerId == null) {
                     timerViewModel.addTimer(name, duration)
                     Toast.makeText(requireContext(), "Temporizador creado", Toast.LENGTH_SHORT).show()
                 } else {
-                    val originalTimer = timerViewModel.timers.value?.find { it.id == id }
-                    if (originalTimer != null) {
-                        val updatedTimer = Timer().apply {
-                            this.id = originalTimer.id
-                            this.name = name
-                            this.duration = duration
-                            this.isActive = originalTimer.isActive
-                            this.createdAt = originalTimer.createdAt
-                            this.uid = originalTimer.uid
-                        }
-                        timerViewModel.updateTimer(updatedTimer)
-                        Toast.makeText(requireContext(), "Temporizador actualizado", Toast.LENGTH_SHORT).show()
-                    }
-                    editingTimerId = null
-                    binding.buttonCreateTimer.text = "Crear temporizador"
+                    actualizarTemporizador(name, duration)
                 }
-                binding.editTextTimerName.text.clear()
-                binding.editTextTimerDuration.text.clear()
+                limpiarFormulario()
+            } else {
+                Toast.makeText(requireContext(), "Rellena todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
-        // ... resto de los listeners del adapter (onEditClick, onDeleteClick, etc.) se mantienen igual ...
+    private fun prepararEdicion(timer: Timer) {
+        editingTimerId = timer.id
+        binding.editTextTimerName.setText(timer.name)
+        binding.editTextTimerDuration.setText(timer.duration.toString())
 
-        adapter.onEditClick = { timer ->
-            editingTimerId = timer.id
-            binding.editTextTimerName.setText(timer.name)
-            binding.editTextTimerDuration.setText(timer.duration.toString())
-            binding.buttonCreateTimer.text = "Actualizar temporizador"
+        // Actualizamos textos del formulario compacto
+        binding.tvFormTitle.text = "Actualizar Temporizador"
+        binding.buttonCreateTimer.text = "ACTUALIZAR"
+        binding.editTextTimerName.requestFocus()
+    }
+
+    private fun actualizarTemporizador(name: String, duration: Int) {
+        val originalTimer = timerViewModel.timers.value?.find { it.id == editingTimerId }
+        originalTimer?.let {
+            val updatedTimer = Timer().apply {
+                this.id = it.id
+                this.name = name
+                this.duration = duration
+                this.isActive = it.isActive
+                this.createdAt = it.createdAt
+                this.uid = it.uid
+            }
+            timerViewModel.updateTimer(updatedTimer)
+            Toast.makeText(requireContext(), "Temporizador actualizado", Toast.LENGTH_SHORT).show()
         }
+    }
 
-        adapter.onDeleteClick = { timer ->
-            AlertDialog.Builder(requireContext())
-                .setTitle("Eliminar temporizador")
-                .setMessage("¿Estás seguro de que quieres eliminar este temporizador?")
-                .setPositiveButton("Sí") { _, _ ->
-                    timerViewModel.deleteTimer(timer.id)
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
-        }
+    private fun mostrarDialogoEliminar(timer: Timer) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar temporizador")
+            .setMessage("¿Estás seguro?")
+            .setPositiveButton("Sí") { _, _ ->
+                timerViewModel.deleteTimer(timer.id)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
 
+    private fun setupObservers() {
         timerViewModel.timers.observe(viewLifecycleOwner, Observer { timers ->
-            adapter.submitList(timers)
+            // CORRECCIÓN: Cambiado submitList por updateData
+            adapter.updateData(timers)
         })
+    }
 
-        return binding.root
+    private fun limpiarFormulario() {
+        editingTimerId = null
+        binding.editTextTimerName.text.clear()
+        binding.editTextTimerDuration.text.clear()
+        binding.tvFormTitle.text = "Nuevo Temporizador"
+        binding.buttonCreateTimer.text = "CREAR"
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

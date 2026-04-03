@@ -19,4 +19,7 @@
 
         <item name="postSplashScreenTheme">@style/Theme.TemporisAndroidApp</item>
     </style>
+    <style name="RoundedCornersDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/bg_dialog_rounded</item>
+    </style>
 </resources>
