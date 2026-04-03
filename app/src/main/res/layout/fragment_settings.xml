@@ -69,7 +69,7 @@
             android:text="Cerrar Sesión"
             android:textColor="@color/white"
             app:backgroundTint="@color/purple_500"
-            app:icon="@drawable/ic_home"
+            app:icon="@drawable/ic_logout"
             app:iconTint="@color/white" />
 
     </LinearLayout>

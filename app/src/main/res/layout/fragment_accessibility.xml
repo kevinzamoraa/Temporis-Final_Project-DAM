@@ -37,11 +37,13 @@
                 android:layout_marginBottom="8dp"/>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchBoldText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Texto en Negrita" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchHighContrast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Alto Contraste" />

@@ -1,5 +1,6 @@
 package com.kevinzamora.temporis_androidapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -72,6 +73,15 @@ class MainActivity : AppCompatActivity() {
                     else -> false
                 }
             }
+
+            val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+
+            // Aplicar tema de alto contraste si está activo
+            if (sharedPref.getBoolean("high_contrast", false)) {
+                setTheme(R.style.Theme_Temporis_HighContrast)
+            }
+
+            super.onCreate(savedInstanceState)
 
         } catch (e: Exception) {
             Log.e("MainActivity", "Error al inicializar navegación: ${e.message}")

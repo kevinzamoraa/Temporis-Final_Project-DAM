@@ -22,4 +22,24 @@
     <style name="RoundedCornersDialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/bg_dialog_rounded</item>
     </style>
+
+    <style name="Theme.Temporis.HighContrast" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">#000000</item>
+        <item name="colorSurface">#000000</item>
+
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">#000000</item>
+
+        <item name="colorSecondary">#FFFF00</item>
+        <item name="colorOnSecondary">#000000</item>
+
+        <item name="cardViewStyle">@style/HighContrastCard</item>
+    </style>
+
+    <style name="HighContrastCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#000000</item>
+        <item name="strokeColor">#FFFFFF</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
 </resources>

@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentSettingsBinding
-import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity // Ajusta según tu paquete
+import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -24,23 +24,24 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun setupClickListeners() {
+        // Navegación a Perfil (Asegúrate de que el ID en mobile_navigation coincida)
         binding.btnProfile.setOnClickListener {
-            findNavController().navigate(R.id.dashboardFragment3) // Usa el ID de tu mobile_navigation
+            findNavController().navigate(R.id.navigation_profile)
         }
 
-        binding.btnGeneralSettings.setOnClickListener {
-            // Por ahora un Toast o crea un fragmento vacío
-            Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
-        }
-
+        // Navegación a Accesibilidad
         binding.btnAccessibility.setOnClickListener {
-        // Por ahora un Toast o crea un fragmento vacío
-        Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
-    }
+            findNavController().navigate(R.id.navigation_accessibility)
+        }
 
+        // Navegación a Ajustes Generales
+        binding.btnGeneralSettings.setOnClickListener {
+            findNavController().navigate(R.id.navigation_general_settings)
+        }
+
+        // Navegación a Info de la Aplicación
         binding.btnAppInfo.setOnClickListener {
-            // Por ahora un Toast o crea un fragmento vacío
-            Toast.makeText(requireContext(), "Ajustes en desarrollo", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.navigation_app_info)
         }
 
         binding.btnLogout.setOnClickListener {
@@ -49,14 +50,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun cerrarSesion() {
-        // 1. Cerrar sesión en Firebase
         FirebaseAuth.getInstance().signOut()
-
-        // 2. Notificar al usuario
         Toast.makeText(requireContext(), "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show()
 
-        // 3. Redirigir al Login y limpiar el historial de navegación
-        // Esto evita que el usuario pueda volver atrás a la app tras cerrar sesión
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -67,5 +63,4 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onDestroyView()
         _binding = null
     }
-
 }
