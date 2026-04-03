@@ -20,50 +20,48 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // --- PASO 1: CARGAR PREFERENCIAS Y APLICAR TEMA ---
+        // Esto debe ir SIEMPRE antes de super.onCreate y setContentView
+        val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        if (sharedPref.getBoolean("high_contrast", false)) {
+            setTheme(R.style.Theme_Temporis_HighContrast)
+        } else {
+            // Asegúrate de usar el nombre exacto de tu tema base definido en themes.xml
+            setTheme(R.style.Theme_TemporisAndroidApp)
+        }
+
         val splashScreen = installSplashScreen()
+        super.onCreate(savedInstanceState) // Solo un super.onCreate y debe ir aquí
 
-        super.onCreate(savedInstanceState)
-
-        // 1. Inflar el layout y configurar Firebase
+        // --- PASO 2: INFLAR VISTAS ---
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
 
-        // 2. Inicializar la vista del menú ANTES de cualquier uso
         val navView: BottomNavigationView = binding.navView
 
-        // 3. Configurar el NavController de forma segura
         try {
             val navHostFragment = supportFragmentManager
                 .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
             val navController = navHostFragment.navController
 
-            // Vinculamos inicialmente
             navView.setupWithNavController(navController)
 
-            // 4. Configurar el Listener manual para las restricciones de acceso
             navView.setOnItemSelectedListener { item ->
                 val currentUser = auth.currentUser
-
                 when (item.itemId) {
                     R.id.navigation_home -> {
                         navController.navigate(R.id.navigation_home)
                         true
                     }
                     R.id.navigation_timers -> {
-                        if (currentUser != null) {
-                            navController.navigate(R.id.navigation_timers)
-                        } else {
-                            mostrarAvisoYSirveLogin("ver tus temporizadores")
-                        }
+                        if (currentUser != null) navController.navigate(R.id.navigation_timers)
+                        else mostrarAvisoYSirveLogin("ver tus temporizadores")
                         true
                     }
                     R.id.navigation_statistics -> {
-                        if (currentUser != null) {
-                            navController.navigate(R.id.navigation_statistics)
-                        } else {
-                            mostrarAvisoYSirveLogin("ver tus estadísticas")
-                        }
+                        if (currentUser != null) navController.navigate(R.id.navigation_statistics)
+                        else mostrarAvisoYSirveLogin("ver tus estadísticas")
                         true
                     }
                     R.id.navigation_settings -> {
@@ -73,16 +71,7 @@ class MainActivity : AppCompatActivity() {
                     else -> false
                 }
             }
-
-            val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-
-            // Aplicar tema de alto contraste si está activo
-            if (sharedPref.getBoolean("high_contrast", false)) {
-                setTheme(R.style.Theme_Temporis_HighContrast)
-            }
-
-            super.onCreate(savedInstanceState)
-
+            // Eliminamos el super.onCreate y el setTheme que tenías aquí abajo
         } catch (e: Exception) {
             Log.e("MainActivity", "Error al inicializar navegación: ${e.message}")
         }

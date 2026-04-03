@@ -21,16 +21,16 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
         // 1. Cargar estado guardado
-        binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
+        // binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
         binding.switchHighContrast.isChecked = sharedPref.getBoolean("high_contrast", false)
 
         // 2. Escuchar cambios de Texto en Negrita
-        binding.switchBoldText.setOnCheckedChangeListener { _, isChecked ->
+        /*binding.switchBoldText.setOnCheckedChangeListener { _, isChecked ->
             sharedPref.edit().putBoolean("bold_text", isChecked).apply()
             Toast.makeText(context, "Ajuste de texto guardado", Toast.LENGTH_SHORT).show()
             // Nota: Para aplicar negrita global, lo ideal es reiniciar la actividad
             activity?.recreate()
-        }
+        }*/
 
         // 3. Escuchar cambios de Alto Contraste
         binding.switchHighContrast.setOnCheckedChangeListener { _, isChecked ->
