@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="?android:attr/windowBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTimers"
@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingTop="8dp"
-        android:paddingBottom="120dp"
+        android:paddingBottom="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,8 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="100dp"  app:cardCornerRadius="20dp"
+        android:layout_marginBottom="120dp"
+        app:cardCornerRadius="20dp"
         app:cardElevation="12dp"
+        app:cardBackgroundColor="?attr/colorSurface"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -38,7 +40,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="4dp"
                 android:text="Nuevo Temporizador"
-                android:textColor="@color/purple_500"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -60,6 +62,8 @@
                         android:layout_height="36dp"
                         android:background="@null"
                         android:hint="Nombre"
+                        android:textColorHint="?attr/colorOutline"
+                        android:textColor="?attr/colorOnSurface"
                         android:inputType="textCapSentences"
                         android:paddingStart="8dp"
                         android:textSize="14sp" />
@@ -68,7 +72,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="4dp"
-                        android:background="#DDDDDD" />
+                        android:background="?attr/colorOutline" />
 
                     <EditText
                         android:id="@+id/editTextTimerDuration"
@@ -76,6 +80,8 @@
                         android:layout_height="36dp"
                         android:background="@null"
                         android:hint="Minutos"
+                        android:textColorHint="?attr/colorOutline"
+                        android:textColor="?attr/colorOnSurface"
                         android:inputType="number"
                         android:paddingStart="8dp"
                         android:textSize="14sp" />
@@ -89,10 +95,11 @@
                     android:minWidth="80dp"
                     android:text="CREAR"
                     android:textSize="12sp"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnPrimary"
                     app:cornerRadius="12dp" />
 
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

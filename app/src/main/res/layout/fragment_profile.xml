@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.StatisticsFragment">
+    android:background="?android:attr/windowBackground">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,64 +16,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Imagen de perfil -->
             <ImageView
                 android:id="@+id/imgProfilePhoto"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="12dp"
                 android:scaleType="centerCrop"
                 android:background="@drawable/circle_background"
-                android:src="@drawable/ic_default_profile" />
+                android:src="@drawable/ic_default_profile"
+                app:tint="?attr/colorPrimary" />
 
-            <!-- URL de la imagen de perfil -->
             <EditText
                 android:id="@+id/etProfileUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="URL de imagen de perfil"
+                android:textColorHint="?attr/colorOutline"
+                android:textColor="?attr/colorOnSurface"
                 android:inputType="textUri" />
 
-            <!-- Nombre de usuario -->
             <EditText
                 android:id="@+id/etUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
                 android:hint="Nombre de usuario" />
 
-            <!-- Nombre visible -->
             <EditText
                 android:id="@+id/etDisplayName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
                 android:hint="Nombre visible" />
 
-            <!-- Descripción -->
-            <!--<EditText
-                android:id="@+id/etDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Descripción personal"
-                android:inputType="textMultiLine" />-->
-
-            <!-- Correo electrónico -->
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Correo electrónico"
+                android:textColor="?attr/colorOutline"
                 android:enabled="false" />
 
-            <!-- Botón para guardar -->
             <Button
                 android:id="@+id/btnSafe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Guardar cambios"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"
                 android:layout_marginTop="16dp" />
 
-            <!-- Botón para borrar usuario -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDeleteAccount"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -85,5 +78,4 @@
 
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,8 @@
     android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="6dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="?attr/colorSurface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,6 +22,7 @@
             android:text="Nombre del temporizador"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintEnd_toStartOf="@+id/timerDuration"
@@ -33,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="20 min"
-            android:textColor="@color/purple_500"
+            android:textColor="?attr/colorPrimary"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/timerName"
@@ -45,6 +47,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/arrow_down_float"
+            app:tint="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="@+id/timerName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/timerName" />
@@ -56,7 +59,7 @@
             android:layout_marginTop="12dp"
             android:minWidth="100dp"
             android:text="00:00"
-            android:textColor="#333333"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +71,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:text="01/04/2026"
-            android:textColor="#888888"
+            android:textColor="?attr/colorOutline"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="@+id/textViewCountdown"
             app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +95,8 @@
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_media_play" />
+                android:src="@android:drawable/ic_media_play"
+                app:tint="?attr/colorPrimary" />
 
             <ImageButton
                 android:id="@+id/btnEdit"
@@ -100,7 +104,8 @@
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_edit" />
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="?attr/colorOnSurface" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
@@ -108,8 +113,8 @@
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@android:drawable/ic_menu_delete" />
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="?attr/colorOutline" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
