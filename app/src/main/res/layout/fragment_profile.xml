@@ -24,8 +24,7 @@
                 android:layout_marginBottom="12dp"
                 android:scaleType="centerCrop"
                 android:background="@drawable/circle_background"
-                android:src="@drawable/ic_default_profile"
-                app:tint="?attr/colorPrimary" />
+                android:src="@drawable/ic_default_profile" />
 
             <EditText
                 android:id="@+id/etProfileUrl"
