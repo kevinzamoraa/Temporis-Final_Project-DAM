@@ -4,21 +4,21 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="Inicio" />
+        android:title="@string/title_home" />
 
     <item
         android:id="@+id/navigation_timers"
         android:icon="@drawable/ic_watch"
-        android:title="Temporizadores" />
+        android:title="@string/title_timers" />
 
     <item
         android:id="@+id/navigation_statistics"
         android:icon="@drawable/ic_bar_chart"
-        android:title="Estadísticas" />
+        android:title="@string/title_statistics" />
 
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_hamburger_menu"
-        android:title="Configuración" />
+        android:title="@string/title_settings" />
 
 </menu>
