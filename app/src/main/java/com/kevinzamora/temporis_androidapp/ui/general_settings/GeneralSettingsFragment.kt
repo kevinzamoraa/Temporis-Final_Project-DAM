@@ -16,20 +16,20 @@ class GeneralSettingsFragment : Fragment(R.layout.fragment_general_settings) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentGeneralSettingsBinding.bind(view)
 
-        val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val sharespref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
         // 1. Cargar preferencias
-        binding.switchTimeFormat.isChecked = sharedPref.getBoolean("use_24h", true)
-        binding.switchFinishSound.isChecked = sharedPref.getBoolean("enable_sound", true)
+        binding.switchTimeFormat.isChecked = sharespref.getBoolean("use_24h", true)
+        binding.switchFinishSound.isChecked = sharespref.getBoolean("enable_sound", true)
 
         // 2. Guardar cambios de Formato Horario
         binding.switchTimeFormat.setOnCheckedChangeListener { _, isChecked ->
-            sharedPref.edit().putBoolean("use_24h", isChecked).apply()
+            sharespref.edit().putBoolean("use_24h", isChecked).apply()
         }
 
         // 3. Guardar cambios de Sonido
         binding.switchFinishSound.setOnCheckedChangeListener { _, isChecked ->
-            sharedPref.edit().putBoolean("enable_sound", isChecked).apply()
+            sharespref.edit().putBoolean("enable_sound", isChecked).apply()
         }
 
         // 4. Lógica de cambio de idioma (la implementaremos a continuación)
@@ -39,20 +39,24 @@ class GeneralSettingsFragment : Fragment(R.layout.fragment_general_settings) {
     }
 
     private fun showLanguageDialog() {
-        val languages = arrayOf("Español", "English")
-        val languageCodes = arrayOf("es", "en")
+        val languages = arrayOf("Español", "English", "Català / Valencià")
+        val languageCodes = arrayOf("es", "en", "ca")
+        val sharespref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
         android.app.AlertDialog.Builder(requireContext())
             .setTitle("Selecciona Idioma")
             .setItems(languages) { _, which ->
                 val selectedLanguage = languageCodes[which]
 
-                // Aplicar el idioma globalmente
-                val appLocale: androidx.core.os.LocaleListCompat =
-                    androidx.core.os.LocaleListCompat.forLanguageTags(selectedLanguage)
+                // 1. Guardar en Sharespreferences para que ThemeUtils lo lea
+                sharespref.edit().putString("language", selectedLanguage).apply()
+
+                // 2. Aplicar vía AppCompatDelegate (recomendado para Android 13+)
+                val appLocale = androidx.core.os.LocaleListCompat.forLanguageTags(selectedLanguage)
                 androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
 
-                requireActivity().recreate() // Reiniciar para aplicar
+                // 3. Reiniciar actividad para forzar cambio de textos
+                requireActivity().recreate()
             }
             .show()
     }

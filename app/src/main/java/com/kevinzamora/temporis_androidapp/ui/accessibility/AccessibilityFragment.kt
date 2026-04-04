@@ -17,26 +17,45 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccessibilityBinding.bind(view)
 
-        // Usamos un solo archivo de preferencias coherente
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-        // 1. Cargar estado guardado
-        // binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
+        // Cargar estados
         binding.switchHighContrast.isChecked = sharedPref.getBoolean("high_contrast", false)
+        binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
+        // Esta fórmula asegura que el número sea exactamente un múltiplo de 0.1 (ej: 1.04 -> 1.0)
+        val savedFontSize = 0.0
+        val validatedValue = Math.round(savedFontSize * 10) / 10.0f
 
-        // 2. Escuchar cambios de Texto en Negrita
-        /*binding.switchBoldText.setOnCheckedChangeListener { _, isChecked ->
-            sharedPref.edit().putBoolean("bold_text", isChecked).apply()
-            Toast.makeText(context, "Ajuste de texto guardado", Toast.LENGTH_SHORT).show()
-            // Nota: Para aplicar negrita global, lo ideal es reiniciar la actividad
-            activity?.recreate()
-        }*/
+        // Validamos que esté en el rango y lo asignamos
+        if (validatedValue in 0.8f..1.4f) {
+            binding.sliderFontSize.value = validatedValue
+        } else {
+            binding.sliderFontSize.value = 1.0f
+        }
+        binding.sliderFontSize.value = if (validatedValue in 0.8f..1.4f) validatedValue else 1.0f
+        binding.sliderFontSize.addOnChangeListener { _, value, _ ->
+            sharedPref.edit().putFloat("font_size_scale", value).apply()
+            // OPCIONAL: requireActivity().recreate()
+            // Nota: Recreate() aplicará el tamaño a TODA la app, pero cerrará el fragment actual.
+        }
 
-        // 3. Escuchar cambios de Alto Contraste
+        // Listener Alto Contraste
         binding.switchHighContrast.setOnCheckedChangeListener { _, isChecked ->
             sharedPref.edit().putBoolean("high_contrast", isChecked).apply()
-            Toast.makeText(context, "Ajuste de contraste guardado", Toast.LENGTH_SHORT).show()
-            activity?.recreate()
+            requireActivity().recreate()
+        }
+
+        // Listener Negrita
+        binding.switchBoldText.setOnCheckedChangeListener { _, isChecked ->
+            sharedPref.edit().putBoolean("bold_text", isChecked).apply()
+            requireActivity().recreate()
+        }
+
+        // Listener Slider Tamaño
+        binding.sliderFontSize.addOnChangeListener { _, value, _ ->
+            sharedPref.edit().putFloat("font_size_scale", value).apply()
+            // No recreamos aquí para que la experiencia sea fluida,
+            // se aplicará al cambiar de pantalla o reiniciar.
         }
     }
 

@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Temporis</string>
+    <string name="title_profile">Usuari</string>
+    <string name="title_home">Temporitzadors</string>
+    <string name="title_logout">Eixir</string>
+    <string name="title_notifications">Notificacions</string>
+
+    <string name="email">Correu electrònic</string>
+    <string name="password">Contrasenya</string>
+    <string name="login_email">Iniciar Sessió</string>
+    <string name="login_google">Iniciar Sessió amb Google</string>
+    <string name="login_anonymous">Iniciar Sessió Anònima</string>
+    <string name="forgot_password">Has oblidat la teua contrasenya?</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Contrasenya</string>
+    <string name="action_sign_in">Inicia sessió o registra\'t</string>
+    <string name="action_sign_in_short">Iniciar sessió</string>
+    <string name="welcome">Benvingut!</string>
+    <string name="invalid_username">No és un usuari vàlid</string>
+    <string name="invalid_password">La contrasenya ha de tindre 5 caràcters o més</string>
+    <string name="login_failed">L\'inici de sessió ha fallat</string>
+    <string name="title_activity_login">Login</string>
+
+    <string name="editar">Editar</string>
+    <string name="registrar">Registrar-me</string>
+    <string name="usuario">Usuari</string>
+    <string name="Contra">Contrasenya</string>
+    <string name="ConfirmarContra">Confirma Contrasenya</string>
+    <string name="ContraOlvidada">He oblidat la meua contrasenya</string>
+    <string name="Registro">Encara no tens compte?</string>
+    <string name="Entrar">Entrar</string>
+    <string name="EntrarGoogle">Entrar amb Google</string>
+    <string name="Recordar">Recordar contrasenya</string>
+    <string name="textoRestablecerContra">Introdueix l\'email associat al teu compte i t\'enviarem un correu per a restablir-la</string>
+    <string name="enviar">Enviar</string>
+    <string name="qr">Generar Codi QR</string>
+    <string name="Actualizar">Actualitzar</string>
+    <string name="descripcion">La teua descripció</string>
+    <string name="mensaje_home">Benvingut a la teua aplicació per a reservar pistes de tenis</string>
+    <string name="EntrarTwitter">Entra amb Twitter</string>
+    <string name="pistas">Pistes disponibles</string>
+    <string name="pista_extra">Extras:</string>
+    <string name="contrincante">Oponent:</string>
+    <string name="continuar">Continuar</string>
+    <string name="inicio">Hora d\'inici:</string>
+    <string name="final_hora">Hora final:</string>
+    <string name="precio">Preu total: </string>
+    <string name="metodo">Mètodes de pagament:</string>
+    <string name="pago">Visa/MasterCard</string>
+    <string name="tarjeta">Número de targeta</string>
+    <string name="csv">cvv</string>
+    <string name="fecha_validez">Data de validesa</string>
+    <string name="pagar">Pagar</string>
+    <string name="paypal">PayPal</string>
+
+    <string name="name">Nom</string>
+    <string name="confirm_password">Confirmar contrasenya</string>
+    <string name="register">Registrar-se</string>
+    <string name="hello_blank_fragment">Hola fragment en blanc</string>
+</resources>

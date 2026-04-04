@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Temporis</string>
+    <string name="title_profile">User</string>
+    <string name="title_home">Timers</string>
+    <string name="title_logout">Logout</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="email">Email address</string>
+    <string name="password">Password</string>
+    <string name="login_email">Login</string>
+    <string name="login_google">Sign in with Google</string>
+    <string name="login_anonymous">Anonymous Login</string>
+    <string name="forgot_password">Forgot your password?</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">Welcome!</string>
+    <string name="invalid_username">Not a valid user</string>
+    <string name="invalid_password">Password must be 5 characters or more</string>
+    <string name="login_failed">Login failed</string>
+    <string name="title_activity_login">Login</string>
+
+    <string name="editar">Edit</string>
+    <string name="registrar">Register me</string>
+    <string name="usuario">User</string>
+    <string name="Contra">Password</string>
+    <string name="ConfirmarContra">Confirm Password</string>
+    <string name="ContraOlvidada">I forgot my password</string>
+    <string name="Registro">Don\'t have an account yet?</string>
+    <string name="Entrar">Enter</string>
+    <string name="EntrarGoogle">Enter with Google</string>
+    <string name="Recordar">Remember password</string>
+    <string name="textoRestablecerContra">Enter the email associated with your account and we will send you an email to reset it</string>
+    <string name="enviar">Send</string>
+    <string name="qr">Generate QR Code</string>
+    <string name="Actualizar">Update</string>
+    <string name="descripcion">Your Description</string>
+    <string name="mensaje_home">Welcome to your tennis court booking app</string>
+    <string name="EntrarTwitter">Enter with Twitter</string>
+    <string name="pistas">Available courts</string>
+    <string name="pista_extra">Extras:</string>
+    <string name="contrincante">Opponent:</string>
+    <string name="continuar">Continue</string>
+    <string name="inicio">Start time:</string>
+    <string name="final_hora">End time:</string>
+    <string name="precio">Total price: </string>
+    <string name="metodo">Payment methods:</string>
+    <string name="pago">Visa/MasterCard</string>
+    <string name="tarjeta">Card number</string>
+    <string name="csv">cvv</string>
+    <string name="fecha_validez">Expiry date</string>
+    <string name="pagar">Pay</string>
+    <string name="paypal">PayPal</string>
+
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="register">Register</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

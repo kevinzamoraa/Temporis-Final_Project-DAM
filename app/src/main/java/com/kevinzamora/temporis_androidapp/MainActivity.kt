@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.kevinzamora.temporis_androidapp.databinding.ActivityMainBinding
 import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
+import com.kevinzamora.temporis_androidapp.util.ThemeUtils
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,22 +21,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // --- PASO 1: CARGAR PREFERENCIAS Y APLICAR TEMA ---
-        // Esto debe ir SIEMPRE antes de super.onCreate y setContentView
+        // 1. Cargar preferencias y aplicar configuraciones visuales ANTES de super.onCreate
         val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+
+        // Aplicar ajustes de Accesibilidad (Idioma, Fuente, Negrita)
+        ThemeUtils.applyAppSettings(this)
+
+        // Aplicar Tema (Alto Contraste o Normal)
         if (sharedPref.getBoolean("high_contrast", false)) {
             setTheme(R.style.Theme_Temporis_HighContrast)
         } else {
-            // Asegúrate de usar el nombre exacto de tu tema base definido en themes.xml
             setTheme(R.style.Theme_TemporisAndroidApp)
         }
 
         val splashScreen = installSplashScreen()
-        super.onCreate(savedInstanceState) // Solo un super.onCreate y debe ir aquí
+        super.onCreate(savedInstanceState)
 
-        // --- PASO 2: INFLAR VISTAS ---
+        // 2. Inflar vista
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         auth = FirebaseAuth.getInstance()
 
         val navView: BottomNavigationView = binding.navView
