@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:padding="24dp"
+    android:padding="24sp"
     android:background="?android:attr/windowBackground">
 
     <ImageView
         android:id="@+id/ivRegistroLogo"
-        android:layout_width="211dp"
-        android:layout_height="205dp"
+        android:layout_width="211sp"
+        android:layout_height="205sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/etLoginEmail"
         app:layout_constraintStart_toStartOf="@+id/etLoginEmail"
@@ -26,7 +26,7 @@
         android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="?attr/colorPrimary"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16sp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,14 +34,14 @@
         android:text="Versión 1.0.0"
         android:textSize="16sp"
         android:textColor="?attr/colorOutline"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Kevin Zamora / Proyecto Final DAM"
         android:gravity="center"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="48sp"
         android:textSize="14sp"
         android:textColor="?attr/colorOnSurface"/>
 
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24sp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGithub"
@@ -64,7 +64,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="16sp"
             android:text="LinkedIn"
             app:icon="@drawable/ic_home" />
     </LinearLayout>

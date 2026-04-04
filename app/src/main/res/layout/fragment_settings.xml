@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground"
-    android:padding="16dp">
+    android:padding="16sp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,13 +19,13 @@
             android:textColor="?attr/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_profile"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="64sp"
             android:text="Perfil de Usuario"
             android:textColor="?attr/colorOnSurface"
             android:gravity="start|center_vertical"
@@ -36,8 +36,8 @@
             android:id="@+id/btn_accessibility"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="64sp"
+            android:layout_marginTop="8sp"
             android:text="Accesibilidad"
             android:textColor="?attr/colorOnSurface"
             android:gravity="start|center_vertical"
@@ -48,8 +48,8 @@
             android:id="@+id/btn_general_settings"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="64sp"
+            android:layout_marginTop="8sp"
             android:text="Ajustes Generales"
             android:textColor="?attr/colorOnSurface"
             android:gravity="start|center_vertical"
@@ -60,8 +60,8 @@
             android:id="@+id/btn_app_info"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="64sp"
+            android:layout_marginTop="8sp"
             android:text="Info de la Aplicación"
             android:textColor="?attr/colorOnSurface"
             android:gravity="start|center_vertical"
@@ -70,12 +70,12 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="32dp" />
+            android:layout_height="32sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="64sp"
             android:text="Cerrar Sesión"
             android:textColor="?attr/colorOnPrimary"
             app:backgroundTint="?attr/colorPrimary"

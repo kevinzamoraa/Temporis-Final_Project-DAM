@@ -9,10 +9,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTimers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="0sp"
         android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="200dp"
+        android:paddingTop="8sp"
+        android:paddingBottom="200sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,10 +20,10 @@
         android:id="@+id/cardForm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="120dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="12dp"
+        android:layout_marginHorizontal="16sp"
+        android:layout_marginBottom="120sp"
+        app:cardCornerRadius="20sp"
+        app:cardElevation="12sp"
         app:cardBackgroundColor="?attr/colorSurface"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -31,14 +31,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="12sp">
 
             <TextView
                 android:id="@+id/tvFormTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8sp"
+                android:layout_marginBottom="4sp"
                 android:text="Nuevo Temporizador"
                 android:textColor="?attr/colorPrimary"
                 android:textSize="12sp"
@@ -51,7 +51,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="0sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
@@ -59,31 +59,31 @@
                     <EditText
                         android:id="@+id/editTextTimerName"
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
+                        android:layout_height="36sp"
                         android:background="@null"
                         android:hint="Nombre"
                         android:textColorHint="?attr/colorOutline"
                         android:textColor="?attr/colorOnSurface"
                         android:inputType="textCapSentences"
-                        android:paddingStart="8dp"
+                        android:paddingStart="8sp"
                         android:textSize="14sp" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginVertical="4dp"
+                        android:layout_height="1sp"
+                        android:layout_marginVertical="4sp"
                         android:background="?attr/colorOutline" />
 
                     <EditText
                         android:id="@+id/editTextTimerDuration"
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
+                        android:layout_height="36sp"
                         android:background="@null"
                         android:hint="Minutos"
                         android:textColorHint="?attr/colorOutline"
                         android:textColor="?attr/colorOnSurface"
                         android:inputType="number"
-                        android:paddingStart="8dp"
+                        android:paddingStart="8sp"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -91,13 +91,13 @@
                     android:id="@+id/buttonCreateTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:minWidth="80dp"
+                    android:layout_marginStart="12sp"
+                    android:minWidth="80sp"
                     android:text="CREAR"
                     android:textSize="12sp"
                     android:backgroundTint="?attr/colorPrimary"
                     android:textColor="?attr/colorOnPrimary"
-                    app:cornerRadius="12dp" />
+                    app:cornerRadius="12sp" />
 
             </LinearLayout>
         </LinearLayout>

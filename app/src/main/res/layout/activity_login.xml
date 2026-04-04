@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/ivRegistroLogo"
-            android:layout_width="211dp"
-            android:layout_height="205dp"
+            android:layout_width="211sp"
+            android:layout_height="205sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/etLoginEmail"
             app:layout_constraintStart_toStartOf="@+id/etLoginEmail"
@@ -37,8 +37,8 @@
 
         <EditText
             android:id="@+id/etLoginEmail"
-            android:layout_width="210dp"
-            android:layout_height="55dp"
+            android:layout_width="210sp"
+            android:layout_height="55sp"
             android:backgroundTint="?attr/colorPrimary"
             android:ems="10"
             android:hint="@string/prompt_email"
@@ -66,8 +66,8 @@
 
         <EditText
             android:id="@+id/etRegistroContra"
-            android:layout_width="210dp"
-            android:layout_height="60dp"
+            android:layout_width="210sp"
+            android:layout_height="60sp"
             android:backgroundTint="?attr/colorPrimary"
             android:ems="10"
             android:hint="@string/Contra"
@@ -110,8 +110,8 @@
 
         <Button
             android:id="@+id/btnRegistroRegistrar"
-            android:layout_width="198dp"
-            android:layout_height="50dp"
+            android:layout_width="198sp"
+            android:layout_height="50sp"
             android:text="@string/Entrar"
             android:backgroundTint="?attr/colorPrimary"
             android:textColor="?attr/colorOnPrimary"
@@ -123,8 +123,8 @@
 
         <Button
             android:id="@+id/btnLoginGoogle"
-            android:layout_width="198dp"
-            android:layout_height="50dp"
+            android:layout_width="198sp"
+            android:layout_height="50sp"
             android:text="@string/EntrarGoogle"
             android:textAllCaps="false"
             android:backgroundTint="?attr/colorSecondary"

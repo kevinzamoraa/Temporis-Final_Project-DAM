@@ -10,12 +10,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="24dp">
+        android:paddingBottom="24sp">
 
         <ImageView
             android:id="@+id/ivRegistroLogo"
-            android:layout_width="211dp"
-            android:layout_height="205dp"
+            android:layout_width="211sp"
+            android:layout_height="205sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -28,7 +28,7 @@
             android:id="@+id/tvRegistroUserNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="16sp"
             android:text="@string/usuario"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="@+id/etRegistroUserName"
@@ -36,8 +36,8 @@
 
         <EditText
             android:id="@+id/etRegistroUserName"
-            android:layout_width="280dp"
-            android:layout_height="55dp"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
             android:backgroundTint="?attr/colorPrimary"
             android:hint="@string/usuario"
             android:textColor="?attr/colorOnSurface"
@@ -50,7 +50,7 @@
             android:id="@+id/tvRegistroEmailLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="8sp"
             android:text="@string/prompt_email"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="@+id/etRegistroEmail"
@@ -58,8 +58,8 @@
 
         <EditText
             android:id="@+id/etRegistroEmail"
-            android:layout_width="280dp"
-            android:layout_height="55dp"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
             android:backgroundTint="?attr/colorPrimary"
             android:hint="@string/prompt_email"
             android:textColor="?attr/colorOnSurface"
@@ -71,7 +71,7 @@
             android:id="@+id/tvRegistroContraLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="8sp"
             android:text="@string/Contra"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="@+id/etRegistroContra"
@@ -79,8 +79,8 @@
 
         <EditText
             android:id="@+id/etRegistroContra"
-            android:layout_width="280dp"
-            android:layout_height="55dp"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
             android:backgroundTint="?attr/colorPrimary"
             android:hint="@string/Contra"
             android:inputType="textPassword"
@@ -93,7 +93,7 @@
             android:id="@+id/tvRegistroConfirmContraLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="8sp"
             android:text="@string/confirm_password"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintStart_toStartOf="@+id/etRegistroConfirm"
@@ -101,8 +101,8 @@
 
         <EditText
             android:id="@+id/etRegistroConfirm"
-            android:layout_width="280dp"
-            android:layout_height="55dp"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
             android:backgroundTint="?attr/colorPrimary"
             android:hint="@string/ConfirmarContra"
             android:inputType="textPassword"
@@ -113,9 +113,9 @@
 
         <Button
             android:id="@+id/btnRegistroRegistrar"
-            android:layout_width="280dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="24dp"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
+            android:layout_marginTop="24sp"
             android:backgroundTint="?attr/colorPrimary"
             android:text="@string/registrar"
             android:textColor="?attr/colorOnPrimary"

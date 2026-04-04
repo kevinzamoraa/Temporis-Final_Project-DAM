@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="16sp"
     android:background="?android:attr/windowBackground">
 
     <TextView
@@ -14,19 +14,19 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="?attr/colorPrimary"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16sp"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="16sp"
+        app:cardElevation="4sp"
         app:cardBackgroundColor="?attr/colorSurface">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="16sp"
             android:orientation="vertical">
 
             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -39,9 +39,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1sp"
                 android:background="?attr/colorOutline"
-                android:layout_marginVertical="8dp"/>
+                android:layout_marginVertical="8sp"/>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchFinishSound"
@@ -52,9 +52,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="1sp"
                 android:background="?attr/colorOutline"
-                android:layout_marginVertical="8dp"/>
+                android:layout_marginVertical="8sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,14 +62,14 @@
                 android:text="Idioma de la aplicación"
                 android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8sp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnChangeLanguage"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="8sp"
                 android:text="Español (Cambiar)" />
 
         </LinearLayout>

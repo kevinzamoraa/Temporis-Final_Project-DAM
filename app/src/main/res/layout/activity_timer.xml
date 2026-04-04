@@ -15,22 +15,22 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="?attr/colorPrimary"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16sp"
+        android:layout_marginTop="16sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTimers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="0sp"
+        android:layout_marginTop="8sp"
         app:layout_constraintTop_toBottomOf="@id/tvTimersTitle"
         app:layout_constraintBottom_toTopOf="@id/nav_view" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
-        android:layout_width="0dp"
+        android:layout_width="0sp"
         android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
         app:itemIconTint="?attr/colorPrimary"

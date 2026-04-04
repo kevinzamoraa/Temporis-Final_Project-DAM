@@ -9,8 +9,8 @@
 
     <TextView
         android:id="@+id/tvSplashImagen"
-        android:layout_width="294dp"
-        android:layout_height="324dp"
+        android:layout_width="294sp"
+        android:layout_height="324sp"
         android:background="@mipmap/logo_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

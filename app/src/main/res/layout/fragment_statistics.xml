@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16sp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,26 +18,26 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16sp"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            app:cardCornerRadius="16sp"
+            app:cardElevation="4sp"
             app:cardBackgroundColor="?attr/colorSurface"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12sp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
+                android:padding="20sp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     android:src="@android:drawable/ic_menu_today"
                     app:tint="?attr/colorPrimary"/>
 
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:layout_marginStart="16sp">
 
                     <TextView
                         android:id="@+id/tvTotalSessionsCount"
@@ -68,20 +68,20 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            app:cardCornerRadius="16sp"
+            app:cardElevation="4sp"
             app:cardBackgroundColor="?attr/colorSurface">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
+                android:padding="20sp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     android:src="@android:drawable/ic_menu_recent_history"
                     app:tint="?attr/colorPrimary"/>
 
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:layout_marginStart="16sp">
 
                     <TextView
                         android:id="@+id/tvTotalTimeMinutes"
@@ -112,8 +112,8 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/contributionChart"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="16dp" />
+            android:layout_height="200sp"
+            android:layout_marginTop="16sp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

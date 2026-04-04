@@ -4,20 +4,20 @@
     android:id="@+id/timerCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="12dp"
-    android:layout_marginVertical="6dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
+    android:layout_marginHorizontal="12sp"
+    android:layout_marginVertical="6sp"
+    app:cardCornerRadius="16sp"
+    app:cardElevation="4sp"
     app:cardBackgroundColor="?attr/colorSurface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16sp">
 
         <TextView
             android:id="@+id/timerName"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:text="Nombre del temporizador"
             android:textSize="16sp"
@@ -33,7 +33,7 @@
             android:id="@+id/timerDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="8sp"
             android:text="20 min"
             android:textColor="?attr/colorPrimary"
             android:textSize="13sp"
@@ -44,8 +44,8 @@
 
         <ImageView
             android:id="@+id/ivExpand"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="24sp"
+            android:layout_height="24sp"
             android:src="@android:drawable/arrow_down_float"
             app:tint="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="@+id/timerName"
@@ -56,8 +56,8 @@
             android:id="@+id/textViewCountdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:minWidth="100dp"
+            android:layout_marginTop="12sp"
+            android:minWidth="100sp"
             android:text="00:00"
             android:textColor="?attr/colorOnSurface"
             android:textSize="32sp"
@@ -67,7 +67,7 @@
 
         <TextView
             android:id="@+id/timerCreatedAt"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:text="01/04/2026"
@@ -79,9 +79,9 @@
 
         <LinearLayout
             android:id="@+id/layoutActions"
-            android:layout_width="0dp"
+            android:layout_width="0sp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="12sp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
@@ -91,27 +91,27 @@
 
             <ImageButton
                 android:id="@+id/btnPlay"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="12dp"
+                android:layout_width="48sp"
+                android:layout_height="48sp"
+                android:layout_marginHorizontal="12sp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_media_play"
                 app:tint="?attr/colorPrimary" />
 
             <ImageButton
                 android:id="@+id/btnEdit"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="12dp"
+                android:layout_width="48sp"
+                android:layout_height="48sp"
+                android:layout_marginHorizontal="12sp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_edit"
                 app:tint="?attr/colorOnSurface" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="12dp"
+                android:layout_width="48sp"
+                android:layout_height="48sp"
+                android:layout_marginHorizontal="12sp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_delete"
                 app:tint="?attr/colorOutline" />
