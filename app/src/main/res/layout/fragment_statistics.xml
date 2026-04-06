@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tu Progreso"
+            android:text="@string/stats_progress_title"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
@@ -60,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="?attr/colorOnSurface"
-                        android:text="Nº de Temporizadores"/>
+                        android:text="@string/stats_total_timers"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -104,7 +104,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="?attr/colorOnSurface"
-                        android:text="Tiempo total de enfoque"/>
+                        android:text="@string/stats_total_time"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

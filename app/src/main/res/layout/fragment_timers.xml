@@ -11,7 +11,6 @@
         android:id="@+id/text_timers_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="@string/title_timers"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -23,23 +22,25 @@
         android:id="@+id/recyclerViewTimers"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
-        android:paddingBottom="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardForm"
+        android:paddingBottom="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_timers_title" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardForm"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
         app:cardBackgroundColor="?attr/colorSurface"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,12 +73,15 @@
                     <EditText
                         android:id="@+id/editTextTimerName"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:background="@null"
                         android:hint="@string/name_placeholder"
+                        android:importantForAutofill="no"
                         android:textColorHint="?attr/colorOutline"
                         android:textColor="?attr/colorOnSurface"
                         android:inputType="textCapSentences"
+                        android:padding="8dp"
                         android:textSize="16sp" />
 
                     <View
@@ -88,12 +92,15 @@
                     <EditText
                         android:id="@+id/editTextTimerDuration"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:background="@null"
                         android:hint="@string/min_placeholder"
+                        android:importantForAutofill="no"
                         android:textColorHint="?attr/colorOutline"
                         android:textColor="?attr/colorOnSurface"
                         android:inputType="number"
+                        android:padding="8dp"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -102,6 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
+                    android:minHeight="48dp"
                     android:text="@string/create_button"
                     android:backgroundTint="?attr/colorPrimary"
                     android:textColor="?attr/colorOnPrimary"
