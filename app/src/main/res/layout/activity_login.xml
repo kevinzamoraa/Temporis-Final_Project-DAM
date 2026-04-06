@@ -14,13 +14,13 @@
 
         <ImageView
             android:id="@+id/ivRegistroLogo"
-            android:layout_width="211sp"
-            android:layout_height="205sp"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/etLoginEmail"
-            app:layout_constraintStart_toStartOf="@+id/etLoginEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.053"
+            app:layout_constraintVertical_bias="0.05"
             app:srcCompat="@mipmap/logo_foreground" />
 
         <TextView
@@ -31,110 +31,121 @@
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintBottom_toTopOf="@id/etLoginEmail"
             app:layout_constraintEnd_toEndOf="@+id/etLoginEmail"
-            app:layout_constraintStart_toStartOf="@+id/etLoginEmail"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintStart_toStartOf="@+id/etLoginEmail" />
 
         <EditText
             android:id="@+id/etLoginEmail"
-            android:layout_width="210sp"
-            android:layout_height="55sp"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
             android:backgroundTint="?attr/colorPrimary"
             android:ems="10"
             android:hint="@string/prompt_email"
             android:inputType="textEmailAddress"
             android:textColor="?attr/colorOnSurface"
             android:textColorHint="?attr/colorOutline"
-            android:textSize="24sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/etRegistroContra"
-            app:layout_constraintStart_toStartOf="@+id/etRegistroContra"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.392" />
+            app:layout_constraintVertical_bias="0.38" />
 
         <TextView
             android:id="@+id/tvRegistroContraLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/Contra"
             android:textColor="?attr/colorOnSurface"
             app:layout_constraintBottom_toTopOf="@id/etRegistroContra"
             app:layout_constraintEnd_toEndOf="@+id/etRegistroContra"
-            app:layout_constraintStart_toStartOf="@+id/etRegistroContra"
-            app:layout_constraintTop_toBottomOf="@id/etLoginEmail"
-            app:layout_constraintVertical_bias="0.966" />
+            app:layout_constraintStart_toStartOf="@+id/etRegistroContra" />
 
         <EditText
             android:id="@+id/etRegistroContra"
-            android:layout_width="210sp"
-            android:layout_height="60sp"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
             android:backgroundTint="?attr/colorPrimary"
             android:ems="10"
             android:hint="@string/Contra"
             android:inputType="textPassword"
             android:textColor="?attr/colorOnSurface"
             android:textColorHint="?attr/colorOutline"
-            android:textSize="24sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnLoginNuevaContra"
-            app:layout_constraintStart_toStartOf="@+id/btnLoginNuevaContra"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.52" />
 
         <Button
             android:id="@+id/btnLoginNuevaContra"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="@string/ContraOlvidada"
             android:textAllCaps="false"
             android:textColor="?attr/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnLoginRegistro"
-            app:layout_constraintStart_toStartOf="@+id/btnLoginRegistro"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.629" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etRegistroContra" />
 
         <Button
             android:id="@+id/btnLoginRegistro"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="@string/Registro"
             android:textColor="?attr/colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnRegistroRegistrar"
-            app:layout_constraintStart_toStartOf="@+id/btnRegistroRegistrar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.718" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnLoginNuevaContra" />
 
-        <Button
-            android:id="@+id/btnRegistroRegistrar"
-            android:layout_width="198sp"
-            android:layout_height="50sp"
-            android:text="@string/Entrar"
-            android:backgroundTint="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnLoginGoogle"
-            app:layout_constraintStart_toStartOf="@+id/btnLoginGoogle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.814" />
+        <LinearLayout
+            android:id="@+id/layoutButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLoginRegistro">
+
+            <Button
+                android:id="@+id/btnRegistroRegistrar"
+                android:layout_width="160dp"
+                android:layout_height="55dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="@string/Entrar"
+                android:textColor="?attr/colorOnPrimary" />
+
+            <ImageButton
+                android:id="@+id/btnBiometric"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="12dp"
+                android:backgroundTint="?attr/colorSecondary"
+                android:contentDescription="TouchID"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_fingerprint_bk"
+                app:tint="?attr/colorOnSecondary" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnLoginGoogle"
-            android:layout_width="198sp"
-            android:layout_height="50sp"
+            android:layout_width="227dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="?attr/colorSecondary"
             android:text="@string/EntrarGoogle"
             android:textAllCaps="false"
-            android:backgroundTint="?attr/colorSecondary"
             android:textColor="?attr/colorOnSecondary"
             app:icon="@drawable/googleg_standard_color_18"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.91" />
+            app:layout_constraintTop_toBottomOf="@+id/layoutButtons" />
 
         <ProgressBar
             android:id="@+id/progressBarLogin"

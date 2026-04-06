@@ -97,8 +97,8 @@ class MainActivity : AppCompatActivity() {
         val lastLogin = sharedPref.getLong("last_login_time", 0)
         val currentTime = System.currentTimeMillis()
 
-        // Definimos caducidad (Ejemplo: 24 horas)
-        val expirationMillis = 24 * 60 * 60 * 1000
+        // Definimos caducidad (Ejemplo: 1 hora)
+        val expirationMillis = 1 * 60 * 60 * 1000
 
         if (auth.currentUser != null && lastLogin != 0L) {
             if (currentTime - lastLogin > expirationMillis) {

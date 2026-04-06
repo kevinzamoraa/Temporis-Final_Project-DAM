@@ -18,15 +18,16 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccessibilityBinding.bind(view)
 
+        // Dentro de onViewCreated, busca donde asignas el valor al slider:
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-
-        // CORRECCIÓN CRASH SLIDER: Leer el valor real guardado
         val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
-        // Forzamos que sea múltiplo de 0.1 para evitar el error del logcat
-        val validatedValue = Math.round(savedFontSize * 10) / 10.0f
 
-        // Asignar valor al slider asegurando el rango
-        binding.sliderFontSize.value = if (validatedValue in 0.8f..1.4f) validatedValue else 1.0f
+// CLAVE: Validar el valor ANTES de asignarlo al Slider para evitar el crash
+        if (savedFontSize >= binding.sliderFontSize.valueFrom && savedFontSize <= binding.sliderFontSize.valueTo) {
+            binding.sliderFontSize.value = savedFontSize
+        } else {
+            binding.sliderFontSize.value = 1.0f // Valor por defecto seguro
+        }
 
         // Listeners corregidos
         binding.switchHighContrast.isChecked = sharedPref.getBoolean("high_contrast", false)

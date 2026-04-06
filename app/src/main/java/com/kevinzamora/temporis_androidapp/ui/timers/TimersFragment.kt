@@ -84,8 +84,8 @@ class TimersFragment : Fragment() {
         binding.editTextTimerDuration.setText(timer.duration.toString())
 
         // Actualizamos textos del formulario compacto
-        binding.tvFormTitle.text = "Actualizar Temporizador"
-        binding.buttonCreateTimer.text = "ACTUALIZAR"
+        binding.tvFormTitle.text = "@string/title_edit_timer"
+        binding.buttonCreateTimer.text = "@string/update_button"
         binding.editTextTimerName.requestFocus()
     }
 
@@ -134,5 +134,6 @@ class TimersFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        binding.recyclerViewTimers.adapter = null // Ayuda a evitar fugas de memoria y crashes en recreación
     }
 }

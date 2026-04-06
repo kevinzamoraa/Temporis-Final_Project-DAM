@@ -13,7 +13,7 @@
         android:id="@+id/text_home_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Últimas Noticias Temporis"
+        android:text="@string/title_home"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="?attr/colorOnSurface"

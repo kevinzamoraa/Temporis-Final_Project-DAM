@@ -1,13 +1,23 @@
 <resources>
     <string name="app_name">Temporis</string>
-    <string name="title_profile">Usuario</string>
+    <string name="title_profile">Perfil de Usuario</string>
     <string name="title_home">Recursos</string>
     <string name="title_timers">Temporizadores</string>
     <string name="title_logout">Salir</string>
+    <string name="title_accessibility">Accesibilidad</string>
     <string name="title_notifications">Notificaciones</string>
     <string name="title_statistics">Estadísticas</string>
+    <string name="title_general_settings">Ajustes Generales</string>
     <string name="title_settings">Configuración</string>
+    <string name="title_app_info">Info de la Aplicación</string>
+    <string name="title_create_timer">Nuevo Temporizador</string>
+    <string name="title_edit_timer">Editar Temporizador</string>
     <color name="logo_background">#FFFBFD</color>
+
+    <string name="name_placeholder">Nombre</string>
+    <string name="min_placeholder">Minutos</string>
+    <string name="create_button">CREAR</string>
+    <string name="update_button">ACTUALIZAR</string>
 
     <string name="email">Correo electrónico</string>
     <string name="password">Contraseña</string>
@@ -62,7 +72,6 @@
     <string name="EntrarTwitter">Entra con Twitter</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="title_accessibility">Accesibilidad</string>
     <string name="label_font_size">Tamaño de la fuente</string>
     <string name="label_high_contrast">Alto contraste</string>
     <string name="label_bold_text">Texto en negrita</string>
@@ -77,5 +86,6 @@
 
     <string name="default_web_client_id">636050813149-6fnav2v1b8tfnnbjhpfvp937bp477r2a.apps.googleusercontent.com</string>
     <string name="prefs_file" translatable="false">TemporisPrefs</string>
-    <string name="label_dark_mode">Dark Mode (Activado/Desactivado por el Sistema)</string>
+    <string name="label_dark_mode">Modo Oscuro (Sistema)</string>
+    <string name="label_display_options">Opciones de Visualización</string>
 </resources>

@@ -1,12 +1,21 @@
 <resources>
     <string name="app_name">Temporis</string>
-    <string name="title_profile">Usuari</string>
+    <string name="title_profile">Perfil d'Usuari</string>
     <string name="title_home">Recursos</string>
     <string name="title_timers">Temporitzadors</string>
     <string name="title_logout">Eixir</string>
     <string name="title_notifications">Notificacions</string>
     <string name="title_statistics">Estadístiques</string>
+    <string name="title_general_settings">Ajustos Generals</string>
     <string name="title_settings">Configuració</string>
+    <string name="title_app_info">Info de la Aplicació</string>
+    <string name="title_create_timer">Nou Temporitzador</string>
+    <string name="title_edit_timer">Editar Temporitzador</string>
+
+    <string name="name_placeholder">Nom</string>
+    <string name="min_placeholder">Minuts</string>
+    <string name="create_button">CREAR</string>
+    <string name="update_button">ACTUALITZAR</string>
 
     <string name="email">Correu electrònic</string>
     <string name="password">Contrasenya</string>
@@ -40,5 +49,6 @@
     <string name="stats_total_timers">Nº de Temporitzadors</string>
     <string name="stats_total_time">Temps total d\'enfocament</string>
     <string name="stats_no_data">No hi ha dades disponibles</string>
-    <string name="label_dark_mode">Dark Mode (Activat/Des-activat per el Sistema)</string>
+    <string name="label_dark_mode">Mode Fosc (Sistema)</string>
+    <string name="label_display_options">Opcions de Visualització</string>
 </resources>
