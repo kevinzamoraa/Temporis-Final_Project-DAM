@@ -95,4 +95,5 @@
     <string name="label_display_options">Opciones de Visualización</string>
     <string name="toast_created">Temporizador creado</string>
     <string name="error_fields">Ha ocurrido un error durante la creación del temporizador</string>
+    <string name="more_info">Leer más</string>
 </resources>

@@ -57,4 +57,5 @@
     <string name="label_display_options">Opcions de Visualització</string>
     <string name="toast_created">Temporitzador creat</string>
     <string name="error_fields">Ha ocorregut un error durant la creació del temporitzador</string>
+    <string name="more_info">Llegir més</string>
 </resources>

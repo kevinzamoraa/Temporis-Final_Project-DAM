@@ -84,4 +84,5 @@
     <string name="label_dark_mode">Dark Mode (System)</string>
     <string name="toast_created" />
     <string name="error_fields" />
+    <string name="more_info">Read more</string>
 </resources>

@@ -20,30 +20,20 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var postAdapter: PostAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        // 1. Blindaje de inflado para evitar cierres súbitos por Modo Oscuro o Recursos
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return try {
             _binding = FragmentHomeBinding.inflate(inflater, container, false)
             binding.root
         } catch (e: Exception) {
-            Log.e("HomeCrash", "Error crítico inflando Inicio: ${e.message}")
-            // Retornamos una vista básica de emergencia para que la app no se cierre
-            View(context ?: requireContext())
+            Log.e("HomeCrash", "Error inflado: ${e.message}")
+            View(requireContext())
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Verificamos si el binding se inicializó correctamente antes de seguir
         if (_binding == null) return
-
-        // 2. Persistencia de la fuente: Forzamos la escala guardada en este fragmento
         applySavedFontScale()
-
         setupRecyclerView()
         observeViewModel()
     }
