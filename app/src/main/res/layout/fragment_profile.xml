@@ -61,7 +61,7 @@
                 android:id="@+id/btnSafe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Guardar cambios"
+                android:text="@string/save_changes_button"
                 android:backgroundTint="?attr/colorPrimary"
                 android:textColor="?attr/colorOnPrimary"
                 android:layout_marginTop="16sp" />
@@ -71,7 +71,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Borrar mi cuenta"
+                android:text="@string/delete_account_button"
                 android:textColor="#F44336"
                 android:layout_marginTop="8sp" />
 

@@ -96,4 +96,6 @@
     <string name="toast_created">Temporizador creado</string>
     <string name="error_fields">Ha ocurrido un error durante la creación del temporizador</string>
     <string name="more_info">Leer más</string>
+    <string name="save_changes_button">Guardar cambios</string>
+    <string name="delete_account_button">Borrar mi cuenta</string>
 </resources>

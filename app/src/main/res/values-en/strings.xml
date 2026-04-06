@@ -85,4 +85,6 @@
     <string name="toast_created" />
     <string name="error_fields" />
     <string name="more_info">Read more</string>
+    <string name="save_changes_button">Save changes</string>
+    <string name="delete_account_button">Delete my account</string>
 </resources>

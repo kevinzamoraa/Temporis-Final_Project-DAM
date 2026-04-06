@@ -16,7 +16,6 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var postAdapter: PostAdapter
 
@@ -25,49 +24,42 @@ class HomeFragment : Fragment() {
             _binding = FragmentHomeBinding.inflate(inflater, container, false)
             binding.root
         } catch (e: Exception) {
-            Log.e("HomeCrash", "Error inflado: ${e.message}")
-            View(requireContext())
+            Log.e("HomeCrash", "Error inflado Modo Oscuro: ${e.message}")
+            View(requireContext()) // Vista de emergencia
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (_binding == null) return
-        applySavedFontScale()
+
+        applySavedFontScale() // Asegura que la fuente se mantenga
         setupRecyclerView()
         observeViewModel()
     }
 
     private fun applySavedFontScale() {
-        try {
-            val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-            val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
+        val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
+        val config = resources.configuration
 
-            val config = resources.configuration
-            // Solo actualizamos si hay una diferencia para evitar refrescos innecesarios
-            if (config.fontScale != savedFontSize) {
-                config.fontScale = savedFontSize
-                val metrics = resources.displayMetrics
-                @Suppress("DEPRECATION")
-                resources.updateConfiguration(config, metrics)
-            }
-        } catch (e: Exception) {
-            Log.e("FontError", "No se pudo aplicar el tamaño de fuente en Inicio: ${e.message}")
+        // Solo aplicar si la diferencia es significativa para evitar bucles de refresco
+        if (Math.abs(config.fontScale - savedFontSize) > 0.01f) {
+            config.fontScale = savedFontSize
+            val metrics = resources.displayMetrics
+            // Usamos el contexto de la aplicación para que sea más estable
+            requireContext().applicationContext.resources.updateConfiguration(config, metrics)
         }
     }
 
     private fun setupRecyclerView() {
         postAdapter = PostAdapter(emptyList())
-        binding.recyclerPosts.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = postAdapter
-        }
+        binding.recyclerPosts.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerPosts.adapter = postAdapter
     }
 
     private fun observeViewModel() {
-        homeViewModel.posts.observe(viewLifecycleOwner) { listaDePosts ->
-            postAdapter.updateData(listaDePosts)
-        }
+        homeViewModel.posts.observe(viewLifecycleOwner) { postAdapter.updateData(it) }
     }
 
     override fun onDestroyView() {

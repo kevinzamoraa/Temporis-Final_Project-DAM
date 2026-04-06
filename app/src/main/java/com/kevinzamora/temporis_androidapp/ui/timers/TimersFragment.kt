@@ -32,7 +32,7 @@ class TimersFragment : Fragment() {
             _binding = FragmentTimersBinding.inflate(inflater, container, false)
             binding.root
         } catch (e: Exception) {
-            Log.e("TimersCrash", "Error inflado: ${e.message}")
+            Log.e("TimersCrash", "Error inflado Modo Oscuro: ${e.message}")
             View(requireContext())
         }
     }
@@ -40,27 +40,24 @@ class TimersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (_binding == null) return
-        applySavedFontScale()
+
+        applySavedFontScale() // Aplicar persistencia de fuente
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
     }
 
     private fun applySavedFontScale() {
-        try {
-            val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
-            val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
+        val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
+        val config = resources.configuration
 
-            val config = resources.configuration
-            // Solo actualizamos si hay una diferencia para evitar refrescos innecesarios
-            if (config.fontScale != savedFontSize) {
-                config.fontScale = savedFontSize
-                val metrics = resources.displayMetrics
-                @Suppress("DEPRECATION")
-                resources.updateConfiguration(config, metrics)
-            }
-        } catch (e: Exception) {
-            Log.e("FontError", "No se pudo aplicar el tamaño de fuente en Inicio: ${e.message}")
+        // Solo aplicar si la diferencia es significativa para evitar bucles de refresco
+        if (Math.abs(config.fontScale - savedFontSize) > 0.01f) {
+            config.fontScale = savedFontSize
+            val metrics = resources.displayMetrics
+            // Usamos el contexto de la aplicación para que sea más estable
+            requireContext().applicationContext.resources.updateConfiguration(config, metrics)
         }
     }
 
