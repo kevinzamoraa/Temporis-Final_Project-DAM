@@ -16,6 +16,7 @@
     <string name="min_placeholder">Minuts</string>
     <string name="create_button">CREAR</string>
     <string name="update_button">ACTUALITZAR</string>
+    <string name="logout_button">TANCAR SESSIÓ</string>
 
     <string name="email">Correu electrònic</string>
     <string name="password">Contrasenya</string>
@@ -51,4 +52,6 @@
     <string name="stats_no_data">No hi ha dades disponibles</string>
     <string name="label_dark_mode">Mode Fosc (Sistema)</string>
     <string name="label_display_options">Opcions de Visualització</string>
+    <string name="toast_created">Temporitzador creat</string>
+    <string name="error_fields">Ha ocorregut un error durant la creació del temporitzador</string>
 </resources>

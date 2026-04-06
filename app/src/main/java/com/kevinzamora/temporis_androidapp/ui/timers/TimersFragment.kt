@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentTimersBinding
 import com.kevinzamora.temporis_androidapp.model.Timer
 import com.kevinzamora.temporis_androidapp.adapter.TimerAdapter
@@ -34,29 +35,29 @@ class TimersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
     }
 
     private fun setupRecyclerView() {
-        // CORRECCIÓN: Pasamos los 4 parámetros obligatorios al constructor
         adapter = TimerAdapter(
             timerList = emptyList(),
             onPlayClick = { timer ->
                 Toast.makeText(requireContext(), "Iniciando: ${timer.name}", Toast.LENGTH_SHORT).show()
             },
-            onEditClick = { timer ->
-                prepararEdicion(timer)
-            },
-            onDeleteClick = { timer ->
-                mostrarDialogoEliminar(timer)
-            }
+            onEditClick = { timer -> prepararEdicion(timer) },
+            onDeleteClick = { timer -> mostrarDialogoEliminar(timer) }
         )
-
         binding.recyclerViewTimers.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTimers.adapter = adapter
+    }
+
+    private fun setupObservers() {
+        // Usar viewLifecycleOwner asegura que el observador muera con la vista del Fragment
+        timerViewModel.timers.observe(viewLifecycleOwner) { timers ->
+            adapter.updateData(timers)
+        }
     }
 
     private fun setupClickListeners() {
@@ -67,13 +68,13 @@ class TimersFragment : Fragment() {
             if (name.isNotEmpty() && duration != null) {
                 if (editingTimerId == null) {
                     timerViewModel.addTimer(name, duration)
-                    Toast.makeText(requireContext(), "Temporizador creado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.toast_created), Toast.LENGTH_SHORT).show()
                 } else {
                     actualizarTemporizador(name, duration)
                 }
                 limpiarFormulario()
             } else {
-                Toast.makeText(requireContext(), "Rellena todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.error_fields), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -83,9 +84,9 @@ class TimersFragment : Fragment() {
         binding.editTextTimerName.setText(timer.name)
         binding.editTextTimerDuration.setText(timer.duration.toString())
 
-        // Actualizamos textos del formulario compacto
-        binding.tvFormTitle.text = "@string/title_edit_timer"
-        binding.buttonCreateTimer.text = "@string/update_button"
+        // CORRECCIÓN: Usar getString(R.string...) para asignar textos correctamente
+        binding.tvFormTitle.text = getString(R.string.title_edit_timer)
+        binding.buttonCreateTimer.text = getString(R.string.update_button)
         binding.editTextTimerName.requestFocus()
     }
 
@@ -93,15 +94,15 @@ class TimersFragment : Fragment() {
         val originalTimer = timerViewModel.timers.value?.find { it.id == editingTimerId }
         originalTimer?.let {
             val updatedTimer = Timer().apply {
-                this.id = it.id
+                id = it.id
                 this.name = name
                 this.duration = duration
-                this.isActive = it.isActive
-                this.createdAt = it.createdAt
-                this.uid = it.uid
+                this.setActive(it.isActive)
+                this.setCreatedAt(it.createdAt)
+                this.setUid(it.uid)
             }
             timerViewModel.updateTimer(updatedTimer)
-            Toast.makeText(requireContext(), "Temporizador actualizado", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.update_button), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -116,24 +117,19 @@ class TimersFragment : Fragment() {
             .show()
     }
 
-    private fun setupObservers() {
-        timerViewModel.timers.observe(viewLifecycleOwner, Observer { timers ->
-            // CORRECCIÓN: Cambiado submitList por updateData
-            adapter.updateData(timers)
-        })
-    }
-
     private fun limpiarFormulario() {
         editingTimerId = null
         binding.editTextTimerName.text.clear()
         binding.editTextTimerDuration.text.clear()
-        binding.tvFormTitle.text = "Nuevo Temporizador"
-        binding.buttonCreateTimer.text = "CREAR"
+        // CORRECCIÓN: Usar getString para resetear el formulario
+        binding.tvFormTitle.text = getString(R.string.title_create_timer)
+        binding.buttonCreateTimer.text = getString(R.string.create_button)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Importante: desconectar el adapter para liberar memoria
+        binding.recyclerViewTimers.adapter = null
         _binding = null
-        binding.recyclerViewTimers.adapter = null // Ayuda a evitar fugas de memoria y crashes en recreación
     }
 }

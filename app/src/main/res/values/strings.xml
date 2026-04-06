@@ -18,6 +18,7 @@
     <string name="min_placeholder">Minutos</string>
     <string name="create_button">CREAR</string>
     <string name="update_button">ACTUALIZAR</string>
+    <string name="logout_button">CERRAR SESIÓN</string>
 
     <string name="email">Correo electrónico</string>
     <string name="password">Contraseña</string>
@@ -88,4 +89,6 @@
     <string name="prefs_file" translatable="false">TemporisPrefs</string>
     <string name="label_dark_mode">Modo Oscuro (Sistema)</string>
     <string name="label_display_options">Opciones de Visualización</string>
+    <string name="toast_created">Temporizador creado</string>
+    <string name="error_fields">Ha ocurrido un error durante la creación del temporizador</string>
 </resources>

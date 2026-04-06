@@ -18,6 +18,7 @@
     <string name="min_placeholder">Minutes</string>
     <string name="create_button">CREATE</string>
     <string name="update_button">UPDATE</string>
+    <string name="logout_button">LOGOUT</string>
 
     <string name="email">Email address</string>
     <string name="password">Password</string>
@@ -79,4 +80,6 @@
     <string name="stats_no_data">No data available to display</string>
     <string name="label_display_options">Display Options</string>
     <string name="label_dark_mode">Dark Mode (System)</string>
+    <string name="toast_created" />
+    <string name="error_fields" />
 </resources>
