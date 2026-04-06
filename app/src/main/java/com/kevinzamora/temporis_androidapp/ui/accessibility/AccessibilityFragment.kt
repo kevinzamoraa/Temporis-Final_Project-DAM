@@ -3,11 +3,11 @@ package com.kevinzamora.temporis_androidapp.ui.accessibility
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentAccessibilityBinding
+import kotlin.math.roundToInt
 
 class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
 
@@ -20,53 +20,52 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
 
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-        // 1. Cargar preferencias
+        // 1. Cargar y normalizar el valor (Importante para cambios de idioma/recreación)
         val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
-        val isHighContrast = sharedPref.getBoolean("high_contrast", false)
-        val isBoldText = sharedPref.getBoolean("bold_text", false)
 
-        // 2. Bloque Try-Catch para el Slider (Punto crítico del FATAL ERROR)
-        try {
-            binding.sliderFontSize.apply {
-                // Aseguramos que el valor esté estrictamente entre 0.8 y 1.4
-                val safeValue = savedFontSize.coerceIn(0.8f, 1.4f)
-                value = safeValue
+        // Función para redondear al primer decimal (evita el error 1.0000001)
+        val normalizedValue = (savedFontSize * 10).roundToInt() / 10.0f
+
+        binding.switchHighContrast.isChecked = sharedPref.getBoolean("high_contrast", false)
+        binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
+
+        // 2. Aplicación segura con post y doble validación
+        binding.sliderFontSize.post {
+            try {
+                // Coerción estricta y asignación
+                binding.sliderFontSize.value = normalizedValue.coerceIn(0.8f, 1.4f)
+            } catch (e: Exception) {
+                // Si falla por precisión, forzamos el valor por defecto
+                binding.sliderFontSize.value = 1.0f
             }
-        } catch (e: Exception) {
-            // Si falla, registramos el error en el Logcat pero la app NO se cierra
-            Log.e("AccessibilityError", "Error al configurar el Slider: ${e.message}")
-            binding.sliderFontSize.value = 1.0f // Valor por defecto seguro
         }
 
-        // 3. Configurar Switches
-        binding.switchHighContrast.isChecked = isHighContrast
-        binding.switchBoldText.isChecked = isBoldText
-
-        // 4. Listeners
+        // 3. Listeners mejorados
         binding.switchHighContrast.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 sharedPref.edit().putBoolean("high_contrast", isChecked).apply()
-                requireActivity().recreate()
+                activity?.recreate()
             }
         }
 
         binding.switchBoldText.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 sharedPref.edit().putBoolean("bold_text", isChecked).apply()
-                requireActivity().recreate()
+                activity?.recreate()
             }
         }
 
         binding.sliderFontSize.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
-                sharedPref.edit().putFloat("font_size_scale", value).apply()
+                // Redondeamos antes de guardar para que al recargar la vista por
+                // cambio de idioma el valor sea exacto
+                val roundedValue = (value * 10).roundToInt() / 10.0f
+                sharedPref.edit().putFloat("font_size_scale", roundedValue).apply()
             }
         }
 
-        // Estado Modo Oscuro
         val isNightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         binding.switchDarkMode.isChecked = isNightMode
-        binding.switchDarkMode.isEnabled = false
     }
 
     override fun onDestroyView() {

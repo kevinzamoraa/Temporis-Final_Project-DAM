@@ -12,6 +12,10 @@
     <string name="title_app_info">Info de la Aplicación</string>
     <string name="title_create_timer">Nuevo Temporizador</string>
     <string name="title_edit_timer">Editar Temporizador</string>
+
+    <string name="app_version">Versión 2.0.0</string>
+    <string name="app_description">Kevin Zamora / Proyecto Final DAM</string>
+
     <color name="logo_background">#FFFBFD</color>
 
     <string name="name_placeholder">Nombre</string>

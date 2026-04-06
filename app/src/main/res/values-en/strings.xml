@@ -13,6 +13,8 @@
     <string name="title_create_timer">New Timer</string>
     <string name="title_edit_timer">Edit Timer</string>
 
+    <string name="app_version">2.0.0 Version</string>
+    <string name="app_description">Kevin Zamora / DAM Final Project</string>
 
     <string name="name_placeholder">Name</string>
     <string name="min_placeholder">Minutes</string>

@@ -12,6 +12,9 @@
     <string name="title_create_timer">Nou Temporitzador</string>
     <string name="title_edit_timer">Editar Temporitzador</string>
 
+    <string name="app_version">Versió 2.0.0</string>
+    <string name="app_description">Kevin Zamora / Projecte Final DAM</string>
+
     <string name="name_placeholder">Nom</string>
     <string name="min_placeholder">Minuts</string>
     <string name="create_button">CREAR</string>

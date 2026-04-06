@@ -31,7 +31,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Versión 1.0.0"
+        android:text="@string/app_version"
         android:textSize="16sp"
         android:textColor="?attr/colorOutline"
         android:layout_marginTop="8sp"/>
@@ -39,7 +39,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kevin Zamora / Proyecto Final DAM"
+        android:text="@string/app_description"
         android:gravity="center"
         android:layout_marginTop="48sp"
         android:textSize="14sp"
