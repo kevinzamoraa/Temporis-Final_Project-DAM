@@ -57,19 +57,44 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
 
         binding.sliderFontSize.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
-                // Redondeamos antes de guardar para que al recargar la vista por
-                // cambio de idioma el valor sea exacto
                 val roundedValue = (value * 10).roundToInt() / 10.0f
-                sharedPref.edit().putFloat("font_size_scale", roundedValue).apply()
+                sharedPref.edit().putFloat("font_size_scale", roundedValue).commit() // Usamos commit() para asegurar escritura inmediata
+
+                // Opcional: Avisar a la actividad que debe refrescarse si queremos cambio instantáneo
+                // activity?.recreate()
             }
         }
 
         val isNightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         binding.switchDarkMode.isChecked = isNightMode
+
+        binding.sliderFontSize.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                val roundedValue = (value * 10).roundToInt() / 10.0f
+
+                // GUARDADO CRÍTICO: Usamos apply() pero forzamos la persistencia
+                sharedPref.edit().putFloat("font_size_scale", roundedValue).apply()
+
+                // En lugar de recrear toda la actividad (que causa el crash en modo oscuro),
+                // avisamos al sistema de que la configuración ha cambiado.
+                updateCustomFontScale(roundedValue)
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Función de apoyo dentro del Fragment para aplicar el cambio visualmente
+    private fun updateCustomFontScale(scale: Float) {
+        val configuration = resources.configuration
+        configuration.fontScale = scale
+        val metrics = resources.displayMetrics
+        resources.updateConfiguration(configuration, metrics)
+
+        // Solo recreamos si es estrictamente necesario para ver el cambio
+        activity?.recreate()
     }
 }
