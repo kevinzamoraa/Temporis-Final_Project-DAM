@@ -4,73 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16sp"
+    android:padding="16dp"
     android:background="?android:attr/windowBackground">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ajustes Generales"
+        android:text="@string/title_settings"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="?attr/colorPrimary"
-        android:layout_marginBottom="16sp"/>
+        android:layout_marginBottom="16dp"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16sp"
-        app:cardElevation="4sp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
         app:cardBackgroundColor="?attr/colorSurface">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16sp"
+            android:padding="16dp"
             android:orientation="vertical">
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchTimeFormat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Formato 24 horas"
-                android:textColor="?attr/colorOnSurface"
-                android:checked="true" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:background="?attr/colorOutline"
-                android:layout_marginVertical="8sp"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchFinishSound"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="?attr/colorOnSurface"
-                android:text="Sonido al finalizar contador" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:background="?attr/colorOutline"
-                android:layout_marginVertical="8sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Idioma de la aplicación"
+                android:text="@string/label_language"
                 android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"
-                android:layout_marginTop="8sp"/>
+                android:layout_marginTop="8dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnChangeLanguage"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8sp"
-                android:text="Español (Cambiar)" />
+                android:layout_marginTop="8dp"
+                android:text="Español" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

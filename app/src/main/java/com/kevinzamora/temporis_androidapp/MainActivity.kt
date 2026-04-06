@@ -88,4 +88,26 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this@MainActivity, LoginActivity::class.java)
         startActivity(intent)
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Lógica de caducidad de sesión
+        val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val lastLogin = sharedPref.getLong("last_login_time", 0)
+        val currentTime = System.currentTimeMillis()
+
+        // Definimos caducidad (Ejemplo: 24 horas)
+        val expirationMillis = 24 * 60 * 60 * 1000
+
+        if (auth.currentUser != null && lastLogin != 0L) {
+            if (currentTime - lastLogin > expirationMillis) {
+                auth.signOut()
+                sharedPref.edit().remove("last_login_time").apply()
+                Toast.makeText(this, "Tu sesión ha caducado por seguridad", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        }
+    }
 }

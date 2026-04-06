@@ -1,6 +1,7 @@
 package com.kevinzamora.temporis_androidapp.ui.accessibility
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -19,44 +20,37 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
 
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-        // Cargar estados
-        binding.switchHighContrast.isChecked = sharedPref.getBoolean("high_contrast", false)
-        binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
-        // Esta fórmula asegura que el número sea exactamente un múltiplo de 0.1 (ej: 1.04 -> 1.0)
-        val savedFontSize = 0.0
+        // CORRECCIÓN CRASH SLIDER: Leer el valor real guardado
+        val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
+        // Forzamos que sea múltiplo de 0.1 para evitar el error del logcat
         val validatedValue = Math.round(savedFontSize * 10) / 10.0f
 
-        // Validamos que esté en el rango y lo asignamos
-        if (validatedValue in 0.8f..1.4f) {
-            binding.sliderFontSize.value = validatedValue
-        } else {
-            binding.sliderFontSize.value = 1.0f
-        }
+        // Asignar valor al slider asegurando el rango
         binding.sliderFontSize.value = if (validatedValue in 0.8f..1.4f) validatedValue else 1.0f
-        binding.sliderFontSize.addOnChangeListener { _, value, _ ->
-            sharedPref.edit().putFloat("font_size_scale", value).apply()
-            // OPCIONAL: requireActivity().recreate()
-            // Nota: Recreate() aplicará el tamaño a TODA la app, pero cerrará el fragment actual.
-        }
 
-        // Listener Alto Contraste
+        // Listeners corregidos
+        binding.switchHighContrast.isChecked = sharedPref.getBoolean("high_contrast", false)
+        binding.switchBoldText.isChecked = sharedPref.getBoolean("bold_text", false)
+
         binding.switchHighContrast.setOnCheckedChangeListener { _, isChecked ->
             sharedPref.edit().putBoolean("high_contrast", isChecked).apply()
             requireActivity().recreate()
         }
 
-        // Listener Negrita
         binding.switchBoldText.setOnCheckedChangeListener { _, isChecked ->
             sharedPref.edit().putBoolean("bold_text", isChecked).apply()
             requireActivity().recreate()
         }
 
-        // Listener Slider Tamaño
         binding.sliderFontSize.addOnChangeListener { _, value, _ ->
             sharedPref.edit().putFloat("font_size_scale", value).apply()
-            // No recreamos aquí para que la experiencia sea fluida,
-            // se aplicará al cambiar de pantalla o reiniciar.
+            // No recreamos aquí para que no de saltos mientras el usuario desliza
         }
+
+        // Punto 2: Botón/Switch informativo de Modo Oscuro
+        val isNightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        binding.switchDarkMode.isChecked = isNightMode
+        binding.switchDarkMode.isEnabled = false // Informativo, no editable manualmente aquí
     }
 
     override fun onDestroyView() {

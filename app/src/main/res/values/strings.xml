@@ -77,4 +77,5 @@
 
     <string name="default_web_client_id">636050813149-6fnav2v1b8tfnnbjhpfvp937bp477r2a.apps.googleusercontent.com</string>
     <string name="prefs_file" translatable="false">TemporisPrefs</string>
+    <string name="label_dark_mode">Dark Mode (Activado/Desactivado por el Sistema)</string>
 </resources>

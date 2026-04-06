@@ -67,6 +67,14 @@
                 android:valueTo="1.4"
                 android:stepSize="0.1"
                 android:value="1.0" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switchDarkMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_dark_mode"
+                android:enabled="false"
+                android:checked="false" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

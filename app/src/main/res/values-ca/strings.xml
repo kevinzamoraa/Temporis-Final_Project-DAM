@@ -40,4 +40,5 @@
     <string name="stats_total_timers">Nº de Temporitzadors</string>
     <string name="stats_total_time">Temps total d\'enfocament</string>
     <string name="stats_no_data">No hi ha dades disponibles</string>
+    <string name="label_dark_mode">Dark Mode (Activat/Des-activat per el Sistema)</string>
 </resources>
