@@ -60,4 +60,6 @@
     <string name="more_info">Llegir més</string>
     <string name="save_changes_button">Guardar canvis</string>
     <string name="delete_account_button">Borrar el meu compte</string>
+
+    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
 </resources>

@@ -90,7 +90,7 @@
     <string name="stats_total_time">Tiempo total de enfoque</string>
     <string name="stats_no_data">No hay datos disponibles para mostrar</string>
 
-    <string name="default_web_client_id">636050813149-6fnav2v1b8tfnnbjhpfvp937bp477r2a.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
     <string name="prefs_file" translatable="false">TemporisPrefs</string>
     <string name="label_dark_mode">Modo Oscuro (Sistema)</string>
     <string name="label_display_options">Opciones de Visualización</string>
