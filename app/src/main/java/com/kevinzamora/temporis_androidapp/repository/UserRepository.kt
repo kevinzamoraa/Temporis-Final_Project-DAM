@@ -1,5 +1,6 @@
 package com.kevinzamora.temporis_androidapp.repository
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.kevinzamora.temporis_androidapp.model.User
@@ -7,10 +8,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) {
+class UserRepository(
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+) {
     private val usersCollection = db.collection("users")
 
-    // Obtener usuario
     fun getUser(userId: String): Flow<Result<User?>> = flow {
         try {
             val snapshot = usersCollection.document(userId).get().await()
@@ -21,11 +24,8 @@ class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getIn
         }
     }
 
-    // Función UNIFICADA para crear o actualizar (Réplica eficiente)
     fun saveUser(user: User): Flow<Result<Boolean>> = flow {
         try {
-            // Usamos SetOptions.merge() para no borrar campos extra (como rol o QrCode)
-            // si solo estamos actualizando el nombre o la foto.
             usersCollection.document(user.uid).set(user, SetOptions.merge()).await()
             emit(Result.success(true))
         } catch (e: Exception) {
@@ -33,8 +33,15 @@ class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getIn
         }
     }
 
-    // Función para borrar los datos de Firestore
-    suspend fun deleteUserFirestore(userId: String) {
-        usersCollection.document(userId).delete().await()
+    suspend fun deleteFullAccount(): Result<Boolean> {
+        return try {
+            val user = auth.currentUser ?: return Result.failure(Exception("No hay sesión activa"))
+            val uid = user.uid
+            usersCollection.document(uid).delete().await()
+            user.delete().await()
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

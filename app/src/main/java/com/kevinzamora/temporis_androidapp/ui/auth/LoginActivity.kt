@@ -49,10 +49,10 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Inicialización de Vistas
+        // Sincronización exacta con activity_login.xml
         val btnLogin = findViewById<Button>(R.id.btnRegistroRegistrar)
         val btnBiometric = findViewById<ImageButton>(R.id.btnBiometric)
-        val btnRegistro = findViewById<Button>(R.id.btnLoginRegistro)
+        val btnIrARegistro = findViewById<Button>(R.id.btnLoginRegistro)
         val etLoginEmail = findViewById<EditText>(R.id.etLoginEmail)
         val etLoginPassword = findViewById<EditText>(R.id.etRegistroContra)
         val btnLoginGoogle = findViewById<Button>(R.id.btnLoginGoogle)
@@ -62,31 +62,29 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         executor = ContextCompat.getMainExecutor(this)
 
-        // 1. Configurar Biometría
         setupBiometrics()
 
-        // 2. Verificar si existe sesión previa para ofrecer Biometría
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val savedEmail = prefs.getString("email", null)
         val savedPass = prefs.getString("password", null)
-
-        if (savedEmail != null && savedPass != null) {
-            // Desplegar automáticamente la ventana de huella
+        /*
+        if (savedEmail != null && savedPass != null && auth.currentUser == null) {
             biometricPrompt.authenticate(promptInfo)
-        }
+        } else if (auth.currentUser != null) {
+            goToMain()
+        }*/
 
-        // 3. Listeners
         btnBiometric.setOnClickListener {
             if (savedEmail != null && savedPass != null) {
                 biometricPrompt.authenticate(promptInfo)
             } else {
-                Toast.makeText(this, "Primero inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
             }
         }
 
         btnLogin.setOnClickListener {
-            val email = etLoginEmail.text.toString()
-            val pass = etLoginPassword.text.toString()
+            val email = etLoginEmail.text.toString().trim()
+            val pass = etLoginPassword.text.toString().trim()
 
             if (email.isNotEmpty() && pass.isNotEmpty()) {
                 progressBarLogin.visibility = View.VISIBLE
@@ -105,47 +103,43 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
         }
 
-        btnRegistro.setOnClickListener {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.coordinatorLayout, RegisterFragment())
-            transaction.addToBackStack(null)
-            transaction.commit()
+        btnIrARegistro.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.coordinatorLayout, RegisterFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         btnLoginNuevaContra.setOnClickListener {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.coordinatorLayout, ForgottenPassword())
-            transaction.addToBackStack(null)
-            transaction.commit()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.coordinatorLayout, ForgottenPassword())
+                .addToBackStack(null)
+                .commit()
         }
 
         pedirMultiplesPermisos()
     }
 
     private fun setupBiometrics() {
-        biometricPrompt = BiometricPrompt(
-            this, executor,
+        biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE)
-                    val email = prefs.getString("email", "")!!
-                    val pass = prefs.getString("password", "")!!
+                    val email = prefs.getString("email", "") ?: ""
+                    val pass = prefs.getString("password", "") ?: ""
 
-                    progressBarLogin.visibility = View.VISIBLE
-                    performLogin(email, pass)
-                }
-
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    // Error o cancelación del usuario, no cerramos la app
+                    if (email.isNotEmpty() && pass.isNotEmpty()) {
+                        progressBarLogin.visibility = View.VISIBLE
+                        performLogin(email, pass)
+                    }
                 }
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Acceso Biométrico")
             .setSubtitle("Usa tu huella para entrar")
-            .setNegativeButtonText("Cancelar")
+            .setNegativeButtonText("Usar contraseña")
             .build()
     }
 
@@ -153,22 +147,15 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // GUARDADO DE SESIÓN Y TIMESTAMP PARA CADUCIDAD
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
                     prefs.putString("email", email)
                     prefs.putString("password", pass)
-                    prefs.putLong("last_login_time", System.currentTimeMillis()) // Timestamp actual
                     prefs.apply()
-
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
-                    Toast.makeText(this, "Error de autenticación", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                 }
-            }
-            .addOnFailureListener {
-                progressBarLogin.visibility = View.GONE
-                Toast.makeText(this, "Fallo de red o servidor", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -186,33 +173,20 @@ class LoginActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        // En Google también guardamos el timestamp
-                        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-                        prefs.putLong("last_login_time", System.currentTimeMillis())
-                        prefs.apply()
-                        goToMain()
-                    }
+                    if (it.isSuccessful) goToMain()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this, "Google Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error Google: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun pedirMultiplesPermisos() {
         Dexter.withActivity(this)
-            .withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.INTERNET
-            ).withListener(object : MultiplePermissionsListener {
+            .withPermissions(Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET)
+            .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {}
-                override fun onPermissionRationaleShouldBeShown(p: List<PermissionRequest?>?, t: PermissionToken) {
-                    t.continuePermissionRequest()
-                }
+                override fun onPermissionRationaleShouldBeShown(p: List<PermissionRequest?>?, t: PermissionToken) { t.continuePermissionRequest() }
             }).check()
     }
 }
