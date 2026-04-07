@@ -13,8 +13,10 @@
     <string name="title_create_timer">New Timer</string>
     <string name="title_edit_timer">Edit Timer</string>
 
-    <string name="app_version">2.0.0 Version</string>
+    <string name="app_version">Version 2.0.0</string>
     <string name="app_description">Kevin Zamora / DAM Final Project</string>
+
+    <color name="logo_background">#FFFBFD</color>
 
     <string name="name_placeholder">Name</string>
     <string name="min_placeholder">Minutes</string>
@@ -69,6 +71,12 @@
     <string name="pagar">Pay</string>
     <string name="paypal">PayPal</string>
 
+    <string name="qr">Generate QR Code</string>
+    <string name="Actualizar">Update</string>
+    <string name="descripcion">Your Description</string>
+    <string name="EntrarTwitter">Sign in with Twitter</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="label_font_size">Font Size</string>
     <string name="label_high_contrast">High Contrast</string>
     <string name="label_bold_text">Bold Text</string>
@@ -80,13 +88,14 @@
     <string name="stats_total_timers">Nº of Timers</string>
     <string name="stats_total_time">Total focus time</string>
     <string name="stats_no_data">No data available to display</string>
-    <string name="label_display_options">Display Options</string>
+
+    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
+    <string name="prefs_file" translatable="false">TemporisPrefs</string>
     <string name="label_dark_mode">Dark Mode (System)</string>
-    <string name="toast_created" />
-    <string name="error_fields" />
+    <string name="label_display_options">Display Options</string>
+    <string name="toast_created">Timer created</string>
+    <string name="error_fields">An error occurred while creating the timer</string>
     <string name="more_info">Read more</string>
     <string name="save_changes_button">Save changes</string>
     <string name="delete_account_button">Delete my account</string>
-
-    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
 </resources>
