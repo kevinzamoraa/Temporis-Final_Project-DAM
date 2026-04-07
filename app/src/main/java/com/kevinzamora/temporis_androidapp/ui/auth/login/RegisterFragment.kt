@@ -36,9 +36,7 @@ class RegisterFragment : Fragment() {
         val btnRegistrar = root.findViewById<Button>(R.id.btnRegistroRegistrar)
         val etRegistroEmail = root.findViewById<EditText>(R.id.etRegistroEmail)
         val etRegistroContra = root.findViewById<EditText>(R.id.etRegistroContra)
-
         val etRegistroConfirmContra = root.findViewById<EditText>(R.id.etRegistroConfirm)
-
         val etRegistroUserName = root.findViewById<EditText>(R.id.etRegistroUserName)
 
         auth = FirebaseAuth.getInstance()
@@ -87,11 +85,16 @@ class RegisterFragment : Fragment() {
                                     userRepository.saveUser(newUser).collect { result ->
                                         result.onSuccess {
                                             if (isAdded) {
-                                                Toast.makeText(context, "¡Cuenta creada con éxito!", Toast.LENGTH_SHORT).show()
-                                                parentFragmentManager.popBackStack()
+                                                Toast.makeText(context, "¡Bienvenido, $username!", Toast.LENGTH_SHORT).show()
+
+                                                // Redirección directa y limpieza de pila
+                                                val intent = Intent(requireContext(), com.kevinzamora.temporis_androidapp.MainActivity::class.java)
+                                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                startActivity(intent)
+                                                requireActivity().finish()
                                             }
                                         }.onFailure { e ->
-                                            Toast.makeText(context, "Error Firestore: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "Error al guardar perfil: ${e.message}", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                 }

@@ -100,12 +100,17 @@ class LoginActivity : AppCompatActivity() {
 
         btnLoginGoogle.setOnClickListener {
             val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Asegúrate que este ID existe en strings.xml o google-services
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
+
             val googleClient = GoogleSignIn.getClient(this, googleConf)
-            googleClient.signOut().addOnCompleteListener { // Forzamos elegir cuenta
-                startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
+
+            // ESTO ES CLAVE: Limpiamos cualquier sesión previa antes de pedir la nueva
+            googleClient.signOut().addOnCompleteListener {
+                googleClient.revokeAccess().addOnCompleteListener {
+                    startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
+                }
             }
         }
 
