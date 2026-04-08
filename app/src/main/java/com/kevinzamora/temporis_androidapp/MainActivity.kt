@@ -55,21 +55,21 @@ class MainActivity : AppCompatActivity() {
             navView.setOnItemSelectedListener { item ->
                 val currentUser = auth.currentUser
                 when (item.itemId) {
-                    R.id.navigation_home -> {
+                    R.id.navigation_home -> { // RECURSOS: Libre
                         navController.navigate(R.id.navigation_home)
                         true
                     }
-                    R.id.navigation_timers -> {
+                    R.id.navigation_timers -> { // PROTEGIDO
                         if (currentUser != null) navController.navigate(R.id.navigation_timers)
                         else mostrarAvisoYSirveLogin("ver tus temporizadores")
                         true
                     }
-                    R.id.navigation_statistics -> {
+                    R.id.navigation_statistics -> { // PROTEGIDO
                         if (currentUser != null) navController.navigate(R.id.navigation_statistics)
                         else mostrarAvisoYSirveLogin("ver tus estadísticas")
                         true
                     }
-                    R.id.navigation_settings -> {
+                    R.id.navigation_settings -> { // CONFIGURACIÓN (Raíz): Libre
                         navController.navigate(R.id.navigation_settings)
                         true
                     }
@@ -109,5 +109,12 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    // Cierre de sesión al cerrar la app (matar el proceso)
+    override fun onDestroy() {
+        super.onDestroy()
+        // Si quieres que siempre pida login al abrir de nuevo tras cerrar:
+        auth.signOut()
     }
 }

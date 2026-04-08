@@ -33,6 +33,17 @@ class UserRepository(
         }
     }
 
+    fun registerUserInFirestore(user: User): Flow<Result<Boolean>> = flow {
+        try {
+            // Usamos set() sin merge para la creación inicial,
+            // asegurando que todos los campos del objeto Java se suban.
+            usersCollection.document(user.uid).set(user).await()
+            emit(Result.success(true))
+        } catch (e: Exception) {
+            emit(Result.failure(e))
+        }
+    }
+
     suspend fun deleteFullAccount(): Result<Boolean> {
         return try {
             val user = auth.currentUser ?: return Result.failure(Exception("No hay sesión activa"))

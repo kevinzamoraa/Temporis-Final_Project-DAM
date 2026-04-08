@@ -166,6 +166,7 @@ class LoginActivity : AppCompatActivity() {
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
                     prefs.putString("email", email)
                     prefs.putString("password", pass)
+                    prefs.putLong("last_login_time", System.currentTimeMillis())
                     prefs.apply()
                     goToMain()
                 } else {

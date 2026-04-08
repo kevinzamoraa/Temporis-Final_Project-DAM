@@ -16,6 +16,7 @@ import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kevinzamora.temporis_androidapp.MainActivity
 import com.kevinzamora.temporis_androidapp.repository.UserRepository
 import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 import kotlinx.coroutines.launch
@@ -70,44 +71,59 @@ class RegisterFragment : Fragment() {
 
     private fun registrar(username: String, email: String, contra: String) {
         val db = FirebaseFirestore.getInstance()
+
+        // 1. Verificamos disponibilidad de username en Firestore
         db.collection("users").whereEqualTo("username", username).get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
+                    // 2. Intentamos crear el usuario en Auth
                     auth.createUserWithEmailAndPassword(email, contra)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                val uid = auth.uid.toString()
+                                val firebaseUser = auth.currentUser
+                                val uid = firebaseUser?.uid ?: ""
+                                val defaultPhoto = "https://img.freepik.com/premium-vector/gamer-man_961307-25037.jpg?semt=ais_hybrid&w=740"
 
-                                // Usamos la imagen de recursos: ic_default_profile
-                                val defaultPhotoPath = "android.resource://${requireContext().packageName}/${R.drawable.ic_default_profile}"
-
-                                // Constructor: uid, username, email, displayName, profilePhotoUrl
-                                val newUser = User(uid, username, email, username, defaultPhotoPath)
+                                // Objeto User para Java
+                                val newUser = User(uid, username, email, username, defaultPhoto)
                                 newUser.rol = 1
 
                                 lifecycleScope.launch {
+                                    // Usamos el repositorio (asegúrate de que saveUser use .set())
                                     userRepository.saveUser(newUser).collect { result ->
-                                        result.onSuccess {
-                                            if (isAdded) {
-                                                Toast.makeText(context, "¡Bienvenido, $username!", Toast.LENGTH_SHORT).show()
-                                                val intent = Intent(requireContext(), com.kevinzamora.temporis_androidapp.MainActivity::class.java)
-                                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                                startActivity(intent)
-                                                requireActivity().finish()
+                                        if (result.isSuccess) {
+                                            // Actualizamos el perfil de Auth
+                                            val profileUpdates = com.google.firebase.auth.userProfileChangeRequest {
+                                                displayName = username
+                                                photoUri = android.net.Uri.parse(defaultPhoto)
                                             }
-                                        }.onFailure { e ->
-                                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            firebaseUser?.updateProfile(profileUpdates)?.addOnCompleteListener {
+                                                if (isAdded) {
+                                                    Toast.makeText(context, "¡Bienvenido, $username!", Toast.LENGTH_SHORT).show()
+                                                    goToMain()
+                                                }
+                                            }
+                                        } else {
+                                            if (isAdded) Toast.makeText(context, "Error Firestore: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
                                         }
                                     }
                                 }
                             } else {
-                                Toast.makeText(context, "Error Auth: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
+                                // AQUÍ es donde salta tu error de "Email ya en uso"
+                                if (isAdded) Toast.makeText(context, "Error: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                             }
                         }
                 } else {
-                    Toast.makeText(context, "El nombre de usuario ya está en uso", Toast.LENGTH_SHORT).show()
+                    if (isAdded) Toast.makeText(context, "El nombre de usuario ya existe", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun goToMain() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun comprobarEmail(email: String): Boolean {

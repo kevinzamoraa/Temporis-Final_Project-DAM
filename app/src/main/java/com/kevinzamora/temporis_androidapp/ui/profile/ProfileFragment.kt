@@ -46,21 +46,20 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val currentUser = auth.currentUser
-        if (currentUser != null) {
-            // 1. Carga rápida desde Firebase Auth (evita que los campos salgan vacíos al inicio)
+        if (currentUser == null) {
+            // Si no hay usuario, redirigimos al Login
+            Toast.makeText(context, "Debes iniciar sesión para ver tu perfil", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+            activity?.finish() // Opcional: cerrar la actividad actual
+        } else {
+            // Si hay usuario, cargamos los datos normalmente
             loadInitialAuthData(currentUser)
-
-            // 2. Carga completa desde Firestore
             loadFirestoreData(currentUser.uid)
 
-            // Configuración de botones
             binding.btnSafe.setOnClickListener { updateProfile(currentUser.uid) }
             binding.btnDeleteAccount.setOnClickListener { confirmDeleteAccount() }
-
-            // Funcionalidad para cambiar la imagen del perfil del usuario.
-            binding.imgProfilePhoto.setOnClickListener {
-                showChangePhotoDialog()
-            }
+            binding.imgProfilePhoto.setOnClickListener { showChangePhotoDialog() }
         }
     }
 
