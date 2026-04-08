@@ -56,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:valueFrom="0.8"
                 android:valueTo="1.4"
-                android:stepSize="0.1"
                 android:value="1.0" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial

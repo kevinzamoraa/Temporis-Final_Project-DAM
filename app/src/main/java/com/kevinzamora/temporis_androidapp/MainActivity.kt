@@ -149,13 +149,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Controlar si al volver a la app la sesión ya expiró
         val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val lastLogin = sharedPref.getLong("last_login_time", 0)
-        if (auth.currentUser != null && lastLogin != 0L) {
-            val diff = System.currentTimeMillis() - lastLogin
-            if (diff > (60 * 60 * 1000)) { // 1 hora
+        val currentTime = System.currentTimeMillis()
+
+        // Si hay usuario, actualizamos el tiempo para que no caduque mientras la usa
+        if (auth.currentUser != null) {
+            if (lastLogin != 0L && (currentTime - lastLogin > 1 * 60 * 60 * 1000)) {
                 cerrarSesionForzada()
+                Toast.makeText(this, "Sesión caducada por inactividad", Toast.LENGTH_LONG).show()
+            } else {
+                // Actualizamos el timestamp para prolongar la sesión 1 hora más desde ahora
+                sharedPref.edit().putLong("last_login_time", currentTime).apply()
             }
         }
     }
