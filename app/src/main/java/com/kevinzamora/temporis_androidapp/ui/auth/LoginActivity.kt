@@ -62,31 +62,42 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         executor = ContextCompat.getMainExecutor(this)
 
+        // Inicializamos la configuración biométrica
         setupBiometrics()
 
-        // Lógica de inicio automático (Estilo Sabadell/ONCE)
+        // Recuperar preferencias guardadas
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val savedEmail = prefs.getString("email", null)
         val savedPass = prefs.getString("password", null)
 
-        // Si hay sesión activa en Firebase, entramos directo
+        // 1. Verificación de sesión activa en Firebase
         if (auth.currentUser != null) {
             goToMain()
         }
-        // Si no hay sesión pero sí credenciales guardadas, lanzamos huella
-        else if (savedEmail != null && savedPass != null) {
-            biometricPrompt.authenticate(promptInfo)
+        // 2. Auto-lanzado de biometría si hay credenciales locales guardadas
+        else if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty()) {
+            // Rellenamos los campos para que el usuario vea sus datos mientras se identifica
+            etLoginEmail.setText(savedEmail)
+            etLoginPassword.setText(savedPass)
+
+            window.decorView.post {
+                biometricPrompt.authenticate(promptInfo)
+            }
         }
 
         // Botón manual de huella
         btnBiometric.setOnClickListener {
-            if (savedEmail != null && savedPass != null) {
+            val email = prefs.getString("email", null)
+            val pass = prefs.getString("password", null)
+
+            if (!email.isNullOrEmpty() && !pass.isNullOrEmpty()) {
                 biometricPrompt.authenticate(promptInfo)
             } else {
-                Toast.makeText(this, "Primero inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Por seguridad, inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
             }
         }
 
+        // Login Manual
         btnLogin.setOnClickListener {
             val email = etLoginEmail.text.toString().trim()
             val pass = etLoginPassword.text.toString().trim()
@@ -98,6 +109,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // Login con Google
         btnLoginGoogle.setOnClickListener {
             val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -106,7 +118,6 @@ class LoginActivity : AppCompatActivity() {
 
             val googleClient = GoogleSignIn.getClient(this, googleConf)
 
-            // ESTO ES CLAVE: Limpiamos cualquier sesión previa antes de pedir la nueva
             googleClient.signOut().addOnCompleteListener {
                 googleClient.revokeAccess().addOnCompleteListener {
                     startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
@@ -114,15 +125,16 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Navegación a fragmentos
+        // Navegación a Registro
         btnIrARegistro.setOnClickListener {
             supportFragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out) // Animación simple
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.coordinatorLayout, RegisterFragment())
                 .addToBackStack(null)
                 .commit()
         }
 
+        // Navegación a Recuperar Contraseña
         btnLoginNuevaContra.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.coordinatorLayout, ForgottenPassword())
@@ -140,20 +152,26 @@ class LoginActivity : AppCompatActivity() {
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE)
                     val email = prefs.getString("email", "") ?: ""
                     val pass = prefs.getString("password", "") ?: ""
+
                     if (email.isNotEmpty() && pass.isNotEmpty()) {
                         runOnUiThread { progressBarLogin.visibility = View.VISIBLE }
                         performLogin(email, pass)
                     }
                 }
+
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    // Si el usuario cancela, no hacemos nada, dejamos que use el teclado
+                    // Ignoramos el toast si el usuario simplemente cancela o pulsa el botón negativo
+                    if (errorCode != BiometricPrompt.ERROR_USER_CANCELED && errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+                        Toast.makeText(applicationContext, errString, Toast.LENGTH_SHORT).show()
+                    }
                 }
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Acceso Seguro Temporis")
-            .setSubtitle("Identifícate para continuar")
+            .setTitle("Acceso Seguro Temporis 2.0")
+            .setSubtitle("Usa tu huella para continuar")
+            .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG)
             .setNegativeButtonText("Usar mi contraseña")
             .build()
     }
@@ -162,12 +180,12 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Guardamos credenciales para la próxima vez que use biometría
+                    // PERSISTENCIA: Guardamos las credenciales para futuras sesiones biométricas
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
                     prefs.putString("email", email)
                     prefs.putString("password", pass)
-                    prefs.putLong("last_login_time", System.currentTimeMillis())
                     prefs.apply()
+
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
@@ -198,7 +216,6 @@ class LoginActivity : AppCompatActivity() {
                     if (t.isSuccessful) {
                         val firebaseUser = auth.currentUser
                         if (firebaseUser != null) {
-                            // Ajustado al constructor de Java: uid, username, email, displayName, photoUrl
                             val userObj = User(
                                 firebaseUser.uid,
                                 firebaseUser.displayName?.replace("\\s+".toRegex(), "")?.lowercase() ?: "user",

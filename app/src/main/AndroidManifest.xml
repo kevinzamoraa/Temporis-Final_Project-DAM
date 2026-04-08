@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TemporisAndroidApp"
+
+        android:enableOnBackInvokedCallback="true"
+
         tools:targetApi="31">
 
         <!-- Previene el crash de Ads SDK si no estás usando AdMob -->
