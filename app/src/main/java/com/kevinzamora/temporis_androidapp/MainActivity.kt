@@ -3,8 +3,11 @@ package com.kevinzamora.temporis_androidapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
@@ -20,14 +23,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        // 1. Cargar preferencias y aplicar configuraciones visuales ANTES de super.onCreate
-        val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+    private val logoutHandler = Handler(Looper.getMainLooper())
+    private val INACTIVITY_TIMEOUT: Long = 30 * 60 * 1000
+    private val WARNING_BEFORE: Long = 1 * 60 * 1000
 
-        // Aplicar ajustes de Accesibilidad (Idioma, Fuente, Negrita)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         ThemeUtils.applyAppSettings(this)
 
-        // Aplicar Tema (Alto Contraste o Normal)
         if (sharedPref.getBoolean("high_contrast", false)) {
             setTheme(R.style.Theme_Temporis_HighContrast)
         } else {
@@ -37,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        // 2. Inflar vista
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -50,71 +52,117 @@ class MainActivity : AppCompatActivity() {
                 .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
             val navController = navHostFragment.navController
 
-            navView.setupWithNavController(navController)
+            // IMPORTANTE: Si usamos setOnItemSelectedListener manual,
+            // no llamamos a setupWithNavController para evitar conflictos.
 
             navView.setOnItemSelectedListener { item ->
                 val currentUser = auth.currentUser
+
                 when (item.itemId) {
-                    R.id.navigation_home -> { // RECURSOS: Libre
+                    R.id.navigation_home -> {
                         navController.navigate(R.id.navigation_home)
                         true
                     }
-                    R.id.navigation_timers -> { // PROTEGIDO
-                        if (currentUser != null) navController.navigate(R.id.navigation_timers)
-                        else mostrarAvisoYSirveLogin("ver tus temporizadores")
-                        true
-                    }
-                    R.id.navigation_statistics -> { // PROTEGIDO
-                        if (currentUser != null) navController.navigate(R.id.navigation_statistics)
-                        else mostrarAvisoYSirveLogin("ver tus estadísticas")
-                        true
-                    }
-                    R.id.navigation_settings -> { // CONFIGURACIÓN (Raíz): Libre
+                    R.id.navigation_settings -> {
                         navController.navigate(R.id.navigation_settings)
                         true
+                    }
+                    R.id.navigation_timers -> {
+                        if (currentUser != null) {
+                            navController.navigate(R.id.navigation_timers)
+                            true
+                        } else {
+                            mostrarAvisoYSirveLogin("ver tus temporizadores")
+                            false
+                        }
+                    }
+                    R.id.navigation_statistics -> {
+                        if (currentUser != null) {
+                            navController.navigate(R.id.navigation_statistics)
+                            true
+                        } else {
+                            mostrarAvisoYSirveLogin("ver tus estadísticas")
+                            false
+                        }
                     }
                     else -> false
                 }
             }
-            // Eliminamos el super.onCreate y el setTheme que tenías aquí abajo
         } catch (e: Exception) {
             Log.e("MainActivity", "Error al inicializar navegación: ${e.message}")
         }
+
+        if (auth.currentUser != null) {
+            resetInactivityTimer()
+        }
     }
 
-    // Función auxiliar para redirigir al login
     private fun mostrarAvisoYSirveLogin(motivo: String) {
         Toast.makeText(this, "Inicia sesión para $motivo", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        val intent = Intent(this, LoginActivity::class.java)
+        // No cerramos MainActivity para que el usuario pueda volver atrás
         startActivity(intent)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        if (auth.currentUser != null) {
+            resetInactivityTimer()
+        }
+    }
+
+    private fun resetInactivityTimer() {
+        logoutHandler.removeCallbacksAndMessages(null)
+        logoutHandler.postDelayed({
+            if (!isFinishing && auth.currentUser != null) {
+                showLogoutWarningDialog()
+            }
+        }, INACTIVITY_TIMEOUT - WARNING_BEFORE)
+    }
+
+    private fun showLogoutWarningDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Aviso de sesión")
+            .setMessage("Tu sesión va a expirar por inactividad en 1 minuto. ¿Quieres seguir conectado?")
+            .setCancelable(false)
+            .setPositiveButton("Sí, continuar") { _, _ ->
+                resetInactivityTimer()
+            }
+            .setNegativeButton("No, salir") { _, _ ->
+                cerrarSesionForzada()
+            }
+            .show()
+
+        logoutHandler.postDelayed({
+            // Verificamos de nuevo si el usuario sigue ahí antes de cerrar
+            if (auth.currentUser != null) cerrarSesionForzada()
+        }, WARNING_BEFORE)
+    }
+
+    private fun cerrarSesionForzada() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     override fun onStart() {
         super.onStart()
-
-        // Lógica de caducidad de sesión
+        // Controlar si al volver a la app la sesión ya expiró
         val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val lastLogin = sharedPref.getLong("last_login_time", 0)
-        val currentTime = System.currentTimeMillis()
-
-        // Definimos caducidad (Ejemplo: 1 hora)
-        val expirationMillis = 1 * 60 * 60 * 1000
-
         if (auth.currentUser != null && lastLogin != 0L) {
-            if (currentTime - lastLogin > expirationMillis) {
-                auth.signOut()
-                sharedPref.edit().remove("last_login_time").apply()
-                Toast.makeText(this, "Tu sesión ha caducado por seguridad", Toast.LENGTH_LONG).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+            val diff = System.currentTimeMillis() - lastLogin
+            if (diff > (60 * 60 * 1000)) { // 1 hora
+                cerrarSesionForzada()
             }
         }
     }
 
-    // Cierre de sesión al cerrar la app (matar el proceso)
     override fun onDestroy() {
         super.onDestroy()
-        // Si quieres que siempre pida login al abrir de nuevo tras cerrar:
-        auth.signOut()
+        logoutHandler.removeCallbacksAndMessages(null)
+        // auth.signOut() // Solo descomenta si quieres que se cierre SIEMPRE al salir
     }
 }

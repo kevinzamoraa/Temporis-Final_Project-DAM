@@ -2,6 +2,7 @@ package com.kevinzamora.temporis_androidapp.ui.auth.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class RegisterFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private val userRepository = UserRepository()
+    private lateinit var btnRegistrar: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,24 +36,26 @@ class RegisterFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_register, container, false)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        val btnRegistrar = root.findViewById<Button>(R.id.btnRegistroRegistrar)
-        val etRegistroEmail = root.findViewById<EditText>(R.id.etRegistroEmail)
-        val etRegistroContra = root.findViewById<EditText>(R.id.etRegistroContra)
-        val etRegistroConfirmContra = root.findViewById<EditText>(R.id.etRegistroConfirm)
-        val etRegistroUserName = root.findViewById<EditText>(R.id.etRegistroUserName)
+        btnRegistrar = root.findViewById(R.id.btnRegistroRegistrar)
+        val etEmail = root.findViewById<EditText>(R.id.etRegistroEmail)
+        val etContra = root.findViewById<EditText>(R.id.etRegistroContra)
+        val etConfirm = root.findViewById<EditText>(R.id.etRegistroConfirm)
+        val etUser = root.findViewById<EditText>(R.id.etRegistroUserName)
 
         auth = FirebaseAuth.getInstance()
 
         btnRegistrar.setOnClickListener {
-            val email = etRegistroEmail.text.toString().trim()
-            val password = etRegistroContra.text.toString().trim()
-            val confirmPassword = etRegistroConfirmContra.text.toString().trim()
-            val username = etRegistroUserName.text.toString().trim()
+            val email = etEmail.text.toString().trim()
+            val password = etContra.text.toString().trim()
+            val confirm = etConfirm.text.toString().trim()
+            val username = etUser.text.toString().trim()
 
-            if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty() && username.isNotEmpty()) {
+            if (email.isNotEmpty() && password.isNotEmpty() && confirm.isNotEmpty() && username.isNotEmpty()) {
                 if (comprobarEmail(email)) {
                     if (password.length >= 6) {
-                        if (password == confirmPassword) {
+                        if (password == confirm) {
+                            // BLOQUEAMOS el botón para evitar que el usuario pulse mil veces
+                            btnRegistrar.isEnabled = false
                             registrar(username, email, password)
                         } else {
                             Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
@@ -72,11 +76,11 @@ class RegisterFragment : Fragment() {
     private fun registrar(username: String, email: String, contra: String) {
         val db = FirebaseFirestore.getInstance()
 
-        // 1. Verificamos disponibilidad de username en Firestore
+        // PASO 1: Comprobar disponibilidad de Username (Aquí fallaba por permisos)
         db.collection("users").whereEqualTo("username", username).get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    // 2. Intentamos crear el usuario en Auth
+                    // PASO 2: Crear usuario en Firebase Auth
                     auth.createUserWithEmailAndPassword(email, contra)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
@@ -84,38 +88,45 @@ class RegisterFragment : Fragment() {
                                 val uid = firebaseUser?.uid ?: ""
                                 val defaultPhoto = "https://img.freepik.com/premium-vector/gamer-man_961307-25037.jpg?semt=ais_hybrid&w=740"
 
-                                // Objeto User para Java
                                 val newUser = User(uid, username, email, username, defaultPhoto)
                                 newUser.rol = 1
 
+                                // PASO 3: Guardar el perfil en Firestore
                                 lifecycleScope.launch {
-                                    // Usamos el repositorio (asegúrate de que saveUser use .set())
                                     userRepository.saveUser(newUser).collect { result ->
                                         if (result.isSuccess) {
-                                            // Actualizamos el perfil de Auth
+                                            // PASO 4: Actualizar el DisplayName en el objeto Auth
                                             val profileUpdates = com.google.firebase.auth.userProfileChangeRequest {
                                                 displayName = username
                                                 photoUri = android.net.Uri.parse(defaultPhoto)
                                             }
                                             firebaseUser?.updateProfile(profileUpdates)?.addOnCompleteListener {
                                                 if (isAdded) {
-                                                    Toast.makeText(context, "¡Bienvenido, $username!", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(context, "¡Registro completado con éxito!", Toast.LENGTH_SHORT).show()
                                                     goToMain()
                                                 }
                                             }
                                         } else {
-                                            if (isAdded) Toast.makeText(context, "Error Firestore: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
+                                            btnRegistrar.isEnabled = true
+                                            Toast.makeText(context, "Error al guardar perfil: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
                                         }
                                     }
                                 }
                             } else {
-                                // AQUÍ es donde salta tu error de "Email ya en uso"
-                                if (isAdded) Toast.makeText(context, "Error: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
+                                btnRegistrar.isEnabled = true
+                                Toast.makeText(context, "Error en Auth: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                             }
                         }
                 } else {
-                    if (isAdded) Toast.makeText(context, "El nombre de usuario ya existe", Toast.LENGTH_SHORT).show()
+                    btnRegistrar.isEnabled = true
+                    Toast.makeText(context, "El nombre de usuario '$username' ya está en uso", Toast.LENGTH_SHORT).show()
                 }
+            }
+            .addOnFailureListener { e ->
+                // Si entra aquí, es que las reglas de Firebase siguen bloqueando o no hay internet
+                btnRegistrar.isEnabled = true
+                Log.e("FIRESTORE_ERROR", "Error: ${e.message}")
+                Toast.makeText(context, "Error de permisos/conexión: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
             }
     }
 
