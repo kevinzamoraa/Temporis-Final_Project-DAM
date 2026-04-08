@@ -25,31 +25,30 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
 
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-// 1. Recuperamos el valor sucio (ej. 1.16)
-        val rawFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
+        // 1. Recuperamos el valor guardado (si no existe, 1.0)
+        val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
 
-// 2. Lo limpiamos ANTES de que toque el slider
-// (1.16 * 10) = 11.6 -> round = 12 -> 12 / 10 = 1.2
-        val cleanFontSize = (rawFontSize * 10).roundToInt() / 10.0f
-
-// 3. Configuramos el slider por código
+        // 2. Configuramos el slider
         binding.sliderFontSize.apply {
-            value = cleanFontSize.coerceIn(0.8f, 1.4f)
-            stepSize = 0.1f // Lo asignamos aquí, después de poner el valor inicial
+            // Importante: No asignes stepSize aquí tampoco
+            value = savedFontSize.coerceIn(0.8f, 1.4f)
         }
 
+        // 3. Usamos un Listener más sencillo para guardar el valor
+        //addOnChangeListener se dispara mientras el usuario mueve el slider
         binding.sliderFontSize.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {}
 
             override fun onStopTrackingTouch(slider: Slider) {
-                // Forzamos el valor al paso más cercano
-                val snappedValue = (slider.value * 10).roundToInt() / 10.0f
+                val newValue = slider.value
 
-                sharedPref.edit().putFloat("font_size_scale", snappedValue).apply()
+                // Guardamos el valor tal cual
+                sharedPref.edit().putFloat("font_size_scale", newValue).apply()
 
+                // Aplicamos el cambio
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (isAdded && activity != null) {
-                        updateCustomFontScale(snappedValue)
+                        updateCustomFontScale(newValue)
                     }
                 }, 150)
             }
