@@ -117,8 +117,10 @@ class LoginActivity : AppCompatActivity() {
         // Navegación a fragmentos
         btnIrARegistro.setOnClickListener {
             supportFragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out) // Animación simple
                 .replace(R.id.coordinatorLayout, RegisterFragment())
-                .addToBackStack(null).commit()
+                .addToBackStack(null)
+                .commit()
         }
 
         btnLoginNuevaContra.setOnClickListener {
@@ -188,10 +190,30 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+
                 progressBarLogin.visibility = View.VISIBLE
+
                 auth.signInWithCredential(credential).addOnCompleteListener { t ->
                     if (t.isSuccessful) {
-                        goToMain()
+                        val firebaseUser = auth.currentUser
+                        if (firebaseUser != null) {
+                            // Ajustado al constructor de Java: uid, username, email, displayName, photoUrl
+                            val userObj = User(
+                                firebaseUser.uid,
+                                firebaseUser.displayName?.replace("\\s+".toRegex(), "")?.lowercase() ?: "user",
+                                firebaseUser.email ?: "",
+                                firebaseUser.displayName ?: "Usuario Temporis",
+                                firebaseUser.photoUrl?.toString() ?: "android.resource://${packageName}/${R.drawable.ic_default_profile}"
+                            )
+                            userObj.rol = 1
+
+                            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(firebaseUser.uid)
+                                .set(userObj, com.google.firebase.firestore.SetOptions.merge())
+                                .addOnSuccessListener { goToMain() }
+                                .addOnFailureListener { goToMain() }
+                        }
                     } else {
                         progressBarLogin.visibility = View.GONE
                         Toast.makeText(this, "Error Auth Google: ${t.exception?.message}", Toast.LENGTH_SHORT).show()
@@ -199,8 +221,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             } catch (e: ApiException) {
                 progressBarLogin.visibility = View.GONE
-                // Si el error es 10, es un problema de SHA-1 en la consola de Firebase
-                Toast.makeText(this, "Error Google (${e.statusCode}): Revisa SHA-1 en Firebase", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Error Google (${e.statusCode})", Toast.LENGTH_LONG).show()
             }
         }
     }

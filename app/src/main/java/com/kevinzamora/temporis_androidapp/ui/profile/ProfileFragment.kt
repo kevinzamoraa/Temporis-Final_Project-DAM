@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -55,6 +56,11 @@ class ProfileFragment : Fragment() {
             // Configuración de botones
             binding.btnSafe.setOnClickListener { updateProfile(currentUser.uid) }
             binding.btnDeleteAccount.setOnClickListener { confirmDeleteAccount() }
+
+            // Funcionalidad para cambiar la imagen del perfil del usuario.
+            binding.imgProfilePhoto.setOnClickListener {
+                showChangePhotoDialog()
+            }
         }
     }
 
@@ -102,31 +108,30 @@ class ProfileFragment : Fragment() {
         val newPhotoUrl = binding.etProfileUrl.text.toString()
         val newUsername = binding.etUsername.text.toString()
 
-        val userUpdates = User().apply {
-            setUid(uid)
-            setUsername(newUsername)
-            setDisplayName(newDisplayName)
-            setProfilePhotoUrl(newPhotoUrl)
-            setEmail(binding.etEmail.text.toString())
-        }
+        // Usamos el constructor vacío y setters para evitar errores de argumentos nombrados
+        val userUpdates = User()
+        userUpdates.uid = uid
+        userUpdates.username = newUsername
+        userUpdates.displayName = newDisplayName
+        userUpdates.profilePhotoUrl = newPhotoUrl
+        userUpdates.email = binding.etEmail.text.toString()
+        userUpdates.rol = 1
 
         lifecycleScope.launch {
-            // 1. Guardar en Firestore a través del repositorio
             userRepository.saveUser(userUpdates).collect { result ->
                 result.onSuccess {
-                    // 2. Si Firestore tiene éxito, sincronizamos con Firebase Auth
                     try {
                         val profileUpdates = userProfileChangeRequest {
                             displayName = newDisplayName
                             photoUri = Uri.parse(newPhotoUrl)
                         }
                         auth.currentUser?.updateProfile(profileUpdates)?.await()
-                        if (isAdded) Toast.makeText(context, "Perfil y Nube actualizados", Toast.LENGTH_SHORT).show()
+                        if (isAdded) Toast.makeText(context, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
-                        Log.e("AuthUpdate", "Error sincronizando Auth: ${e.message}")
+                        Log.e("AuthUpdate", "Error: ${e.message}")
                     }
                 }.onFailure { e ->
-                    if (isAdded) Toast.makeText(context, "Error en Firestore: ${e.message}", Toast.LENGTH_LONG).show()
+                    if (isAdded) Toast.makeText(context, "Error Firestore: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -163,6 +168,32 @@ class ProfileFragment : Fragment() {
                 if (isAdded) Toast.makeText(context, "Para borrar la cuenta debes haber iniciado sesión recientemente.", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun showChangePhotoDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Cambiar URL de foto de perfil")
+
+        val input = EditText(requireContext())
+        input.hint = "Pega aquí la URL de tu nueva imagen"
+        input.setText(binding.etProfileUrl.text.toString())
+        builder.setView(input)
+
+        builder.setPositiveButton("Actualizar") { _, _ ->
+            val newUrl = input.text.toString()
+            if (newUrl.isNotEmpty()) {
+                binding.etProfileUrl.setText(newUrl)
+                // Cargamos la vista previa inmediatamente
+                Glide.with(this)
+                    .load(newUrl)
+                    .placeholder(R.drawable.ic_default_profile)
+                    .circleCrop()
+                    .into(binding.imgProfilePhoto)
+                Toast.makeText(context, "No olvides pulsar 'Guardar cambios' para confirmar", Toast.LENGTH_LONG).show()
+            }
+        }
+        builder.setNegativeButton("Cancelar", null)
+        builder.show()
     }
 
     override fun onDestroyView() {

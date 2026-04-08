@@ -77,24 +77,26 @@ class RegisterFragment : Fragment() {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 val uid = auth.uid.toString()
-                                val defaultPhoto = "https://img.freepik.com/premium-vector/gamer-man_961307-25037.jpg?semt=ais_hybrid&w=740"
-                                val newUser = User(uid, username, email, username, defaultPhoto).apply {
-                                    setRol(1)
-                                }
+
+                                // Usamos la imagen de recursos: ic_default_profile
+                                val defaultPhotoPath = "android.resource://${requireContext().packageName}/${R.drawable.ic_default_profile}"
+
+                                // Constructor: uid, username, email, displayName, profilePhotoUrl
+                                val newUser = User(uid, username, email, username, defaultPhotoPath)
+                                newUser.rol = 1
+
                                 lifecycleScope.launch {
                                     userRepository.saveUser(newUser).collect { result ->
                                         result.onSuccess {
                                             if (isAdded) {
                                                 Toast.makeText(context, "¡Bienvenido, $username!", Toast.LENGTH_SHORT).show()
-
-                                                // Redirección directa y limpieza de pila
                                                 val intent = Intent(requireContext(), com.kevinzamora.temporis_androidapp.MainActivity::class.java)
                                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                                 startActivity(intent)
                                                 requireActivity().finish()
                                             }
                                         }.onFailure { e ->
-                                            Toast.makeText(context, "Error al guardar perfil: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                                         }
                                     }
                                 }
