@@ -19,9 +19,9 @@ class TimerRepository {
     fun getTimers(): LiveData<List<Timer>> {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            listenerRegistration?.remove() // Evitar duplicados
+            listenerRegistration?.remove()
             listenerRegistration = firestore.collection("timers")
-                .whereEqualTo("uid", userId) // Asegúrate de usar el campo correcto
+                .whereEqualTo("uid", userId)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         Log.e("TimerRepository", "Error al obtener temporizadores", error)
@@ -31,12 +31,17 @@ class TimerRepository {
 
                     Log.d("TimerRepository", "Snapshot recibido: ${snapshot?.documents?.size} documentos")
 
+                    // Bloque Try-Catch añadido en el mapeo
                     val timers = snapshot?.documents?.mapNotNull { doc ->
-                        doc.toObject(Timer::class.java)?.apply { id = doc.id }
+                        try {
+                            doc.toObject(Timer::class.java)?.apply { id = doc.id }
+                        } catch (e: Exception) {
+                            Log.e("TimerRepository", "Error al convertir documento ${doc.id}", e)
+                            null // Si falla este documento, se ignora y no rompe la app
+                        }
                     } ?: emptyList()
 
                     Log.d("TimerRepository", "Timers parseados: $timers")
-
                     timersLiveData.value = timers
                 }
         } else {
@@ -45,10 +50,8 @@ class TimerRepository {
         return timersLiveData
     }
 
-
     fun addTimer(name: String, duration: Int, isActive: Boolean = false) {
         val uid = auth.currentUser?.uid ?: return
-
         val newTimer = hashMapOf(
             "name" to name,
             "duration" to duration,
@@ -56,16 +59,13 @@ class TimerRepository {
             "createdAt" to Timestamp.now(),
             "uid" to uid
         )
-
-        firestore.collection("timers")
-            .add(newTimer)
-            .addOnSuccessListener { Log.d("TimerRepository", "Temporizador añadido con ID: ${it.id}") }
-            .addOnFailureListener { e -> Log.e("TimerRepository", "Error al añadir temporizador", e) }
+        firestore.collection("timers").add(newTimer)
+            .addOnSuccessListener { Log.d("TimerRepository", "ID: ${it.id}") }
+            .addOnFailureListener { Log.e("TimerRepository", "Error", it) }
     }
 
     fun updateTimer(timer: Timer) {
         if (timer.id.isNullOrEmpty()) return
-
         val updatedTimer = hashMapOf(
             "name" to timer.name,
             "duration" to timer.duration,
@@ -73,18 +73,15 @@ class TimerRepository {
             "createdAt" to timer.createdAt,
             "uid" to auth.currentUser?.uid
         )
-
-        firestore.collection("timers").document(timer.id!!)
-            .set(updatedTimer)
-            .addOnSuccessListener { Log.d("TimerRepository", "Temporizador actualizado") }
-            .addOnFailureListener { e -> Log.e("TimerRepository", "Error al actualizar temporizador", e) }
+        firestore.collection("timers").document(timer.id!!).set(updatedTimer)
+            .addOnSuccessListener { Log.d("TimerRepository", "Actualizado") }
+            .addOnFailureListener { Log.e("TimerRepository", "Error", it) }
     }
 
     fun deleteTimer(timerId: String) {
-        firestore.collection("timers").document(timerId)
-            .delete()
-            .addOnSuccessListener { Log.d("TimerRepository", "Temporizador eliminado") }
-            .addOnFailureListener { e -> Log.e("TimerRepository", "Error al eliminar temporizador", e) }
+        firestore.collection("timers").document(timerId).delete()
+            .addOnSuccessListener { Log.d("TimerRepository", "Eliminado") }
+            .addOnFailureListener { Log.e("TimerRepository", "Error", it) }
     }
 
     fun clearListener() {

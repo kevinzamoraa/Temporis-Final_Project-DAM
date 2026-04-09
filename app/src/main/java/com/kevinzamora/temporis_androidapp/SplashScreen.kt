@@ -3,12 +3,8 @@ package com.kevinzamora.temporis_androidapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import com.google.android.ads.mediationtestsuite.activities.HomeActivity
-import com.kevinzamora.temporis_androidapp.R
-import com.kevinzamora.temporis_androidapp.ui.auth.login.LoginActivity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.kevinzamora.temporis_androidapp.ui.auth.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
@@ -36,6 +32,6 @@ class SplashActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        finish() // Cerramos esta pantalla para que no se vuelva a mostrar al hacer back
+        finish()
     }
 }

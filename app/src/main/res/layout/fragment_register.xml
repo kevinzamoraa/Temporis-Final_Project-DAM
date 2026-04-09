@@ -1,171 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context=".ui.auth.login.LoginActivity">
+    android:fillViewport="true"
+    android:background="?android:attr/windowBackground">
 
-    <!-- Logo -->
-
-    <!-- Username Label -->
-
-    <!-- Username -->
-
-    <!-- Email Label -->
-
-    <!-- Email -->
-    <EditText
-        android:id="@+id/etRegistroEmail"
-        android:layout_width="210dp"
-        android:layout_height="60dp"
-        android:backgroundTint="#0347F4"
-        android:hint="@string/prompt_email"
-        android:inputType="textEmailAddress"
-        android:textColor="@color/primary_dark"
-        android:textColorHint="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@id/tvRegistroEmailLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Password Label -->
-
-    <!-- Password -->
-
-    <!-- Confirm Password Label -->
-
-    <!-- Confirm Password -->
-
-    <!-- Botón Registrar -->
-
-    <EditText
-        android:id="@+id/etRegistroConfirm"
-        android:layout_width="210dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="#0347F4"
-        android:hint="@string/ConfirmarContra"
-        android:inputType="textPassword"
-        android:textColor="@color/primary_dark"
-        android:textColorHint="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvRegistroConfirmContraLabel" />
-
-    <TextView
-        android:id="@+id/tvRegistroUserNameLabel"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/usuario"
-        android:textColor="@color/primary_dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivRegistroLogo" />
+        android:paddingBottom="24sp">
 
-    <TextView
-        android:id="@+id/tvRegistroEmailLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/prompt_email"
-        android:textColor="@color/primary_dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etRegistroUserName" />
+        <ImageView
+            android:id="@+id/ivRegistroLogo"
+            android:layout_width="211sp"
+            android:layout_height="205sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.053"
+            app:srcCompat="@mipmap/logo_foreground" />
 
-    <TextView
-        android:id="@+id/tvRegistroContraLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/Contra"
-        android:textColor="@color/primary_dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etRegistroEmail" />
+        <TextView
+            android:id="@+id/tvRegistroUserNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:text="@string/usuario"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="@+id/etRegistroUserName"
+            app:layout_constraintTop_toBottomOf="@id/ivRegistroLogo" />
 
-    <TextView
-        android:id="@+id/tvRegistroConfirmContraLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="@string/confirm_password"
-        android:textColor="@color/primary_dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etRegistroContra" />
+        <EditText
+            android:id="@+id/etRegistroUserName"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:hint="@string/usuario"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOutline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRegistroUserNameLabel" />
 
-    <EditText
-        android:id="@+id/etRegistroUserName"
-        android:layout_width="210dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="#0347F4"
-        android:hint="@string/usuario"
-        android:inputType="textPersonName"
-        android:textColor="@color/primary_dark"
-        android:textColorHint="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvRegistroUserNameLabel" />
+        <TextView
+            android:id="@+id/tvRegistroEmailLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:text="@string/prompt_email"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="@+id/etRegistroEmail"
+            app:layout_constraintTop_toBottomOf="@id/etRegistroUserName" />
 
-    <ImageView
-        android:id="@+id/ivRegistroLogo"
-        android:layout_width="211dp"
-        android:layout_height="205dp"
-        android:layout_marginTop="52dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/logo_foreground" />
+        <EditText
+            android:id="@+id/etRegistroEmail"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:hint="@string/prompt_email"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRegistroEmailLabel" />
 
-    <Button
-        android:id="@+id/btnRegistroRegistrar"
-        android:layout_width="198dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/primary_dark"
-        android:text="@string/registrar"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etRegistroConfirm" />
+        <TextView
+            android:id="@+id/tvRegistroContraLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:text="@string/Contra"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="@+id/etRegistroContra"
+            app:layout_constraintTop_toBottomOf="@id/etRegistroEmail" />
 
-    <EditText
-        android:id="@+id/etRegistroContra"
-        android:layout_width="210dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="#0347F4"
-        android:hint="@string/Contra"
-        android:inputType="textPassword"
-        android:textColor="@color/primary_dark"
-        android:textColorHint="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvRegistroContraLabel" />
+        <EditText
+            android:id="@+id/etRegistroContra"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:hint="@string/Contra"
+            android:inputType="textPassword"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRegistroContraLabel" />
 
-    <!-- Botón Atrás -->
-    <!--<ImageView
-        android:id="@+id/ivRegistroAtras"
-        android:layout_width="75dp"
-        android:layout_height="45dp"
-        android:src="@drawable/ic_backarrow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />-->
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvRegistroConfirmContraLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:text="@string/confirm_password"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toStartOf="@+id/etRegistroConfirm"
+            app:layout_constraintTop_toBottomOf="@id/etRegistroContra" />
+
+        <EditText
+            android:id="@+id/etRegistroConfirm"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:hint="@string/ConfirmarContra"
+            android:inputType="textPassword"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvRegistroConfirmContraLabel" />
+
+        <Button
+            android:id="@+id/btnRegistroRegistrar"
+            android:layout_width="280sp"
+            android:layout_height="55sp"
+            android:layout_marginTop="24sp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="@string/registrar"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etRegistroConfirm" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

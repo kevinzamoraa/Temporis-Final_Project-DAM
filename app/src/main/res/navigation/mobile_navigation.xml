@@ -8,21 +8,54 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.kevinzamora.temporis_androidapp.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="Inicio"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.kevinzamora.temporis_androidapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_timers"
+        android:name="com.kevinzamora.temporis_androidapp.ui.timers.TimersFragment"
+        android:label="Temporizadores"
+        tools:layout="@layout/fragment_timers" />
+
+    <fragment
+        android:id="@+id/navigation_statistics"
+        android:name="com.kevinzamora.temporis_androidapp.ui.statistics.StatisticsFragment"
+        android:label="Estadísticas"
+        tools:layout="@layout/fragment_statistics" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.kevinzamora.temporis_androidapp.ui.settings.SettingsFragment"
+        android:label="Configuración"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.kevinzamora.temporis_androidapp.ui.profile.ProfileFragment"
+        android:label="Perfil de usuario"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_accessibility"
+        android:name="com.kevinzamora.temporis_androidapp.ui.accessibility.AccessibilityFragment"
+        android:label="Accesibilidad"
+        tools:layout="@layout/fragment_accessibility" />
+
+    <fragment
+        android:id="@+id/navigation_general_settings"
+        android:name="com.kevinzamora.temporis_androidapp.ui.general_settings.GeneralSettingsFragment"
+        android:label="Ajustes Generales"
+        tools:layout="@layout/fragment_general_settings" />
+
+    <fragment
+        android:id="@+id/navigation_app_info"
+        android:name="com.kevinzamora.temporis_androidapp.ui.appinfo.AppInfoFragment"
+        android:label="Info de la Aplicación"
+        tools:layout="@layout/fragment_app_info" />
+
     <fragment
         android:id="@+id/navigation_forgotten_password"
         android:name="com.kevinzamora.temporis_androidapp.ui.auth.forgotten_password.ForgotPasswordFragment"
-        android:label="ForgottenPassword" />
-    <fragment
-        android:id="@+id/dashboardFragment3"
-        android:name="com.kevinzamora.temporis_androidapp.ui.dashboard.DashboardFragment"
-        android:label="Perfil de usuario"
-        tools:layout="@layout/fragment_dashboard" />
+        android:label="Recuperar Contraseña" />
+
 </navigation>

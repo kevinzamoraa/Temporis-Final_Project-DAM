@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">Temporis</string>
+    <string name="title_profile">Perfil d\'Usuari</string>
+    <string name="title_home">Recursos</string>
+    <string name="title_timers">Temporitzadors</string>
+    <string name="title_logout">Eixir</string>
+    <string name="title_accessibility">Accessibilitat</string>
+    <string name="title_notifications">Notificacions</string>
+    <string name="title_statistics">Estadístiques</string>
+    <string name="title_general_settings">Ajustos Generals</string>
+    <string name="title_settings">Configuració</string>
+    <string name="title_app_info">Info de l\'Aplicació</string>
+    <string name="title_create_timer">Nou Temporitzador</string>
+    <string name="title_edit_timer">Editar Temporitzador</string>
+
+    <string name="app_version">Versió 2.0.0</string>
+    <string name="app_description">Kevin Zamora / Projecte Final DAM</string>
+
+    <color name="logo_background">#FFFBFD</color>
+
+    <string name="name_placeholder">Nom</string>
+    <string name="min_placeholder">Minuts</string>
+    <string name="create_button">CREAR</string>
+    <string name="update_button">ACTUALITZAR</string>
+    <string name="logout_button">TANCAR SESSIÓ</string>
+
+    <string name="email">Correu electrònic</string>
+    <string name="password">Contrasenya</string>
+    <string name="login_email">Iniciar Sessió</string>
+    <string name="login_google">Iniciar amb Google</string>
+    <string name="login_anonymous">Sessió Anònima</string>
+    <string name="forgot_password">Has oblidat la teua contrasenya?</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Contrasenya</string>
+    <string name="action_sign_in">Inicia sessió o registra\'t</string>
+    <string name="action_sign_in_short">Iniciar sessió</string>
+    <string name="welcome">"Benvingut!"</string>
+    <string name="invalid_username">No és un usuari vàlid</string>
+    <string name="invalid_password">La contrasenya ha de tindre 5 caràcters o més</string>
+    <string name="login_failed">"L\'inici de sessió ha fallat"</string>
+    <string name="title_activity_login">Login</string>
+    <string name="editar">Editar</string>
+    <string name="registrar">Registrar-me</string>
+    <string name="usuario">Usuari</string>
+    <string name="Contra">Contrasenya</string>
+    <string name="ConfirmarContra">Confirme Contrasenya</string>
+    <string name="ContraOlvidada">He oblidat la contrasenya</string>
+    <string name="Registro">Encara no tens compte?</string>
+    <string name="Entrar">Entrar</string>
+    <string name="EntrarGoogle">Entrar amb Google</string>
+    <string name="Recordar">Recordar contrasenya</string>
+    <string name="textoRestablecerContra">Introdueix l\'email i t\'enviarem un correu per a restablir-la</string>
+    <string name="enviar">Enviar</string>
+    <string name="name">Nom</string>
+    <string name="confirm_password">Confirmar contrasenya</string>
+    <string name="register">Registrar-se</string>
+
+    <string name="mensaje_home">Benvingut a la teua app per a reservar pistes de tenis</string>
+    <string name="pistas">Pistes disponibles</string>
+    <string name="pista_extra">Extras:</string>
+    <string name="contrincante">Contrincant:</string>
+    <string name="continuar">Continuar</string>
+    <string name="inicio">Hora d\'inici:</string>
+    <string name="final_hora">Hora final:</string>
+    <string name="precio">"Preu total: "</string>
+    <string name="metodo">Mètodes de pagament:</string>
+    <string name="pago">Visa/MasterCard</string>
+    <string name="tarjeta">Número de targeta</string>
+    <string name="csv">CSV</string>
+    <string name="fecha_validez">Data de validesa</string>
+    <string name="pagar">Pagar</string>
+    <string name="paypal">PayPal</string>
+
+    <string name="qr">Generar Codi QR</string>
+    <string name="Actualizar">Actualitzar</string>
+    <string name="descripcion">La teua Descripció</string>
+    <string name="EntrarTwitter">Entra amb Twitter</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="label_font_size">Grandària de la font</string>
+    <string name="label_high_contrast">Alt contrast</string>
+    <string name="label_bold_text">Text en negreta</string>
+    <string name="label_language">Idioma de l\'aplicació</string>
+    <string name="label_date_format">Format de data</string>
+    <string name="toast_settings_saved">Ajustos guardats correctament</string>
+
+    <string name="stats_progress_title">El teu Progrés</string>
+    <string name="stats_total_timers">Nº de Temporitzadors</string>
+    <string name="stats_total_time">Temps total d\'enfocament</string>
+    <string name="stats_no_data">No hi ha dades disponibles</string>
+
+    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
+    <string name="prefs_file" translatable="false">TemporisPrefs</string>
+    <string name="label_dark_mode">Mode Fosc (Sistema)</string>
+    <string name="label_display_options">Opcions de Visualització</string>
+    <string name="toast_created">Temporitzador creat</string>
+    <string name="error_fields">Ha ocorregut un error durant la creació del temporitzador</string>
+    <string name="more_info">Llegir més</string>
+    <string name="save_changes_button">Guardar canvis</string>
+    <string name="delete_account_button">Esborrar el meu compte</string>
+</resources>

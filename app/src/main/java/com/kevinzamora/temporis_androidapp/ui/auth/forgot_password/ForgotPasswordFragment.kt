@@ -5,56 +5,64 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.kevinzamora.temporis_androidapp.R
+import com.kevinzamora.temporis_androidapp.databinding.FragmentForgotPasswordBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class ForgotPasswordFragment : Fragment(R.layout.fragment_forgot_password) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ForgotPasswordFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ForgotPasswordFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentForgotPasswordBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentForgotPasswordBinding.bind(view)
+
+        // Configuración del botón de enviar
+        binding.btnContraOlvidadaEnviar.setOnClickListener {
+            val email = binding.etContraOlvidadaEmail.text.toString().trim()
+
+            if (email.isNotEmpty()) {
+                sendPasswordReset(email)
+            } else {
+                Toast.makeText(requireContext(), "Por favor, introduce tu correo electrónico", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Configuración de la flecha atrás (ImageView)
+        binding.ivRegistroAtras2.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forgot_password, container, false)
-    }
+    private fun sendPasswordReset(email: String) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Visualización del mensaje de éxito
+                    Toast.makeText(
+                        requireContext(),
+                        "Se ha enviado un correo de recuperación a: $email",
+                        Toast.LENGTH_LONG
+                    ).show()
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ForgotPasswordFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ForgotPasswordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    // Redirección automática al Login
+                    findNavController().popBackStack()
+                } else {
+                    // Visualización de error (ej: email no registrado o error de red)
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

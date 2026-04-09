@@ -1,16 +1,43 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.TemporisAndroidApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
+
+    <style name="Theme.TemporisAndroidApp" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
+        <item name="android:windowBackground">#F5F5F5</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">#1C1B1F</item> <item name="colorOutline">#79747E</item> <item name="android:statusBarColor">@color/purple_700</item>
     </style>
+
+    <style name="Theme.Temporis.HighContrast" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorSecondary">#FFFF00</item>
+        <item name="colorOnSecondary">#000000</item>
+
+        <item name="android:windowBackground">#000000</item>
+        <item name="colorSurface">#000000</item>
+        <item name="colorOnSurface">#FFFFFF</item> <item name="colorOutline">#FFFFFF</item>
+
+        <item name="android:textStyle">bold</item>
+
+        <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Outlined</item>
+    </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.TemporisAndroidApp</item>
+    </style>
+
+    <style name="Base.Theme.Temporis" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">#1E1E1E</item>
+        <item name="colorSurface">#2C2C2C</item>
+
+        <item name="colorPrimary">#BB86FC</item>
+        <item name="colorOnSurface">#E0E0E0</item>
+    </style>
+
 </resources>

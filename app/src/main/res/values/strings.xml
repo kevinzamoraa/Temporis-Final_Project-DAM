@@ -1,32 +1,46 @@
 <resources>
-    <!-- Textos generales -->
     <string name="app_name">Temporis</string>
-    <string name="title_profile">Usuario</string>
-    <string name="title_home">Temporizadores</string>
+    <string name="title_profile">Perfil de Usuario</string>
+    <string name="title_home">Recursos</string>
+    <string name="title_timers">Temporizadores</string>
     <string name="title_logout">Salir</string>
+    <string name="title_accessibility">Accesibilidad</string>
     <string name="title_notifications">Notificaciones</string>
+    <string name="title_statistics">Estadísticas</string>
+    <string name="title_general_settings">Ajustes Generales</string>
+    <string name="title_settings">Configuración</string>
+    <string name="title_app_info">Info de la Aplicación</string>
+    <string name="title_create_timer">Nuevo Temporizador</string>
+    <string name="title_edit_timer">Editar Temporizador</string>
+
+    <string name="app_version">Versión 2.0.0</string>
+    <string name="app_description">Kevin Zamora / Proyecto Final DAM</string>
+
     <color name="logo_background">#FFFBFD</color>
 
-    <!-- Textos para el login -->
+    <string name="name_placeholder">Nombre</string>
+    <string name="min_placeholder">Minutos</string>
+    <string name="create_button">CREAR</string>
+    <string name="update_button">ACTUALIZAR</string>
+    <string name="logout_button">CERRAR SESIÓN</string>
+
     <string name="email">Correo electrónico</string>
     <string name="password">Contraseña</string>
     <string name="login_email">Iniciar Sesión</string>
     <string name="login_google">Iniciar Sesión con Google</string>
     <string name="login_anonymous">Iniciar Sesión Anónima</string>
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
-
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Contraseña</string>
     <string name="action_sign_in">Inicia sesión o regístrate</string>
-    <string name="action_sign_in_short">Iniciar sesiós</string>
-    <string name="welcome">"Bienvenido!"</string>
+    <string name="action_sign_in_short">Iniciar sesión</string>
+    <string name="welcome">"¡Bienvenido!"</string>
     <string name="invalid_username">No es un usuario válido</string>
-    <string name="invalid_password">La contraseña debe tener 5 carácteres o más</string>
+    <string name="invalid_password">La contraseña debe tener 5 caracteres o más</string>
     <string name="login_failed">"El inicio de sesión ha fallado"</string>
     <string name="title_activity_login">Login</string>
-
     <string name="editar">Editar</string>
-    <string name="registrar">Registrame</string>
+    <string name="registrar">Registrarme</string>
     <string name="usuario">Usuario</string>
     <string name="Contra">Contraseña</string>
     <string name="ConfirmarContra">Confirme Contraseña</string>
@@ -35,13 +49,13 @@
     <string name="Entrar">Entrar</string>
     <string name="EntrarGoogle">Entrar con Google</string>
     <string name="Recordar">Recordar contraseña</string>
-    <string name="textoRestablecerContra">Introduce el email asociado a tu cuenta y te enviaremos un correo para cambiar restablecerla</string>
+    <string name="textoRestablecerContra">Introduce el email asociado a tu cuenta y te enviaremos un correo para restablecerla</string>
     <string name="enviar">Enviar</string>
-    <string name="qr">Generar Codigo QR</string>
-    <string name="Actualizar">Actualizar</string>
-    <string name="descripcion">Tu Descripcion</string>
-    <string name="mensaje_home">Bienvenido a tu aplicacion para reservar pistas de tenis</string>
-    <string name="EntrarTwitter">Entra con Twitter</string>
+    <string name="name">Nombre</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="register">Registrarse</string>
+
+    <string name="mensaje_home">Bienvenido a tu aplicación para reservar pistas de tenis</string>
     <string name="pistas">Pistas disponibles</string>
     <string name="pista_extra">Extras:</string>
     <string name="contrincante">Contrincante:</string>
@@ -51,21 +65,37 @@
     <string name="precio">"Precio total: "</string>
     <string name="metodo">Métodos de pago:</string>
     <string name="pago">Visa/MasterCard</string>
-    <string name="tarjeta">Numero de tarjeta</string>
-    <string name="csv">csv</string>
+    <string name="tarjeta">Número de tarjeta</string>
+    <string name="csv">CSV</string>
     <string name="fecha_validez">Fecha validez</string>
     <string name="pagar">Pagar</string>
     <string name="paypal">PayPal</string>
 
-    <!-- Textos para el registro -->
-    <string name="name">Nombre</string>
-    <string name="confirm_password">Confirmar contraseña</string>
-    <string name="register">Registrarse</string>
-
-    <!-- Firebase -->
-    <string name="default_web_client_id">636050813149-6fnav2v1b8tfnnbjhpfvp937bp477r2a.apps.googleusercontent.com</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="qr">Generar Código QR</string>
+    <string name="Actualizar">Actualizar</string>
+    <string name="descripcion">Tu Descripción</string>
+    <string name="EntrarTwitter">Entra con Twitter</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="prefs_file" />
+
+    <string name="label_font_size">Tamaño de la fuente</string>
+    <string name="label_high_contrast">Alto contraste</string>
+    <string name="label_bold_text">Texto en negrita</string>
+    <string name="label_language">Idioma de la aplicación</string>
+    <string name="label_date_format">Formato de fecha</string>
+    <string name="toast_settings_saved">Ajustes guardados correctamente</string>
+
+    <string name="stats_progress_title">Tu Progreso</string>
+    <string name="stats_total_timers">Nº de Temporizadores</string>
+    <string name="stats_total_time">Tiempo total de enfoque</string>
+    <string name="stats_no_data">No hay datos disponibles para mostrar</string>
+
+    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
+    <string name="prefs_file" translatable="false">TemporisPrefs</string>
+    <string name="label_dark_mode">Modo Oscuro (Sistema)</string>
+    <string name="label_display_options">Opciones de Visualización</string>
+    <string name="toast_created">Temporizador creado</string>
+    <string name="error_fields">Ha ocurrido un error durante la creación del temporizador</string>
+    <string name="more_info">Leer más</string>
+    <string name="save_changes_button">Guardar cambios</string>
+    <string name="delete_account_button">Borrar mi cuenta</string>
 </resources>

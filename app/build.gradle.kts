@@ -12,10 +12,18 @@ android {
         applicationId = "com.kevinzamora.temporis_androidapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            val output = this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
+            output.outputFileName = "Temporis_v${variant.versionName}.apk"
+        }
     }
 
     buildTypes {
@@ -62,6 +70,9 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.androidx.runner)
     implementation(libs.mediation.test.suite)
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("io.coil-kt:coil:2.6.0")
+    implementation(libs.firebase.appcheck.debug)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -83,7 +94,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-basement:17.5.0")
 
-    implementation("com.google.android.gms:play-services-ads:18.2.0")
+    implementation("com.google.android.gms:play-services-ads:25.1.0")
 
     implementation("com.google.firebase:firebase-auth:18.0.0")
     implementation("com.google.firebase:firebase-database:18.0.0")
@@ -91,6 +102,8 @@ dependencies {
 
     implementation("com.karumi:dexter:6.0.0")
     implementation("com.squareup.picasso:picasso:2.71828")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:20.3.0")
@@ -101,7 +114,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
-    /*kapt ("com.github.bumptech.glide:compiler:4.16.0")*/
+
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
+    implementation("androidx.lifecycle:lifecycle-process:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
 
 }
 

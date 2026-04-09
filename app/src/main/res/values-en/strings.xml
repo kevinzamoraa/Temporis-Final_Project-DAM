@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">Temporis</string>
+    <string name="title_profile">User Profile</string>
+    <string name="title_home">Resources</string>
+    <string name="title_timers">Timers</string>
+    <string name="title_logout">Logout</string>
+    <string name="title_accessibility">Accessibility</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_statistics">Statistics</string>
+    <string name="title_general_settings">General Settings</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_app_info">App Info</string>
+    <string name="title_create_timer">New Timer</string>
+    <string name="title_edit_timer">Edit Timer</string>
+
+    <string name="app_version">Version 2.0.0</string>
+    <string name="app_description">Kevin Zamora / DAM Final Project</string>
+
+    <color name="logo_background">#FFFBFD</color>
+
+    <string name="name_placeholder">Name</string>
+    <string name="min_placeholder">Minutes</string>
+    <string name="create_button">CREATE</string>
+    <string name="update_button">UPDATE</string>
+    <string name="logout_button">LOGOUT</string>
+
+    <string name="email">Email address</string>
+    <string name="password">Password</string>
+    <string name="login_email">Login</string>
+    <string name="login_google">Sign in with Google</string>
+    <string name="login_anonymous">Anonymous Login</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Invalid user</string>
+    <string name="invalid_password">Password must be 5+ characters</string>
+    <string name="login_failed">Login failed</string>
+    <string name="title_activity_login">Login</string>
+    <string name="editar">Edit</string>
+    <string name="registrar">Register me</string>
+    <string name="usuario">User</string>
+    <string name="Contra">Password</string>
+    <string name="ConfirmarContra">Confirm Password</string>
+    <string name="ContraOlvidada">Forgot password</string>
+    <string name="Registro">No account yet?</string>
+    <string name="Entrar">Enter</string>
+    <string name="EntrarGoogle">Sign in with Google</string>
+    <string name="Recordar">Remember password</string>
+    <string name="textoRestablecerContra">Enter your email and we will send a reset link</string>
+    <string name="enviar">Send</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="register">Register</string>
+
+    <string name="mensaje_home">Welcome to your tennis booking app</string>
+    <string name="pistas">Available courts</string>
+    <string name="pista_extra">Extras:</string>
+    <string name="contrincante">Opponent:</string>
+    <string name="continuar">Continue</string>
+    <string name="inicio">Start time:</string>
+    <string name="final_hora">End time:</string>
+    <string name="precio">"Total price: "</string>
+    <string name="metodo">Payment methods:</string>
+    <string name="pago">Visa/MasterCard</string>
+    <string name="tarjeta">Card number</string>
+    <string name="csv">CSV</string>
+    <string name="fecha_validez">Expiry date</string>
+    <string name="pagar">Pay</string>
+    <string name="paypal">PayPal</string>
+
+    <string name="qr">Generate QR Code</string>
+    <string name="Actualizar">Update</string>
+    <string name="descripcion">Your Description</string>
+    <string name="EntrarTwitter">Sign in with Twitter</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="label_font_size">Font Size</string>
+    <string name="label_high_contrast">High Contrast</string>
+    <string name="label_bold_text">Bold Text</string>
+    <string name="label_language">App Language</string>
+    <string name="label_date_format">Date Format</string>
+    <string name="toast_settings_saved">Settings saved successfully</string>
+
+    <string name="stats_progress_title">Your Progress</string>
+    <string name="stats_total_timers">Nº of Timers</string>
+    <string name="stats_total_time">Total focus time</string>
+    <string name="stats_no_data">No data available to display</string>
+
+    <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
+    <string name="prefs_file" translatable="false">TemporisPrefs</string>
+    <string name="label_dark_mode">Dark Mode (System)</string>
+    <string name="label_display_options">Display Options</string>
+    <string name="toast_created">Timer created</string>
+    <string name="error_fields">An error occurred while creating the timer</string>
+    <string name="more_info">Read more</string>
+    <string name="save_changes_button">Save changes</string>
+    <string name="delete_account_button">Delete my account</string>
+</resources>

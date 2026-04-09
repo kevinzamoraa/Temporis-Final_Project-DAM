@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgProfilePhoto"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_background"
+                android:src="@drawable/ic_default_profile" />
+
+            <EditText
+                android:id="@+id/etProfileUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL de imagen de perfil"
+                android:textColorHint="?attr/colorOutline"
+                android:textColor="?attr/colorOnSurface"
+                android:inputType="textUri" />
+
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:hint="Nombre de usuario" />
+
+            <EditText
+                android:id="@+id/etDisplayName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:hint="Nombre visible" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Correo electrónico"
+                android:textColor="?attr/colorOutline"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/btnSafe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save_changes_button"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"
+                android:layout_marginTop="16sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteAccount"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_account_button"
+                android:textColor="#F44336"
+                android:layout_marginTop="8sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
