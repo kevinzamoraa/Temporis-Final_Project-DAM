@@ -30,6 +30,7 @@ import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.PermissionRequestErrorListener
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.kevinzamora.temporis_androidapp.SessionLifecycleManager
 import com.kevinzamora.temporis_androidapp.ui.auth.Login.ForgottenPassword
 import com.kevinzamora.temporis_androidapp.ui.auth.login.RegisterFragment
 import java.util.*
@@ -165,8 +166,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToMain() {
         progressBarLogin.visibility = View.GONE
+
+        // AVISAMOS al gestor de que esto es un cambio controlado
+        SessionLifecycleManager.isChangingConfiguration = true
+
         val intent = Intent(this, MainActivity::class.java)
-        // Flags esenciales para seguridad y flujo de navegación
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
