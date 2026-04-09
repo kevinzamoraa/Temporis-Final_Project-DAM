@@ -29,8 +29,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        ThemeUtils.applyAppSettings(this)
 
+        // 1. Aplicar configuraciones de tema ANTES de super.onCreate y setContentView
+        ThemeUtils.applyAppSettings(this)
         if (sharedPref.getBoolean("high_contrast", false)) {
             setTheme(R.style.Theme_Temporis_HighContrast)
         } else {
@@ -44,20 +45,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
-
         val navView: BottomNavigationView = binding.navView
 
+        // 2. Inicializar Navegación
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
+
         try {
-            val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-            val navController = navHostFragment.navController
-
-            // IMPORTANTE: Si usamos setOnItemSelectedListener manual,
-            // no llamamos a setupWithNavController para evitar conflictos.
-
             navView.setOnItemSelectedListener { item ->
                 val currentUser = auth.currentUser
-
                 when (item.itemId) {
                     R.id.navigation_home -> {
                         navController.navigate(R.id.navigation_home)
@@ -92,27 +89,29 @@ class MainActivity : AppCompatActivity() {
             Log.e("MainActivity", "Error al inicializar navegación: ${e.message}")
         }
 
-        if (auth.currentUser != null) {
-            resetInactivityTimer()
+        // 3. GESTIÓN DE REDIRECCIONES (Al final, cuando todo está inicializado)
+
+        // Redirección por cambios en Accesibilidad
+        if (sharedPref.getBoolean("should_return_to_accessibility", false)) {
+            sharedPref.edit().putBoolean("should_return_to_accessibility", false).apply()
+            navController.navigate(R.id.navigation_settings)
         }
 
+        // Redirección tras Login (hacia Temporizadores)
         val openTimers = intent.getBooleanExtra("OPEN_TIMERS", false)
         if (openTimers) {
-            val navHostFragment = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-            val navController = navHostFragment.navController
-
-            // Cambiamos visualmente el item seleccionado en el BottomNav
             binding.navView.selectedItemId = R.id.navigation_timers
-            // Navegamos al fragment
             navController.navigate(R.id.navigation_timers)
+        }
+
+        if (auth.currentUser != null) {
+            resetInactivityTimer()
         }
     }
 
     private fun mostrarAvisoYSirveLogin(motivo: String) {
         Toast.makeText(this, "Inicia sesión para $motivo", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, LoginActivity::class.java)
-        // No cerramos MainActivity para que el usuario pueda volver atrás
         startActivity(intent)
     }
 
@@ -146,7 +145,6 @@ class MainActivity : AppCompatActivity() {
             .show()
 
         logoutHandler.postDelayed({
-            // Verificamos de nuevo si el usuario sigue ahí antes de cerrar
             if (auth.currentUser != null) cerrarSesionForzada()
         }, WARNING_BEFORE)
     }
@@ -166,12 +164,10 @@ class MainActivity : AppCompatActivity() {
         val currentTime = System.currentTimeMillis()
 
         if (auth.currentUser != null) {
-            // Si el lastLogin es 0, significa que es la primera vez que entra tras limpiar datos
             if (lastLogin != 0L && (currentTime - lastLogin > 1 * 60 * 60 * 1000)) {
                 cerrarSesionForzada()
                 Toast.makeText(this, "Sesión caducada por inactividad", Toast.LENGTH_LONG).show()
             } else {
-                // MUY IMPORTANTE: Actualizamos siempre al entrar para que la sesión esté viva
                 sharedPref.edit().putLong("last_login_time", currentTime).apply()
             }
         }
@@ -180,7 +176,5 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         logoutHandler.removeCallbacksAndMessages(null)
-        // Cerramos sesión cuando la actividad principal se destruye (app cerrada por el usuario)
-        // FirebaseAuth.getInstance().signOut()
     }
 }
