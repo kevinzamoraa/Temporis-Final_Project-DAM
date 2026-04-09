@@ -27,3 +27,10 @@ El proyecto cuenta con una suite de pruebas para garantizar la estabilidad:
 1. Clona el repositorio:
    ```bash
    git clone [https://github.com/kevinzamoraa/Temporis-Final_Project-DAM.git](https://github.com/kevinzamoraa/Temporis-Final_Project-DAM.git)
+   
+2. Abre el proyecto en Android Studio.
+
+3. Sincroniza Gradle y ejecuta en un emulador o dispositivo físico.
+
+👤 Autor
+**Kevin Zamora Amela** Estudiante de Desarrollo de Aplicaciones Multiplataforma.
