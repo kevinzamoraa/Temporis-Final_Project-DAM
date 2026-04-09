@@ -36,7 +36,6 @@ import java.util.*
 import java.util.concurrent.Executor
 
 class LoginActivity : AppCompatActivity() {
-
     private lateinit var auth: FirebaseAuth
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
@@ -49,7 +48,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Enlace de vistas
         val btnLogin = findViewById<Button>(R.id.btnRegistroRegistrar)
         val btnBiometric = findViewById<ImageButton>(R.id.btnBiometric)
         val btnIrARegistro = findViewById<Button>(R.id.btnLoginRegistro)
@@ -62,79 +60,57 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         executor = ContextCompat.getMainExecutor(this)
 
-        // Inicializamos la configuración biométrica
         setupBiometrics()
 
-        // Recuperar preferencias guardadas
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val savedEmail = prefs.getString("email", null)
         val savedPass = prefs.getString("password", null)
 
-        // 1. Verificación de sesión activa en Firebase
+        // IMPORTANTE: Para cumplir con el requisito de "cerrar sesión al salir",
+        // aquí podríamos forzar un signOut si no viene de una navegación interna.
         if (auth.currentUser != null) {
             goToMain()
         }
-        // 2. Auto-lanzado de biometría si hay credenciales locales guardadas
         else if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty()) {
-            // Rellenamos los campos para que el usuario vea sus datos mientras se identifica
             etLoginEmail.setText(savedEmail)
             etLoginPassword.setText(savedPass)
-
-            window.decorView.post {
-                biometricPrompt.authenticate(promptInfo)
-            }
+            window.decorView.post { biometricPrompt.authenticate(promptInfo) }
         }
 
-        // Botón manual de huella
         btnBiometric.setOnClickListener {
-            val email = prefs.getString("email", null)
-            val pass = prefs.getString("password", null)
-
-            if (!email.isNullOrEmpty() && !pass.isNullOrEmpty()) {
+            if (!prefs.getString("email", null).isNullOrEmpty()) {
                 biometricPrompt.authenticate(promptInfo)
             } else {
-                Toast.makeText(this, "Por seguridad, inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
             }
         }
 
-        // Login Manual
         btnLogin.setOnClickListener {
             val email = etLoginEmail.text.toString().trim()
             val pass = etLoginPassword.text.toString().trim()
             if (email.isNotEmpty() && pass.isNotEmpty()) {
                 progressBarLogin.visibility = View.VISIBLE
                 performLogin(email, pass)
-            } else {
-                Toast.makeText(this, "Rellene todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Login con Google
         btnLoginGoogle.setOnClickListener {
             val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
-
             val googleClient = GoogleSignIn.getClient(this, googleConf)
-
             googleClient.signOut().addOnCompleteListener {
-                googleClient.revokeAccess().addOnCompleteListener {
-                    startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
-                }
+                startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
             }
         }
 
-        // Navegación a Registro
         btnIrARegistro.setOnClickListener {
             supportFragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.coordinatorLayout, RegisterFragment())
-                .addToBackStack(null)
-                .commit()
+                .addToBackStack(null).commit()
         }
 
-        // Navegación a Recuperar Contraseña
         btnLoginNuevaContra.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.coordinatorLayout, ForgottenPassword())
@@ -152,27 +128,20 @@ class LoginActivity : AppCompatActivity() {
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE)
                     val email = prefs.getString("email", "") ?: ""
                     val pass = prefs.getString("password", "") ?: ""
-
                     if (email.isNotEmpty() && pass.isNotEmpty()) {
-                        runOnUiThread { progressBarLogin.visibility = View.VISIBLE }
                         performLogin(email, pass)
                     }
                 }
-
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    // Ignoramos el toast si el usuario simplemente cancela o pulsa el botón negativo
-                    if (errorCode != BiometricPrompt.ERROR_USER_CANCELED && errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                        Toast.makeText(applicationContext, errString, Toast.LENGTH_SHORT).show()
-                    }
                 }
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Acceso Seguro Temporis 2.0")
-            .setSubtitle("Usa tu huella para continuar")
+            .setTitle("Temporis 2.0")
+            .setSubtitle("Autenticación biométrica")
             .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .setNegativeButtonText("Usar mi contraseña")
+            .setNegativeButtonText("Cancelar")
             .build()
     }
 
@@ -180,16 +149,16 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // PERSISTENCIA: Guardamos las credenciales para futuras sesiones biométricas
-                    val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-                    prefs.putString("email", email)
-                    prefs.putString("password", pass)
-                    prefs.apply()
-
+                    getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit().apply {
+                        putString("email", email)
+                        putString("password", pass)
+                        apply()
+                    }
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
-                    Toast.makeText(this, "Error: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
+                    val errorMsg = task.exception?.localizedMessage ?: "Credenciales incorrectas"
+                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
                 }
             }
     }
@@ -197,6 +166,7 @@ class LoginActivity : AppCompatActivity() {
     private fun goToMain() {
         progressBarLogin.visibility = View.GONE
         val intent = Intent(this, MainActivity::class.java)
+        // Flags esenciales para seguridad y flujo de navegación
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

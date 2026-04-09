@@ -116,6 +116,9 @@ dependencies {
 
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
 
+    implementation("androidx.lifecycle:lifecycle-process:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
+
 }
 
 apply(plugin = "com.google.gms.google-services")

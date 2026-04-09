@@ -133,16 +133,20 @@
                 app:tint="?attr/colorOnSecondary" />
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLoginGoogle"
-            android:layout_width="227dp"
-            android:layout_height="50dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
             android:layout_marginTop="24dp"
-            android:backgroundTint="?attr/colorSecondary"
             android:text="@string/EntrarGoogle"
             android:textAllCaps="false"
-            android:textColor="?attr/colorOnSecondary"
+            android:textColor="?attr/colorOnSurface"
             app:icon="@drawable/googleg_standard_color_18"
+            app:iconGravity="textStart"
+            app:iconPadding="12dp"
+            app:iconTint="@null"
+            app:strokeColor="?attr/colorOutline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutButtons" />
