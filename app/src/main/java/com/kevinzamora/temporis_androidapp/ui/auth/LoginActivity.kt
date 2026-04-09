@@ -148,18 +148,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun performLogin(email: String, pass: String) {
         auth.signInWithEmailAndPassword(email, pass)
-            .addOnCompleteListener { task ->
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit().apply {
-                        putString("email", email)
-                        putString("password", pass)
-                        apply()
-                    }
+                    val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
+                    prefs.putString("email", email)
+                    prefs.putString("password", pass)
+                    prefs.apply()
+
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
-                    val errorMsg = task.exception?.localizedMessage ?: "Credenciales incorrectas"
-                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Fallo: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
     }
@@ -167,10 +166,13 @@ class LoginActivity : AppCompatActivity() {
     private fun goToMain() {
         progressBarLogin.visibility = View.GONE
 
-        // AVISAMOS al gestor de que esto es un cambio controlado
-        SessionLifecycleManager.isChangingConfiguration = true
+        // Actualizamos el tiempo de login aquí también para que MainActivity lo reciba fresco
+        getSharedPreferences("Settings", Context.MODE_PRIVATE)
+            .edit().putLong("last_login_time", System.currentTimeMillis()).apply()
 
         val intent = Intent(this, MainActivity::class.java)
+        // Pasamos un mensaje a MainActivity: "Abre temporizadores"
+        intent.putExtra("OPEN_TIMERS", true)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

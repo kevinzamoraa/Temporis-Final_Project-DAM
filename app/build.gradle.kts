@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.mediation.test.suite)
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("io.coil-kt:coil:2.6.0")
+    implementation(libs.firebase.appcheck.debug)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

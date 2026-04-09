@@ -95,6 +95,18 @@ class MainActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             resetInactivityTimer()
         }
+
+        val openTimers = intent.getBooleanExtra("OPEN_TIMERS", false)
+        if (openTimers) {
+            val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+            val navController = navHostFragment.navController
+
+            // Cambiamos visualmente el item seleccionado en el BottomNav
+            binding.navView.selectedItemId = R.id.navigation_timers
+            // Navegamos al fragment
+            navController.navigate(R.id.navigation_timers)
+        }
     }
 
     private fun mostrarAvisoYSirveLogin(motivo: String) {
@@ -153,13 +165,13 @@ class MainActivity : AppCompatActivity() {
         val lastLogin = sharedPref.getLong("last_login_time", 0)
         val currentTime = System.currentTimeMillis()
 
-        // Si hay usuario, actualizamos el tiempo para que no caduque mientras la usa
         if (auth.currentUser != null) {
+            // Si el lastLogin es 0, significa que es la primera vez que entra tras limpiar datos
             if (lastLogin != 0L && (currentTime - lastLogin > 1 * 60 * 60 * 1000)) {
                 cerrarSesionForzada()
                 Toast.makeText(this, "Sesión caducada por inactividad", Toast.LENGTH_LONG).show()
             } else {
-                // Actualizamos el timestamp para prolongar la sesión 1 hora más desde ahora
+                // MUY IMPORTANTE: Actualizamos siempre al entrar para que la sesión esté viva
                 sharedPref.edit().putLong("last_login_time", currentTime).apply()
             }
         }
@@ -168,6 +180,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         logoutHandler.removeCallbacksAndMessages(null)
-        // auth.signOut() // Solo descomenta si quieres que se cierre SIEMPRE al salir
+        // Cerramos sesión cuando la actividad principal se destruye (app cerrada por el usuario)
+        // FirebaseAuth.getInstance().signOut()
     }
 }
