@@ -10,6 +10,7 @@ Temporis es una aplicación Android diseñada para gestionar y optimizar la prod
 - **Persistencia en la Nube:** Sincronización en tiempo real mediante **Firebase Firestore**.
 - **Autenticación Multimodal:** Inicio de sesión con Email/Password y Google Auth.
 - **Accesibilidad:** Interfaz adaptada con controles de escala visual y sliders optimizados.
+- **Cambio de idioma:** Interfaz disponible en tres idiomas (al menos de momento): Castellano/Español,Catalán/Balear/Valenciano y Inglés/English 
 
 ## 🛠️ Tecnologías Utilizadas
 - **Lenguajes:** Kotlin & Java.
