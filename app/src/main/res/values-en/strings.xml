@@ -117,4 +117,27 @@
     <string name="label_paste_your_new_image_uri">Pega aquí la URL de tu nueva imagen</string>
     <string name="label_update_button">Update</string>
     <string name="dont_forget_to_sabe_changes">Don t forget to click Save changes to confirm</string>
+
+    <string name="month_1">Jan</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Apr</string>
+    <string name="month_5">May</string>
+    <string name="month_6">June</string>
+    <string name="month_7">July</string>
+    <string name="month_8">Aug</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Oct</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Dic</string>
+
+    <string name="day_1">Mon</string>
+    <string name="day_2">Thu</string>
+    <string name="day_3">Wed</string>
+    <string name="day_4">Thur</string>
+    <string name="day_5">Fri</string>
+    <string name="day_6">Sat</string>
+    <string name="day_7">San</string>
+
+    <string name="delete_button">Delete</string>
 </resources>

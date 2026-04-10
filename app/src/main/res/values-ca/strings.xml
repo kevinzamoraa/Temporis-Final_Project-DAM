@@ -117,4 +117,27 @@
     <string name="label_paste_your_new_image_uri">Pega aquí la URL de la tua nova imatge</string>
     <string name="label_update_button">Actualitzar</string>
     <string name="dont_forget_to_sabe_changes">No oblides polsar Guardar canvis per a confirmar</string>
+
+    <string name="month_1">Gen</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Abr</string>
+    <string name="month_5">Maig</string>
+    <string name="month_6">Juny</string>
+    <string name="month_7">Jur</string>
+    <string name="month_8">Ago</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Oct</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Dic</string>
+
+    <string name="day_1">Dll</string>
+    <string name="day_2">Dmt</string>
+    <string name="day_3">Dmc</string>
+    <string name="day_4">Dij</string>
+    <string name="day_5">Div</string>
+    <string name="day_6">Dis</string>
+    <string name="day_7">Diu</string>
+
+    <string name="delete_button">Eliminar</string>
 </resources>
