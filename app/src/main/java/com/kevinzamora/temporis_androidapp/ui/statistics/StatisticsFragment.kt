@@ -15,6 +15,9 @@ import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentStatisticsBinding
 import com.kevinzamora.temporis_androidapp.repository.TimerRepository
 
+import com.kevinzamora.temporis_androidapp.ui.statistics.StatisticsViewModel
+import com.kevinzamora.temporis_androidapp.ui.statistics.StatisticsViewModelFactory
+
 class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
     private var _binding: FragmentStatisticsBinding? = null
@@ -45,8 +48,6 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         }
     }
 
-    // --- LÓGICA DEL GRÁFICO TIPO TOGGL ---
-
     private fun setupContributionChart() {
         val chart = binding.contributionChart
 
@@ -54,40 +55,53 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         chart.legend.isEnabled = false
         chart.setDrawGridBackground(false)
         chart.setDrawBarShadow(false)
-        chart.isHighlightFullBarEnabled = false
-        chart.setScaleEnabled(false) // Desactivar zoom para mantener la forma de rejilla
+        chart.setScaleEnabled(false)
         chart.setTouchEnabled(false)
 
+        // EJE X: Días de la semana (7 columnas)
         val xAxis = chart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM // Cambiado a BOTTOM para mejor alineación
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
         xAxis.setDrawAxisLine(false)
-        xAxis.textColor = Color.parseColor("#888888")
+        xAxis.textColor = Color.GRAY
         xAxis.textSize = 10f
         xAxis.granularity = 1f
+        xAxis.labelCount = 7
+
         xAxis.valueFormatter = object : ValueFormatter() {
-            private val months = arrayOf("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago")
+            private val daysRes = intArrayOf(
+                R.string.day_1, R.string.day_2, R.string.day_3,
+                R.string.day_4, R.string.day_5, R.string.day_6, R.string.day_7
+            )
             override fun getFormattedValue(value: Float): String {
-                return months.getOrElse(value.toInt()) { "" }
+                val index = value.toInt()
+                return if (index in daysRes.indices) getString(daysRes[index]) else ""
             }
         }
 
+        // EJE Y IZQUIERDO: Los 12 meses (Filas apiladas)
         val leftAxis = chart.axisLeft
         leftAxis.setDrawGridLines(false)
         leftAxis.setDrawAxisLine(false)
-        leftAxis.textColor = Color.parseColor("#888888")
-        leftAxis.textSize = 10f
+        leftAxis.textColor = Color.GRAY
+        leftAxis.textSize = 9f
         leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 7f // Forzamos 7 espacios para los días de la semana
-        leftAxis.setLabelCount(7, true)
+        leftAxis.axisMaximum = 12f
+        leftAxis.setLabelCount(12, true)
+
         leftAxis.valueFormatter = object : ValueFormatter() {
-            private val days = arrayOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom")
+            private val monthsRes = intArrayOf(
+                R.string.month_1, R.string.month_2, R.string.month_3, R.string.month_4,
+                R.string.month_5, R.string.month_6, R.string.month_7, R.string.month_8,
+                R.string.month_9, R.string.month_10, R.string.month_11, R.string.month_12
+            )
             override fun getFormattedValue(value: Float): String {
-                return days.getOrElse(value.toInt()) { "" }
+                val index = value.toInt()
+                return if (index in monthsRes.indices) getString(monthsRes[index]) else ""
             }
         }
-        chart.axisRight.isEnabled = false
 
+        chart.axisRight.isEnabled = false
         setChartData()
     }
 
@@ -99,12 +113,11 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         val colorLow = ContextCompat.getColor(requireContext(), R.color.purple_200)
         val colorHigh = ContextCompat.getColor(requireContext(), R.color.purple_500)
 
-        // Dibujaremos 8 semanas (columnas)
-        for (week in 0 until 8) {
-            val dailyValues = FloatArray(7)
-            for (day in 0 until 7) {
-                // Cada "día" tiene una altura de 1f para que todos los cuadrados sean iguales
-                dailyValues[day] = 1f
+        // Ahora iteramos: X = 7 días, Y = 12 niveles (meses)
+        for (day in 0 until 7) {
+            val monthlyValues = FloatArray(12)
+            for (month in 0 until 12) {
+                monthlyValues[month] = 1f // Altura uniforme para crear el "cuadrado"
 
                 val activity = (0..3).random()
                 when (activity) {
@@ -113,23 +126,21 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
                     else -> colors.add(colorHigh)
                 }
             }
-            // Añadimos la columna de la semana con 7 bloques de altura 1
-            entries.add(BarEntry(week.toFloat(), dailyValues))
+            // Creamos una barra por cada día de la semana, con 12 segmentos (meses)
+            entries.add(BarEntry(day.toFloat(), monthlyValues))
         }
 
-        val dataSet = BarDataSet(entries, "Actividad")
+        val dataSet = BarDataSet(entries, "")
         dataSet.colors = colors
         dataSet.setDrawValues(false)
-
-        // ESTO CREA EL EFECTO DE CUADRADITOS:
-        // Añade un borde blanco grueso alrededor de cada segmento apilado
-        dataSet.barBorderWidth = 2f
+        dataSet.barBorderWidth = 1.5f
         dataSet.barBorderColor = Color.WHITE
 
         val barData = BarData(dataSet)
-        barData.barWidth = 0.8f // Espacio entre columnas (semanas)
+        barData.barWidth = 0.85f
 
         binding.contributionChart.data = barData
+        // Ya no forzamos la altura por código, se usa la del XML (320dp)
         binding.contributionChart.invalidate()
     }
 

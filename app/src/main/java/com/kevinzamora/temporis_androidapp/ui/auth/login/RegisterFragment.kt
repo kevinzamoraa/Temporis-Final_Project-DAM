@@ -86,7 +86,7 @@ class RegisterFragment : Fragment() {
                             if (task.isSuccessful) {
                                 val firebaseUser = auth.currentUser
                                 val uid = firebaseUser?.uid ?: ""
-                                val defaultPhoto = "https://img.freepik.com/premium-vector/gamer-man_961307-25037.jpg?semt=ais_hybrid&w=740"
+                                val defaultPhoto = "https://cdn-icons-png.flaticon.com/512/8679/8679953.png"
 
                                 val newUser = User(uid, username, email, username, defaultPhoto)
                                 newUser.rol = 1

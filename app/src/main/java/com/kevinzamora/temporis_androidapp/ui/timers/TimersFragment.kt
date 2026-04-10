@@ -32,7 +32,7 @@ class TimersFragment : Fragment() {
             _binding = FragmentTimersBinding.inflate(inflater, container, false)
             binding.root
         } catch (e: Exception) {
-            Log.e("TimersCrash", "Error inflado Modo Oscuro: ${e.message}")
+            Log.e("TimersCrash", "Error inflado: ${e.message}")
             View(requireContext())
         }
     }
@@ -41,32 +41,63 @@ class TimersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (_binding == null) return
 
-        applySavedFontScale() // Aplicar persistencia de fuente
+        applySavedFontScale()
         setupRecyclerView()
         setupObservers()
         setupClickListeners()
+        setupKeyboardDetection()
+    }
+
+    private fun setupKeyboardDetection() {
+        val rootView = binding.mainTimersLayout
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            if (_binding == null) return@addOnGlobalLayoutListener
+
+            val rect = android.graphics.Rect()
+            rootView.getWindowVisibleDisplayFrame(rect)
+
+            val screenHeight = rootView.rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+
+            val params = binding.cardForm.layoutParams as ViewGroup.MarginLayoutParams
+
+            if (keypadHeight > screenHeight * 0.15) {
+                // TECLADO ABIERTO
+                binding.textTimersTitle.visibility = View.GONE
+                params.bottomMargin = 0 // Pegado al teclado
+            } else {
+                // TECLADO CERRADO
+                binding.textTimersTitle.visibility = View.VISIBLE
+                params.bottomMargin = dpToPx(100) // Margen para el Bottom Nav
+            }
+            binding.cardForm.layoutParams = params
+        }
+    }
+
+    // Función auxiliar para mantener la consistencia del margen en cualquier pantalla
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    private fun hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     private fun applySavedFontScale() {
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
         val config = resources.configuration
-
-        // Solo aplicar si la diferencia es significativa para evitar bucles de refresco
         if (Math.abs(config.fontScale - savedFontSize) > 0.01f) {
             config.fontScale = savedFontSize
-            val metrics = resources.displayMetrics
-            // Usamos el contexto de la aplicación para que sea más estable
-            requireContext().applicationContext.resources.updateConfiguration(config, metrics)
+            requireContext().applicationContext.resources.updateConfiguration(config, resources.displayMetrics)
         }
     }
 
     private fun setupRecyclerView() {
         adapter = TimerAdapter(
             timerList = emptyList(),
-            onPlayClick = { timer ->
-                Toast.makeText(requireContext(), "Iniciando: ${timer.name}", Toast.LENGTH_SHORT).show()
-            },
+            onPlayClick = { timer -> Toast.makeText(requireContext(), "Start: ${timer.name}", Toast.LENGTH_SHORT).show() },
             onEditClick = { timer -> prepararEdicion(timer) },
             onDeleteClick = { timer -> mostrarDialogoEliminar(timer) }
         )
@@ -75,17 +106,13 @@ class TimersFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        // Usar viewLifecycleOwner asegura que el observador muera con la vista del Fragment
-        timerViewModel.timers.observe(viewLifecycleOwner) { timers ->
-            adapter.updateData(timers)
-        }
+        timerViewModel.timers.observe(viewLifecycleOwner) { timers -> adapter.updateData(timers) }
     }
 
     private fun setupClickListeners() {
         binding.buttonCreateTimer.setOnClickListener {
             val name = binding.editTextTimerName.text.toString().trim()
             val duration = binding.editTextTimerDuration.text.toString().toIntOrNull()
-
             if (name.isNotEmpty() && duration != null) {
                 if (editingTimerId == null) {
                     timerViewModel.addTimer(name, duration)
@@ -94,8 +121,7 @@ class TimersFragment : Fragment() {
                     actualizarTemporizador(name, duration)
                 }
                 limpiarFormulario()
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.error_fields), Toast.LENGTH_SHORT).show()
+                hideKeyboard()
             }
         }
     }
@@ -104,8 +130,6 @@ class TimersFragment : Fragment() {
         editingTimerId = timer.id
         binding.editTextTimerName.setText(timer.name)
         binding.editTextTimerDuration.setText(timer.duration.toString())
-
-        // CORRECCIÓN: Usar getString(R.string...) para asignar textos correctamente
         binding.tvFormTitle.text = getString(R.string.title_edit_timer)
         binding.buttonCreateTimer.text = getString(R.string.update_button)
         binding.editTextTimerName.requestFocus()
@@ -123,18 +147,15 @@ class TimersFragment : Fragment() {
                 this.setUid(it.uid)
             }
             timerViewModel.updateTimer(updatedTimer)
-            Toast.makeText(requireContext(), getString(R.string.update_button), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun mostrarDialogoEliminar(timer: Timer) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Eliminar temporizador")
-            .setMessage("¿Estás seguro?")
-            .setPositiveButton("Sí") { _, _ ->
-                timerViewModel.deleteTimer(timer.id)
-            }
-            .setNegativeButton("Cancelar", null)
+            .setTitle(getString(R.string.label_delete_button))
+            .setMessage(getString(R.string.label_are_you_sure))
+            .setPositiveButton(getString(R.string.label_yes)) { _, _ -> timerViewModel.deleteTimer(timer.id) }
+            .setNegativeButton(getString(R.string.label_no), null)
             .show()
     }
 
@@ -142,15 +163,12 @@ class TimersFragment : Fragment() {
         editingTimerId = null
         binding.editTextTimerName.text.clear()
         binding.editTextTimerDuration.text.clear()
-        // CORRECCIÓN: Usar getString para resetear el formulario
         binding.tvFormTitle.text = getString(R.string.title_create_timer)
         binding.buttonCreateTimer.text = getString(R.string.create_button)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Importante: desconectar el adapter para liberar memoria
-        binding.recyclerViewTimers.adapter = null
         _binding = null
     }
 }

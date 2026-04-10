@@ -98,4 +98,47 @@
     <string name="more_info">Leer más</string>
     <string name="save_changes_button">Guardar cambios</string>
     <string name="delete_account_button">Borrar mi cuenta</string>
+    <string name="label_delete_button">Eliminar temporizador</string>
+    <string name="label_are_you_sure">¿Estás seguro?</string>
+    <string name="label_yes">Sí</string>
+    <string name="label_no">No</string>
+    <string name="login_manually_once">Inicia sesión manualmente una vez</string>
+    <string name="biometric_auth">Autenticación biométrica</string>
+    <string name="temporis_version">Temporis 2.0</string>
+    <string name="label_cancel">Cancelar</string>
+    <string name="label_login_required">Debes iniciar sesión para ver tu perfil</string>
+    <string name="successfully_updated_profile">Perfil actualizado correctamente</string>
+    <string name="label_it_is_deleting_account">Eliminar cuenta</string>
+    <string name="label_are_you_sure_to_delete_your_account">¿Estás completamente seguro? Se borrarán tus datos de Firestore y tu acceso. Esta acción no se puede deshacer.</string>
+    <string name="label_definitively_delete">Eliminar definitivamente</string>
+    <string name="label_account_successfully_deleted">Cuenta eliminada con éxito</string>
+    <string name="label_login_required_to_delete_account">Para borrar la cuenta debes haber iniciado sesión recientemente.</string>
+    <string name="label_change_profile_photo_uri">Cambiar la URL de la foto de perfil</string>
+    <string name="label_paste_your_new_image_uri">Pega aquí la URL de tu nueva imagen</string>
+    <string name="label_update_button">Actualizar</string>
+    <string name="dont_forget_to_sabe_changes">No olvides pulsar Guardar cambios para confirmar</string>
+
+    <string name="month_1">Ene</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Abr</string>
+    <string name="month_5">May</string>
+    <string name="month_6">Jun</string>
+    <string name="month_7">Jul</string>
+    <string name="month_8">Ago</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Oct</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Dic</string>
+
+    <string name="day_1">Lun</string>
+    <string name="day_2">Mar</string>
+    <string name="day_3">Mié</string>
+    <string name="day_4">Jue</string>
+    <string name="day_5">Vie</string>
+    <string name="day_6">Sáb</string>
+    <string name="day_7">Dom</string>
+
+    <string name="delete_button">Eliminar</string>
+
 </resources>

@@ -98,4 +98,46 @@
     <string name="more_info">Read more</string>
     <string name="save_changes_button">Save changes</string>
     <string name="delete_account_button">Delete my account</string>
+    <string name="label_delete_button">Delete timer</string>
+    <string name="label_are_you_sure">Are you sure?</string>
+    <string name="label_yes">Yes</string>
+    <string name="label_no">No</string>
+    <string name="login_manually_once">Login manually once</string>
+    <string name="biometric_auth">Biometric auth</string>
+    <string name="temporis_version">Temporis 2.0</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_login_required">Login is required to see your profile</string>
+    <string name="successfully_updated_profile">successfully updated profile</string>
+    <string name="label_it_is_deleting_account">Delete account</string>
+    <string name="label_are_you_sure_to_delete_your_account">Are you absolutely sure? Your Firestore data and access will be deleted. This action cannot be undone.</string>
+    <string name="label_definitively_delete">Definitely delete</string>
+    <string name="label_account_successfully_deleted">Account successfully deleted</string>
+    <string name="label_login_required_to_delete_account">To delete your account, you must have logged in recently.</string>
+    <string name="label_change_profile_photo_uri">Cambiar la URL de la foto de perfil</string>
+    <string name="label_paste_your_new_image_uri">Pega aquí la URL de tu nueva imagen</string>
+    <string name="label_update_button">Update</string>
+    <string name="dont_forget_to_sabe_changes">Don t forget to click Save changes to confirm</string>
+
+    <string name="month_1">Jan</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Apr</string>
+    <string name="month_5">May</string>
+    <string name="month_6">June</string>
+    <string name="month_7">July</string>
+    <string name="month_8">Aug</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Oct</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Dic</string>
+
+    <string name="day_1">Mon</string>
+    <string name="day_2">Thu</string>
+    <string name="day_3">Wed</string>
+    <string name="day_4">Thur</string>
+    <string name="day_5">Fri</string>
+    <string name="day_6">Sat</string>
+    <string name="day_7">San</string>
+
+    <string name="delete_button">Delete</string>
 </resources>
