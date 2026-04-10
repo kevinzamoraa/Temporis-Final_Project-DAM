@@ -98,4 +98,23 @@
     <string name="more_info">Llegir més</string>
     <string name="save_changes_button">Guardar canvis</string>
     <string name="delete_account_button">Esborrar el meu compte</string>
+    <string name="label_delete_button">Eliminar temporitzador</string>
+    <string name="label_are_you_sure">¿Estàs segur?</string>
+    <string name="label_yes">Sí</string>
+    <string name="label_no">No</string>
+    <string name="login_manually_once">Inicia sessió manualment una vegada</string>
+    <string name="biometric_auth">Autenticació biomètrica</string>
+    <string name="temporis_version">Temporis 2.0</string>
+    <string name="label_cancel">Cancelar</string>
+    <string name="label_login_required">Deus iniciar sessió per a veure el tu perfil</string>
+    <string name="successfully_updated_profile">Perfil actualitzat correctament</string>
+    <string name="label_it_is_deleting_account">Eliminar compte</string>
+    <string name="label_are_you_sure_to_delete_your_account">¿Estàs completament segur? Es borraran les teues dades de Firestore i el teu accés. Aquesta acció no es pot desfer.</string>
+    <string name="label_definitively_delete">Eliminar definitivament</string>
+    <string name="label_account_successfully_deleted">Compte eliminat amb èxit</string>
+    <string name="label_login_required_to_delete_account">Per a borrar el compte deus haber iniciat sessió recentment.</string>
+    <string name="label_change_profile_photo_uri">Cambiar la URL de la foto de perfil</string>
+    <string name="label_paste_your_new_image_uri">Pega aquí la URL de la tua nova imatge</string>
+    <string name="label_update_button">Actualitzar</string>
+    <string name="dont_forget_to_sabe_changes">No oblides polsar Guardar canvis per a confirmar</string>
 </resources>

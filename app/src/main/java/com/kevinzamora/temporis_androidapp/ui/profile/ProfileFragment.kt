@@ -48,7 +48,7 @@ class ProfileFragment : Fragment() {
         val currentUser = auth.currentUser
         if (currentUser == null) {
             // Si no hay usuario, redirigimos al Login
-            Toast.makeText(context, "Debes iniciar sesión para ver tu perfil", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.label_login_required), Toast.LENGTH_SHORT).show()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
             activity?.finish() // Opcional: cerrar la actividad actual
@@ -125,7 +125,7 @@ class ProfileFragment : Fragment() {
                             photoUri = Uri.parse(newPhotoUrl)
                         }
                         auth.currentUser?.updateProfile(profileUpdates)?.await()
-                        if (isAdded) Toast.makeText(context, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show()
+                        if (isAdded) Toast.makeText(context, getString(R.string.successfully_updated_profile), Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
                         Log.e("AuthUpdate", "Error: ${e.message}")
                     }
@@ -138,10 +138,10 @@ class ProfileFragment : Fragment() {
 
     private fun confirmDeleteAccount() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Eliminar cuenta")
-            .setMessage("¿Estás completamente seguro? Se borrarán tus datos de Firestore y tu acceso. Esta acción no se puede deshacer.")
-            .setPositiveButton("Eliminar definitivamente") { _, _ -> deleteAccount() }
-            .setNegativeButton("Cancelar", null)
+            .setTitle(getString(R.string.label_it_is_deleting_account))
+            .setMessage(getString(R.string.label_are_you_sure_to_delete_your_account))
+            .setPositiveButton(getString(R.string.label_definitively_delete)) { _, _ -> deleteAccount() }
+            .setNegativeButton(getString(R.string.label_cancel), null)
             .show()
     }
 
@@ -157,28 +157,28 @@ class ProfileFragment : Fragment() {
                     it.delete().await()
 
                     if (isAdded) {
-                        Toast.makeText(context, "Cuenta eliminada con éxito", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.label_account_successfully_deleted), Toast.LENGTH_SHORT).show()
                         val intent = Intent(requireContext(), LoginActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                     }
                 }
             } catch (e: Exception) {
-                if (isAdded) Toast.makeText(context, "Para borrar la cuenta debes haber iniciado sesión recientemente.", Toast.LENGTH_LONG).show()
+                if (isAdded) Toast.makeText(context, getString(R.string.label_login_required_to_delete_account), Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun showChangePhotoDialog() {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Cambiar URL de foto de perfil")
+        builder.setTitle(getString(R.string.label_change_profile_photo_uri))
 
         val input = EditText(requireContext())
-        input.hint = "Pega aquí la URL de tu nueva imagen"
+        input.hint = getString(R.string.label_paste_your_new_image_uri)
         input.setText(binding.etProfileUrl.text.toString())
         builder.setView(input)
 
-        builder.setPositiveButton("Actualizar") { _, _ ->
+        builder.setPositiveButton(getString(R.string.label_update_button)) { _, _ ->
             val newUrl = input.text.toString()
             if (newUrl.isNotEmpty()) {
                 binding.etProfileUrl.setText(newUrl)
@@ -188,10 +188,10 @@ class ProfileFragment : Fragment() {
                     .placeholder(R.drawable.ic_default_profile)
                     .circleCrop()
                     .into(binding.imgProfilePhoto)
-                Toast.makeText(context, "No olvides pulsar 'Guardar cambios' para confirmar", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, getString(R.string.dont_forget_to_sabe_changes), Toast.LENGTH_LONG).show()
             }
         }
-        builder.setNegativeButton("Cancelar", null)
+        builder.setNegativeButton(getString(R.string.label_cancel), null)
         builder.show()
     }
 

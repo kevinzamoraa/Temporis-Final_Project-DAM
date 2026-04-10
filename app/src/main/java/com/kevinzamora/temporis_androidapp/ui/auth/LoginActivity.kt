@@ -82,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
             if (!prefs.getString("email", null).isNullOrEmpty()) {
                 biometricPrompt.authenticate(promptInfo)
             } else {
-                Toast.makeText(this, "Inicia sesión manualmente una vez", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.login_manually_once), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -139,10 +139,10 @@ class LoginActivity : AppCompatActivity() {
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Temporis 2.0")
-            .setSubtitle("Autenticación biométrica")
+            .setTitle(getString(R.string.temporis_version))
+            .setSubtitle(getString(R.string.biometric_auth))
             .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .setNegativeButtonText("Cancelar")
+            .setNegativeButtonText(getString(R.string.label_cancel))
             .build()
     }
 
