@@ -10,6 +10,8 @@
         <item name="colorOnSurfaceVariant">#1C1B1F</item>
 
         <item name="android:statusBarColor">@color/purple_700</item>
+
+        <item name="materialButtonStyle">@style/Widget.App.Button.Rounded</item>
     </style>
 
     <style name="Theme.Temporis.HighContrast" parent="Theme.Material3.DayNight">
@@ -26,5 +28,12 @@
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="postSplashScreenTheme">@style/Theme.TemporisAndroidApp</item>
     </style>
+
+    <style name="Widget.App.Button.Rounded" parent="Widget.Material3.Button">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.Button.Rounded</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Rounded" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">24dp</item> </style>
 
 </resources>
