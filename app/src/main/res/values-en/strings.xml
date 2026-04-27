@@ -140,4 +140,16 @@
     <string name="day_7">San</string>
 
     <string name="delete_button">Delete</string>
+
+    <string name="talkback_guide_title">User Guide: TalkBack</string>
+    <string name="talkback_guide_message">TalkBack is Google\'s screen reader. Basic gestures:\n\n
+                        "Explore: Swipe a finger across the screen to hear what's there.\n" +
+                        "Select: Tap once to select an item.\n" +
+                        "Activate: Tap twice quickly anywhere.\n" +
+                        "Scroll: Swipe with two fingers simultaneously."</string>
+    <string name="talkback_guide_button">Understood</string>
+
+    <string name="talkback_button_label">Read TalkBack Guide</string>
+    <string name="talkback_configuration_label">Configure TalkBack</string>
+    <string name="talkback_note">Note: At the beginning, you will be redirected to the system adjustments.</string>
 </resources>

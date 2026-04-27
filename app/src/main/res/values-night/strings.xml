@@ -140,4 +140,12 @@
     <string name="day_7">Dom</string>
 
     <string name="delete_button">Eliminar</string>
+
+    <string name="talkback_guide_title">Guía de uso: TalkBack</string>
+    <string name="talkback_guide_message">TalkBack es el lector de pantalla de Google. Gestos básicos:\n\n" +
+                        "• Explorar: Desliza un dedo por la pantalla para oír qué hay.\n" +
+                        "• Seleccionar: Pulsa una vez para marcar un elemento.\n" +
+                        "• Activar: Pulsa dos veces rápidamente en cualquier parte.\n" +
+                        "• Scroll: Desliza con dos dedos simultáneamente.</string>
+    <string name="talkback_guide_button">Entendido</string>
 </resources>

@@ -140,4 +140,16 @@
     <string name="day_7">Diu</string>
 
     <string name="delete_button">Eliminar</string>
+
+    <string name="talkback_guide_title">Guia d\'ús: TalkBack</string>
+    <string name="talkback_guide_message">TalkBack és el lector de pantalla de Google. Gestos bàsics:\n\n" +
+                        "• Explorar: Desliza un dit per la pantalla per a escoltar què hi ha.\n" +
+                        "• Seleccionar: Polsa una vegada per a marcar un element.\n" +
+                        "• Activar: Polsa dos vegades ràpidament en qualsevol part.\n" +
+                        "• Scroll: Deslitza amb dos dits simultàneament.</string>
+    <string name="talkback_guide_button">Entés</string>
+
+    <string name="talkback_button_label">Llegir guia de TalkBack</string>
+    <string name="talkback_configuration_label">Configurar TalkBack</string>
+    <string name="talkback_note">Nota: Al configurar, seràs re-dirigit als ajustos del sistema.</string>
 </resources>

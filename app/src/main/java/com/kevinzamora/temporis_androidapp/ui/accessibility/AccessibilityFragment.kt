@@ -22,11 +22,11 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAccessibilityBinding.bind(view)
-        isInitializing = true // Marcamos inicio
+        isInitializing = true
 
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-// --- 1. CARGAR ESTADOS ACTUALES (Esto soluciona que los botones se vean apagados) ---
+        // 1. CARGAR ESTADOS ACTUALES
         val savedFontSize = sharedPref.getFloat("font_size_scale", 1.0f)
         val isHighContrast = sharedPref.getBoolean("high_contrast", false)
         val isBoldText = sharedPref.getBoolean("bold_text", false)
@@ -35,56 +35,51 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
         binding.switchHighContrast.isChecked = isHighContrast
         binding.switchBoldText.isChecked = isBoldText
 
-        // ... carga de datos ...
-        binding.switchHighContrast.isChecked = isHighContrast
-        binding.switchBoldText.isChecked = isBoldText
-
-        // 3. Usamos un Listener más sencillo para guardar el valor
-        //addOnChangeListener se dispara mientras el usuario mueve el slider
+        // 2. Listener Slider
         binding.sliderFontSize.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {}
-
             override fun onStopTrackingTouch(slider: Slider) {
                 val newValue = slider.value
-
-                // Guardamos el valor tal cual
                 sharedPref.edit().putFloat("font_size_scale", newValue).apply()
-
-                // Aplicamos el cambio
                 Handler(Looper.getMainLooper()).postDelayed({
-                    if (isAdded && activity != null) {
-                        updateCustomFontScale(newValue)
-                    }
+                    if (isAdded && activity != null) updateCustomFontScale(newValue)
                 }, 150)
             }
         })
 
-        // 4. Listeners para Switches con validación de pulsación manual
+        // 3. Listeners Switches
         binding.switchHighContrast.setOnCheckedChangeListener { _, isChecked ->
-            // Solo actuamos si no estamos inicializando la vista
             if (!isInitializing) {
-                val current = sharedPref.getBoolean("high_contrast", false)
-                if (current != isChecked) {
-                    sharedPref.edit().putBoolean("high_contrast", isChecked).apply()
-                    triggerRecreate()
-                }
+                sharedPref.edit().putBoolean("high_contrast", isChecked).apply()
+                triggerRecreate()
             }
         }
 
         binding.switchBoldText.setOnCheckedChangeListener { _, isChecked ->
             if (!isInitializing) {
-                val current = sharedPref.getBoolean("bold_text", false)
-                if (current != isChecked) {
-                    sharedPref.edit().putBoolean("bold_text", isChecked).apply()
-                    triggerRecreate()
-                }
+                sharedPref.edit().putBoolean("bold_text", isChecked).apply()
+                triggerRecreate()
             }
         }
 
         val isNightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
         binding.switchDarkMode.isChecked = isNightMode
 
-        // Al final del setup de vistas, cambiamos el estado
+        // 4. Guía explicativa (Ventana Modal con Strings traducidos)
+        binding.btnShowTalkBackGuide.setOnClickListener {
+            android.app.AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.talkback_guide_title))
+                .setMessage(getString(R.string.talkback_guide_message))
+                .setPositiveButton(getString(R.string.talkback_guide_button), null)
+                .show()
+        }
+
+        // 5. Botón para Redirección a Ajustes
+        binding.btnOpenTalkBack.setOnClickListener {
+            val intent = android.content.Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
+        }
+
         isInitializing = false
     }
 
@@ -93,10 +88,7 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
         try {
             val configuration = activity.resources.configuration
             configuration.fontScale = scale
-            val metrics = activity.resources.displayMetrics
-            activity.resources.updateConfiguration(configuration, metrics)
-
-            // ¡Cuidado aquí!Esto llama a triggerRecreate() para que se active la bandera
+            activity.resources.updateConfiguration(configuration, activity.resources.displayMetrics)
             triggerRecreate()
         } catch (e: Exception) {
             Log.e("Accessibility", "Error recreando: ${e.message}")
@@ -105,10 +97,8 @@ class AccessibilityFragment : Fragment(R.layout.fragment_accessibility) {
 
     private fun triggerRecreate() {
         val activity = activity ?: return
-        // Guardamos en SharedPreferences que queremos volver a Accesibilidad tras recrear
         val sharedPref = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE)
         sharedPref.edit().putBoolean("should_return_to_accessibility", true).apply()
-
         activity.recreate()
     }
 
