@@ -1,8 +1,12 @@
 package com.kevinzamora.temporis_androidapp.repository
 
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kevinzamora.temporis_androidapp.model.User
 import io.mockk.MockKAnnotations
@@ -10,85 +14,83 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
 class UserRepositoryTest {
 
-    // El repositorio que vamos a testear
     private lateinit var userRepository: UserRepository
 
-    // Creamos los "dobles" (mocks) de las clases de Firebase
     @MockK
     lateinit var mockFirestore: FirebaseFirestore
-
+    @MockK
+    lateinit var mockAuth: FirebaseAuth
     @MockK
     lateinit var mockCollection: CollectionReference
-
     @MockK
     lateinit var mockDocument: DocumentReference
 
     @Before
     fun setUp() {
-        // Inicializa las anotaciones @MockK
         MockKAnnotations.init(this)
-
-        // IMPORTANTE: Para que el test funcione, inyectamos el mock en el repositorio.
-        // Si tu UserRepository no acepta parámetros, asegúrate de que la variable db sea accesible.
-        userRepository = UserRepository(mockFirestore)
-
-        // Configuración común de los mocks
         every { mockFirestore.collection("users") } returns mockCollection
         every { mockCollection.document(any()) } returns mockDocument
+        userRepository = UserRepository(mockFirestore, mockAuth)
     }
 
+    private fun <T> completedTask(result: T): Task<T> = Tasks.forResult(result)
+
     @Test
-    fun testGetUser() {
+    fun testGetUser() = runTest {
         val testUid = "user123"
+        val mockSnapshot = mockk<DocumentSnapshot>()
+        every { mockSnapshot.toObject(User::class.java) } returns User(testUid, "test", "test@test.com", "Test", "")
+        every { mockDocument.get() } returns completedTask(mockSnapshot)
 
-        // Ejecutamos el método del repositorio
-        userRepository.getUser(testUid)
+        // CAMBIO: Usamos toList() para recolectar todas las emisiones sin abortar el flujo
+        val results = userRepository.getUser(testUid).toList()
 
-        // Verificamos que se llamó a la colección "users" y al documento con el UID correcto
-        verify { mockFirestore.collection("users").document(testUid) }
-        verify { mockDocument.get() }
+        assertTrue(results.first().isSuccess)
+        verify { mockCollection.document(testUid) }
     }
 
     @Test
-    fun testSaveUser() {
-        val testUser = User("123", "kevin", "kevin@test.com", "Kevin Z", "photo_url")
-        val mockTask = mockk<Task<Void>>()
+    fun testSaveUser() = runTest {
+        val testUser = User("123", "kevin", "kevin@test.com", "Kevin Z", "url")
+        every { mockDocument.set(any(), any()) } returns completedTask(null)
 
-        // Definimos que al llamar a set() con cualquier objeto, devuelva una tarea mockeada
-        every { mockDocument.set(any()) } returns mockTask
+        val results = userRepository.saveUser(testUser).toList()
 
-        // Ejecutamos
-        userRepository.saveUser(testUser)
-
-        // Verificamos que se llamó a set con el objeto usuario correcto
-        verify { mockDocument.set(testUser) }
-    }
-
-    @Test
-    fun testRegisterUserInFirestore() {
-        val testUser = User("456", "nuevo", "nuevo@test.com", "Nuevo Usuario", "url")
-        val mockTask = mockk<Task<Void>>()
-
-        every { mockDocument.set(any(), any()) } returns mockTask
-
-        // Supongamos que registerUser usa set() con MergeOptions
-        userRepository.registerUserInFirestore(testUser)
-
-        // Verificamos que se intenta escribir en el documento del usuario
-        verify { mockCollection.document(testUser.uid) }
+        assertTrue(results.first().isSuccess)
         verify { mockDocument.set(testUser, any()) }
     }
 
     @Test
-    fun testGetUserProfileCallsCorrectDocument() {
-        // Este es un alias de testGetUser si tu repo usa ambos nombres
-        val testUid = "user789"
-        userRepository.getUser(testUid)
-        verify { mockFirestore.collection("users").document(testUid) }
+    fun testRegisterUserInFirestore() = runTest {
+        val testUser = User("456", "nuevo", "nuevo@test.com", "Nuevo", "url")
+        every { mockDocument.set(any()) } returns completedTask(null)
+
+        val results = userRepository.registerUserInFirestore(testUser).toList()
+
+        assertTrue(results.first().isSuccess)
+        verify { mockDocument.set(testUser) }
+    }
+
+    @Test
+    fun testDeleteFullAccount() = runTest {
+        val mockFirebaseUser = mockk<FirebaseUser>()
+        every { mockAuth.currentUser } returns mockFirebaseUser
+        every { mockFirebaseUser.uid } returns "123"
+        every { mockDocument.delete() } returns completedTask(null)
+        every { mockFirebaseUser.delete() } returns completedTask(null)
+
+        val result = userRepository.deleteFullAccount()
+
+        assertTrue(result.isSuccess)
+        verify { mockDocument.delete() }
+        verify { mockFirebaseUser.delete() }
     }
 }
