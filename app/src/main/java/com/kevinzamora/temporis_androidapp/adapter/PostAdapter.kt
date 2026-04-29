@@ -60,6 +60,14 @@ class PostAdapter(private var posts: List<Post>) : RecyclerView.Adapter<PostAdap
             val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
             holder.date.text = sdf.format(it.toDate())
         }
+
+        if (post.imageUrl.isNotEmpty()) {
+            holder.image.visibility = View.VISIBLE
+            holder.image.load(post.imageUrl) {
+                crossfade(true)
+                placeholder(R.drawable.ic_launcher_foreground)
+            }
+        }
     }
 
     override fun getItemCount() = posts.size

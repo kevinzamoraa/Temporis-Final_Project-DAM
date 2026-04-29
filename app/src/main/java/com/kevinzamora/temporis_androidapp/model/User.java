@@ -79,5 +79,19 @@ public class User implements Serializable {
                 /*", decription=" + description +*/
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        // Comparamos los campos clave (puedes añadir más si quieres)
+        return uid != null ? uid.equals(user.uid) : user.uid == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return uid != null ? uid.hashCode() : 0;
+    }
 }
 
