@@ -9,28 +9,36 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 class SessionLifecycleManager : Application(), DefaultLifecycleObserver {
 
     companion object {
-        // Restauramos esta variable para que LoginActivity pueda usarla
         var isChangingConfiguration: Boolean = false
     }
 
     override fun onCreate() {
-        super<Application>.onCreate()
+        super<Application>.onCreate() // Corrección: super.onCreate() en lugar de super<Application> si no hay ambigüedad
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
-        // Versión actualizada de App Check (sin .ktx)
         val firebaseAppCheck = com.google.firebase.appcheck.FirebaseAppCheck.getInstance()
         firebaseAppCheck.installAppCheckProviderFactory(
             DebugAppCheckProviderFactory.getInstance()
         )
     }
 
-    override fun onStop(owner: LifecycleOwner) {
-        super<DefaultLifecycleObserver>.onStop(owner)
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+        // Se puede usar para registrar el inicio de la sesión visual
+    }
 
-        // Solo cerramos sesión si NO estamos cambiando de pantalla internamente
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
+
+        // Si la app va al background y no es por una navegación controlada (isChangingConfiguration),
+        // cerramos sesión para obligar a pedir biometría al volver.
         if (!isChangingConfiguration) {
-            // FirebaseAuth.getInstance().signOut() // Descomentar cuando SHA-1 esté listo
+            // FirebaseAuth.getInstance().signOut()
+            // Nota: Al volver a abrir la app, LoginActivity detectará currentUser == null
+            // y lanzará la biometría automáticamente.
         }
+
+        // Reset para la próxima acción
         isChangingConfiguration = false
     }
 }

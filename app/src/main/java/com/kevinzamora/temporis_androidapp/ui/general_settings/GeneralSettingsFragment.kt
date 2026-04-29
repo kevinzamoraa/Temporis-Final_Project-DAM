@@ -33,7 +33,7 @@ class GeneralSettingsFragment : Fragment(R.layout.fragment_general_settings) {
     }
 
     private fun showLanguageDialog() {
-        val languages = arrayOf("Español", "English", "Català / Valencià")
+        val languages = arrayOf("Castellano / Español", "English / Inglés", "Català / Valencià")
         val languageCodes = arrayOf("es", "en", "ca")
         val sharedPref = requireActivity().getSharedPreferences("Settings", Context.MODE_PRIVATE)
 

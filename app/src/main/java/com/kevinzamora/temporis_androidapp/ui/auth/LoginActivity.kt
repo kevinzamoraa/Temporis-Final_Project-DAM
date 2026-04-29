@@ -43,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var progressBarLogin: ProgressBar
 
+    private var biometricAttempted = false // Evita bucles si el usuario cancela
+
     private val GOOGLE_SIGN_IN = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,23 +69,16 @@ class LoginActivity : AppCompatActivity() {
         val savedEmail = prefs.getString("email", null)
         val savedPass = prefs.getString("password", null)
 
-        // IMPORTANTE: Para cumplir con el requisito de "cerrar sesión al salir",
-        // aquí podríamos forzar un signOut si no viene de una navegación interna.
         if (auth.currentUser != null) {
             goToMain()
-        }
-        else if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty()) {
+        } else if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty()) {
             etLoginEmail.setText(savedEmail)
             etLoginPassword.setText(savedPass)
-            window.decorView.post { biometricPrompt.authenticate(promptInfo) }
+            // Ya no lo lanzamos en el post de onCreate, lo hará onWindowFocusChanged
         }
 
         btnBiometric.setOnClickListener {
-            if (!prefs.getString("email", null).isNullOrEmpty()) {
-                biometricPrompt.authenticate(promptInfo)
-            } else {
-                Toast.makeText(this, getString(R.string.login_manually_once), Toast.LENGTH_LONG).show()
-            }
+            biometricPrompt.authenticate(promptInfo)
         }
 
         btnLogin.setOnClickListener {
@@ -107,18 +102,35 @@ class LoginActivity : AppCompatActivity() {
         }
 
         btnIrARegistro.setOnClickListener {
+            SessionLifecycleManager.isChangingConfiguration = true
             supportFragmentManager.beginTransaction()
                 .replace(R.id.coordinatorLayout, RegisterFragment())
                 .addToBackStack(null).commit()
         }
 
         btnLoginNuevaContra.setOnClickListener {
+            SessionLifecycleManager.isChangingConfiguration = true
             supportFragmentManager.beginTransaction()
                 .replace(R.id.coordinatorLayout, ForgottenPassword())
                 .addToBackStack(null).commit()
         }
 
         pedirMultiplesPermisos()
+    }
+
+    // CLAVE PARA EL ACCESO AUTOMÁTICO: Se dispara cuando la vista es visible al 100%
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && !biometricAttempted) {
+            val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+            val savedEmail = prefs.getString("email", null)
+            val savedPass = prefs.getString("password", null)
+
+            if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty() && auth.currentUser == null) {
+                biometricAttempted = true
+                biometricPrompt.authenticate(promptInfo)
+            }
+        }
     }
 
     private fun setupBiometrics() {
@@ -135,14 +147,15 @@ class LoginActivity : AppCompatActivity() {
                 }
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
+                    // Si hay error o cancelación, permitimos que el botón manual siga funcionando
                 }
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.temporis_version))
-            .setSubtitle(getString(R.string.biometric_auth))
+            .setTitle(getString(R.string.biometric_login_title))
+            .setSubtitle(getString(R.string.biometric_login_subtitle))
             .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .setNegativeButtonText(getString(R.string.label_cancel))
+            .setNegativeButtonText(getString(R.string.use_password))
             .build()
     }
 
@@ -150,30 +163,30 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-                    prefs.putString("email", email)
-                    prefs.putString("password", pass)
-                    prefs.apply()
-
+                    getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit().apply {
+                        putString("email", email)
+                        putString("password", pass)
+                        apply()
+                    }
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
+                    biometricAttempted = false // Reset para permitir reintentar si falló el login
                     Toast.makeText(this, "Fallo: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
     }
 
     private fun goToMain() {
+        SessionLifecycleManager.isChangingConfiguration = true
         progressBarLogin.visibility = View.GONE
-
-        // Actualizamos el tiempo de login aquí también para que MainActivity lo reciba fresco
         getSharedPreferences("Settings", Context.MODE_PRIVATE)
             .edit().putLong("last_login_time", System.currentTimeMillis()).apply()
 
-        val intent = Intent(this, MainActivity::class.java)
-        // Pasamos un mensaje a MainActivity: "Abre temporizadores"
-        intent.putExtra("OPEN_TIMERS", true)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("OPEN_TIMERS", true)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         startActivity(intent)
         finish()
     }
@@ -185,29 +198,10 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-
                 progressBarLogin.visibility = View.VISIBLE
-
                 auth.signInWithCredential(credential).addOnCompleteListener { t ->
                     if (t.isSuccessful) {
-                        val firebaseUser = auth.currentUser
-                        if (firebaseUser != null) {
-                            val userObj = User(
-                                firebaseUser.uid,
-                                firebaseUser.displayName?.replace("\\s+".toRegex(), "")?.lowercase() ?: "user",
-                                firebaseUser.email ?: "",
-                                firebaseUser.displayName ?: "Usuario Temporis",
-                                firebaseUser.photoUrl?.toString() ?: "android.resource://${packageName}/${R.drawable.ic_default_profile}"
-                            )
-                            userObj.rol = 1
-
-                            com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                                .collection("users")
-                                .document(firebaseUser.uid)
-                                .set(userObj, com.google.firebase.firestore.SetOptions.merge())
-                                .addOnSuccessListener { goToMain() }
-                                .addOnFailureListener { goToMain() }
-                        }
+                        goToMain()
                     } else {
                         progressBarLogin.visibility = View.GONE
                         Toast.makeText(this, "Error Auth Google: ${t.exception?.message}", Toast.LENGTH_SHORT).show()
@@ -215,7 +209,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             } catch (e: ApiException) {
                 progressBarLogin.visibility = View.GONE
-                Toast.makeText(this, "Error Google (${e.statusCode})", Toast.LENGTH_LONG).show()
             }
         }
     }

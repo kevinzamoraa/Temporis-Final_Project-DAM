@@ -65,6 +65,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timerName" />
 
+        <ImageButton
+            android:id="@+id/btnQuickPlay"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_play"
+            android:contentDescription="Reproducir rápido"
+            app:tint="?attr/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewCountdown"
+            app:layout_constraintStart_toEndOf="@+id/textViewCountdown"
+            app:layout_constraintTop_toTopOf="@+id/textViewCountdown" />
+
         <TextView
             android:id="@+id/timerCreatedAt"
             android:layout_width="0dp"
@@ -75,7 +88,7 @@
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="@+id/textViewCountdown"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textViewCountdown" />
+            app:layout_constraintStart_toEndOf="@+id/btnQuickPlay" />
 
         <LinearLayout
             android:id="@+id/layoutActions"
