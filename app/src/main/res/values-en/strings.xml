@@ -12,18 +12,14 @@
     <string name="title_app_info">App Info</string>
     <string name="title_create_timer">New Timer</string>
     <string name="title_edit_timer">Edit Timer</string>
-
-    <string name="app_version">Version 2.0.0</string>
+    <string name="app_version">Versión 2.1.0</string>
     <string name="app_description">Kevin Zamora / DAM Final Project</string>
-
     <color name="logo_background">#FFFBFD</color>
-
     <string name="name_placeholder">Name</string>
     <string name="min_placeholder">Minutes</string>
     <string name="create_button">CREATE</string>
     <string name="update_button">UPDATE</string>
     <string name="logout_button">LOGOUT</string>
-
     <string name="email">Email address</string>
     <string name="password">Password</string>
     <string name="login_email">Login</string>
@@ -34,7 +30,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome!"</string>
+    <string name="welcome">Welcome!</string>
     <string name="invalid_username">Invalid user</string>
     <string name="invalid_password">Password must be 5+ characters</string>
     <string name="login_failed">Login failed</string>
@@ -54,7 +50,6 @@
     <string name="name">Name</string>
     <string name="confirm_password">Confirm password</string>
     <string name="register">Register</string>
-
     <string name="mensaje_home">Welcome to your tennis booking app</string>
     <string name="pistas">Available courts</string>
     <string name="pista_extra">Extras:</string>
@@ -62,7 +57,7 @@
     <string name="continuar">Continue</string>
     <string name="inicio">Start time:</string>
     <string name="final_hora">End time:</string>
-    <string name="precio">"Total price: "</string>
+    <string name="precio">Total price: </string>
     <string name="metodo">Payment methods:</string>
     <string name="pago">Visa/MasterCard</string>
     <string name="tarjeta">Card number</string>
@@ -70,25 +65,21 @@
     <string name="fecha_validez">Expiry date</string>
     <string name="pagar">Pay</string>
     <string name="paypal">PayPal</string>
-
     <string name="qr">Generate QR Code</string>
     <string name="Actualizar">Update</string>
     <string name="descripcion">Your Description</string>
     <string name="EntrarTwitter">Sign in with Twitter</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="label_font_size">Font Size</string>
     <string name="label_high_contrast">High Contrast</string>
     <string name="label_bold_text">Bold Text</string>
     <string name="label_language">App Language</string>
     <string name="label_date_format">Date Format</string>
     <string name="toast_settings_saved">Settings saved successfully</string>
-
     <string name="stats_progress_title">Your Progress</string>
     <string name="stats_total_timers">Nº of Timers</string>
     <string name="stats_total_time">Total focus time</string>
     <string name="stats_no_data">No data available to display</string>
-
     <string name="default_web_client_id">636050813149-34fd4g39lg1v7ti69mn3v1ce7j6ilfcm.apps.googleusercontent.com</string>
     <string name="prefs_file" translatable="false">TemporisPrefs</string>
     <string name="label_dark_mode">Dark Mode (System)</string>
@@ -104,6 +95,9 @@
     <string name="label_no">No</string>
     <string name="login_manually_once">Login manually once</string>
     <string name="biometric_auth">Biometric auth</string>
+    <string name="biometric_login_title">Biometric Login</string>
+    <string name="biometric_login_subtitle">Use your fingerprint or face to login</string>
+    <string name="use_password">Use password</string>
     <string name="temporis_version">Temporis 2.0</string>
     <string name="label_cancel">Cancel</string>
     <string name="label_login_required">Login is required to see your profile</string>
@@ -116,8 +110,7 @@
     <string name="label_change_profile_photo_uri">Cambiar la URL de la foto de perfil</string>
     <string name="label_paste_your_new_image_uri">Pega aquí la URL de tu nueva imagen</string>
     <string name="label_update_button">Update</string>
-    <string name="dont_forget_to_sabe_changes">Don t forget to click Save changes to confirm</string>
-
+    <string name="dont_forget_to_sabe_changes">Don\'t forget to click Save changes to confirm</string>
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
     <string name="month_3">Mar</string>
@@ -130,26 +123,21 @@
     <string name="month_10">Oct</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Dic</string>
-
     <string name="day_1">Mon</string>
     <string name="day_2">Thu</string>
     <string name="day_3">Wed</string>
     <string name="day_4">Thur</string>
     <string name="day_5">Fri</string>
     <string name="day_6">Sat</string>
-    <string name="day_7">San</string>
-
+    <string name="day_7">Sun</string>
     <string name="delete_button">Delete</string>
-
     <string name="talkback_guide_title">User Guide: TalkBack</string>
-    <string name="talkback_guide_message">TalkBack is Google\'s screen reader. Basic gestures:\n\n
-                        "Explore: Swipe a finger across the screen to hear what's there.\n" +
-                        "Select: Tap once to select an item.\n" +
-                        "Activate: Tap twice quickly anywhere.\n" +
-                        "Scroll: Swipe with two fingers simultaneously."</string>
+    <string name="talkback_guide_message">TalkBack is Google\'s screen reader. Basic gestures:\n\n• Explore: Swipe a finger across the screen to hear what\'s there.\n• Select: Tap once to select an item.\n• Activate: Tap twice quickly anywhere.\n• Scroll: Swipe with two fingers simultaneously.</string>
     <string name="talkback_guide_button">Understood</string>
-
     <string name="talkback_button_label">Read TalkBack Guide</string>
     <string name="talkback_configuration_label">Configure TalkBack</string>
     <string name="talkback_note">Note: At the beginning, you will be redirected to the system adjustments.</string>
+    <string name="talkback_popup_title">Accessibility</string>
+    <string name="talkback_popup_message">TalkBack is activated. ¿Do you want to read the use guide to improve your experience using Temporis?</string>
+    <string name="talkback_popup_button">See Guide</string>
 </resources>

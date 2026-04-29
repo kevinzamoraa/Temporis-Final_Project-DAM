@@ -67,8 +67,7 @@ class LoginActivity : AppCompatActivity() {
         val savedEmail = prefs.getString("email", null)
         val savedPass = prefs.getString("password", null)
 
-        // IMPORTANTE: Para cumplir con el requisito de "cerrar sesión al salir",
-        // aquí podríamos forzar un signOut si no viene de una navegación interna.
+        // Verificamos si hay sesión activa o credenciales para biometría
         if (auth.currentUser != null) {
             goToMain()
         }
@@ -79,7 +78,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         btnBiometric.setOnClickListener {
-            if (!prefs.getString("email", null).isNullOrEmpty()) {
+            val email = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE).getString("email", null)
+            if (!email.isNullOrEmpty()) {
                 biometricPrompt.authenticate(promptInfo)
             } else {
                 Toast.makeText(this, getString(R.string.login_manually_once), Toast.LENGTH_LONG).show()
@@ -129,8 +129,11 @@ class LoginActivity : AppCompatActivity() {
                     val prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE)
                     val email = prefs.getString("email", "") ?: ""
                     val pass = prefs.getString("password", "") ?: ""
+
                     if (email.isNotEmpty() && pass.isNotEmpty()) {
                         performLogin(email, pass)
+                    } else {
+                        if (auth.currentUser != null) goToMain()
                     }
                 }
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -139,10 +142,10 @@ class LoginActivity : AppCompatActivity() {
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.temporis_version))
-            .setSubtitle(getString(R.string.biometric_auth))
+            .setTitle(getString(R.string.biometric_login_title))
+            .setSubtitle(getString(R.string.biometric_login_subtitle))
             .setAllowedAuthenticators(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .setNegativeButtonText(getString(R.string.label_cancel))
+            .setNegativeButtonText(getString(R.string.use_password))
             .build()
     }
 
@@ -154,7 +157,6 @@ class LoginActivity : AppCompatActivity() {
                     prefs.putString("email", email)
                     prefs.putString("password", pass)
                     prefs.apply()
-
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
@@ -165,13 +167,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToMain() {
         progressBarLogin.visibility = View.GONE
-
-        // Actualizamos el tiempo de login aquí también para que MainActivity lo reciba fresco
         getSharedPreferences("Settings", Context.MODE_PRIVATE)
             .edit().putLong("last_login_time", System.currentTimeMillis()).apply()
 
         val intent = Intent(this, MainActivity::class.java)
-        // Pasamos un mensaje a MainActivity: "Abre temporizadores"
         intent.putExtra("OPEN_TIMERS", true)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -185,7 +184,6 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-
                 progressBarLogin.visibility = View.VISIBLE
 
                 auth.signInWithCredential(credential).addOnCompleteListener { t ->
@@ -200,7 +198,6 @@ class LoginActivity : AppCompatActivity() {
                                 firebaseUser.photoUrl?.toString() ?: "android.resource://${packageName}/${R.drawable.ic_default_profile}"
                             )
                             userObj.rol = 1
-
                             com.google.firebase.firestore.FirebaseFirestore.getInstance()
                                 .collection("users")
                                 .document(firebaseUser.uid)
