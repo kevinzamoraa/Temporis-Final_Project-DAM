@@ -7,9 +7,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.kevinzamora.temporis_androidapp.model.Post
 
-class PostRepository {
+class PostRepository(
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) {
 
-    private val firestore = FirebaseFirestore.getInstance()
     private val postsLiveData = MutableLiveData<List<Post>>()
 
     fun getPosts(): LiveData<List<Post>> {

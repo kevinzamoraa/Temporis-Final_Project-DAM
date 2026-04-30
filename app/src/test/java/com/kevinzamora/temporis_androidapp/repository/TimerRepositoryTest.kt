@@ -77,6 +77,18 @@ class TimerRepositoryTest {
     }
 
     @Test
+    fun testGetTimers_UserNull() {
+        // Simulamos que no hay nadie logueado
+        every { mockAuth.currentUser } returns null
+
+        val liveData = timerRepository.getTimers()
+
+        // Verificamos que devuelve una lista vacía y no intenta llamar a Firestore
+        assert(liveData.value?.isEmpty() == true)
+        verify(exactly = 0) { mockFirestore.collection(any()) }
+    }
+
+    @Test
     fun testAddTimer() {
         // Configuramos la tarea exitosa para .add()
         every { mockCollection.add(any()) } returns Tasks.forResult(mockDocument)
