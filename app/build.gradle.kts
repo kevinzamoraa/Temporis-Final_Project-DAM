@@ -58,6 +58,7 @@ android {
     testOptions {
         unitTests {
             isReturnDefaultValues = true
+            isIncludeAndroidResources = true
         }
     }
 }
@@ -109,6 +110,20 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // --- TEST DEPENDENCIES ---
+    testImplementation("junit:junit:4.13.2")
+
+    // Robolectric para emular el framework de Android en la JVM
+    testImplementation("org.robolectric:robolectric:4.11.1")
+
+    // Para testear Fragmentos y LiveData
+    debugImplementation("androidx.fragment:fragment-testing:1.6.2")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    // Espresso para unit tests (necesario con Robolectric)
+    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation("androidx.test.ext:junit:1.1.5")
 }
 
 // El plugin de Google Services debe ir al final
