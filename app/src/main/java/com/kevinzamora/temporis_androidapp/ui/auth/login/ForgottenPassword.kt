@@ -1,4 +1,4 @@
-package com.kevinzamora.temporis_androidapp.ui.auth.Login
+package com.kevinzamora.temporis_androidapp.ui.auth.login
 
 import android.content.Intent
 import android.os.Bundle
