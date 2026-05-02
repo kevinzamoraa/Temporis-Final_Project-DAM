@@ -3,7 +3,7 @@ package com.kevinzamora.temporis_androidapp.adapter
 import android.content.Context
 import android.widget.FrameLayout
 import androidx.test.core.app.ApplicationProvider
-import com.google.firebase.FirebaseApp // Añadir este import
+import com.google.firebase.FirebaseApp
 import com.kevinzamora.temporis_androidapp.model.Timer
 import com.google.firebase.Timestamp
 import org.junit.Assert.assertEquals
@@ -12,8 +12,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+// 1. Configuramos el SDK y el tema a nivel de clase para mayor estabilidad
+@Config(sdk = [33])
 class TimerAdapterTest {
 
     private lateinit var context: Context
@@ -23,7 +26,10 @@ class TimerAdapterTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
 
-        // SOLUCIÓN AL ERROR DE LOG: Inicializamos Firebase para el entorno de test
+        // 2. Aplicamos tu tema real al contexto antes de cada test
+        // Esto soluciona el InflateException de CardView en la línea 11
+        context.setTheme(com.kevinzamora.temporis_androidapp.R.style.Theme_TemporisAndroidApp)
+
         if (FirebaseApp.getApps(context).isEmpty()) {
             FirebaseApp.initializeApp(context)
         }
@@ -36,7 +42,6 @@ class TimerAdapterTest {
 
     @Test
     fun testGetItemCount() {
-        // Corregido: Especificamos el tipo de los lambdas para que Kotlin no se pierda
         val adapter = TimerAdapter(timerList, { _: Timer -> }, { _: Timer -> }, { _: Timer -> })
         assertEquals(2, adapter.itemCount)
     }
@@ -53,25 +58,22 @@ class TimerAdapterTest {
     fun testOnCreateViewHolder() {
         val adapter = TimerAdapter(timerList, { _ -> }, { _ -> }, { _ -> })
         val parent = FrameLayout(context)
+
+        // Ahora el contexto del parent ya tiene el tema cargado en setUp()
         val viewHolder = adapter.onCreateViewHolder(parent, 0)
         assertNotNull(viewHolder.binding)
     }
 
     @Test
     fun testOnBindViewHolder() {
-        // Usamos el timer de la lista inicializada en setUp que ya tiene ID "1"
         val adapter = TimerAdapter(timerList, { _ -> }, { _ -> }, { _ -> })
-        val context = ApplicationProvider.getApplicationContext<Context>()
         val parent = FrameLayout(context)
         val viewHolder = adapter.onCreateViewHolder(parent, 0)
 
         adapter.onBindViewHolder(viewHolder, 0)
 
-        // Verificamos que los textos se asignaron correctamente
         assertEquals("Entrenar", viewHolder.binding.timerName.text.toString())
         assertEquals("30 min", viewHolder.binding.timerDuration.text.toString())
-
-        // Verificamos que el contador se inicializó (00:00 o el tiempo restante)
         assertNotNull(viewHolder.binding.textViewCountdown.text)
     }
 }
