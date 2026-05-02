@@ -16,7 +16,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 // 1. Configuramos el SDK y el tema a nivel de clase para mayor estabilidad
-@Config(sdk = [33])
+@Config(sdk = [34])
 class TimerAdapterTest {
 
     private lateinit var context: Context
