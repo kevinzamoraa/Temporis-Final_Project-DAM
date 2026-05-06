@@ -107,6 +107,8 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.robolectric:robolectric:4.12.2")
+    debugImplementation("androidx.fragment:fragment-testing:1.6.2")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 

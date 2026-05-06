@@ -159,7 +159,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Actualizar el tiempo de último acceso
         val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putLong("last_login_time", System.currentTimeMillis())
+            apply() // Usamos apply para que sea asíncrono pero persistente
+        }
         val lastLogin = sharedPref.getLong("last_login_time", 0)
         val currentTime = System.currentTimeMillis()
 

@@ -15,19 +15,17 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-// 1. Configuramos el SDK y el tema a nivel de clase para mayor estabilidad
 @Config(sdk = [34])
 class TimerAdapterTest {
 
     private lateinit var context: Context
     private lateinit var timerList: List<Timer>
+    // Variables para verificar los clicks
+    private var clickedTimer: Timer? = null
 
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
-
-        // 2. Aplicamos tu tema real al contexto antes de cada test
-        // Esto soluciona el InflateException de CardView en la línea 11
         context.setTheme(com.kevinzamora.temporis_androidapp.R.style.Theme_TemporisAndroidApp)
 
         if (FirebaseApp.getApps(context).isEmpty()) {
@@ -75,5 +73,53 @@ class TimerAdapterTest {
         assertEquals("Entrenar", viewHolder.binding.timerName.text.toString())
         assertEquals("30 min", viewHolder.binding.timerDuration.text.toString())
         assertNotNull(viewHolder.binding.textViewCountdown.text)
+    }
+
+    @Test
+    fun testOnBindViewHolder_SetsTextCorrectly() {
+        val adapter = TimerAdapter(timerList, {}, {}, {})
+        val parent = FrameLayout(context)
+        val viewHolder = adapter.onCreateViewHolder(parent, 0)
+
+        adapter.onBindViewHolder(viewHolder, 0)
+
+        assertEquals("Entrenar", viewHolder.binding.timerName.text.toString())
+        assertEquals("30 min", viewHolder.binding.timerDuration.text.toString())
+    }
+
+    @Test
+    fun testClickPlay_TriggersCallback() {
+        var callCount = 0
+        val adapter = TimerAdapter(timerList,
+            onPlayClick = { callCount++ },
+            onEditClick = {},
+            onDeleteClick = {}
+        )
+
+        val parent = FrameLayout(context)
+        val viewHolder = adapter.onCreateViewHolder(parent, 0)
+        adapter.onBindViewHolder(viewHolder, 0)
+
+        // Simulamos el click en el botón de Play/Pause
+        viewHolder.binding.btnPlay.performClick()
+
+        assertEquals("El callback de Play debería haberse llamado", 1, callCount)
+    }
+
+    @Test
+    fun testClickDelete_TriggersCallback() {
+        var deletedTimerId: String? = null
+        val adapter = TimerAdapter(timerList,
+            {}, {},
+            onDeleteClick = { timer -> deletedTimerId = timer.id }
+        )
+
+        val parent = FrameLayout(context)
+        val viewHolder = adapter.onCreateViewHolder(parent, 1) // Probamos el segundo elemento
+        adapter.onBindViewHolder(viewHolder, 1)
+
+        viewHolder.binding.btnDelete.performClick()
+
+        assertEquals("2", deletedTimerId)
     }
 }
