@@ -9,10 +9,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.kevinzamora.temporis_androidapp.model.Timer
 
-class TimerRepository {
+class TimerRepository(
+    // Añadimos estas líneas al constructor
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+) {
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
+    // ELIMINAMOS estas dos líneas de dentro de la clase, ya que ahora vienen de arriba:
+    // private val firestore = FirebaseFirestore.getInstance()
+    // private val auth = FirebaseAuth.getInstance()
     private val timersLiveData = MutableLiveData<List<Timer>>()
     private var listenerRegistration: ListenerRegistration? = null
 

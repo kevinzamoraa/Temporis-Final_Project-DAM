@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.gms.google-services") apply false
+    id("com.google.gms.google-services")
+    id("jacoco")
 }
 
 android {
@@ -14,112 +15,125 @@ android {
         targetSdk = 35
         versionCode = 2
         versionName = "2.1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     applicationVariants.all {
-        val variant = this
-        variant.outputs.all {
+        outputs.all {
             val output = this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
-            output.outputFileName = "Temporis_v${variant.versionName}.apk"
+            output.outputFileName = "Temporis_v${versionName}.apk"
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "21"
     }
 
     buildFeatures {
         viewBinding = true
     }
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+// CONFIGURACIÓN DE TESTS CORREGIDA
+tasks.withType<Test>().configureEach {
+    configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
+        // Mantenemos esto en false para evitar el error en Resources
+        isIncludeNoLocationClasses = false
+
+        // Exclusiones para que JaCoCo no toque nada del sistema Android
+        excludes = listOf(
+            "jdk.internal.*",
+            "android.*",
+            "com.android.*",
+            "org.robolectric.*",
+            "androidx.*",
+            "com.google.*"
+        )
+    }
+
+    // Argumentos de JVM simplificados y compatibles
+    jvmArgs(
+        "-Xmx2g",
+        "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*"
+    )
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.androidx.runner)
-    implementation(libs.mediation.test.suite)
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("io.coil-kt:coil:2.6.0")
-    implementation(libs.firebase.appcheck.debug)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    // Core
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.fragment:fragment-ktx:1.5.5")
-
-    // UI
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
-    implementation("com.google.android.material:material:1.10.0")
-
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-appcheck-debug")
 
-    implementation("com.google.android.gms:play-services-basement:17.5.0")
+    // UI & Core
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
-    implementation("com.google.android.gms:play-services-ads:25.1.0")
-
-    implementation("com.google.firebase:firebase-auth:18.0.0")
-    implementation("com.google.firebase:firebase-database:18.0.0")
-    implementation("com.google.firebase:firebase-storage:16.0.1")
-
-    implementation("com.karumi:dexter:6.0.0")
-    implementation("com.squareup.picasso:picasso:2.71828")
-
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
-    // Google Sign-In
-    implementation("com.google.android.gms:play-services-auth:20.3.0")
-
-    // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
-
-    implementation("androidx.biometric:biometric:1.2.0-alpha05")
-
+    // Navigation & Lifecycle
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation("androidx.lifecycle:lifecycle-process:2.7.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
 
-}
+    // Biometrics & Permissions
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    implementation("com.karumi:dexter:6.2.3")
 
-apply(plugin = "com.google.gms.google-services")
+    // Images & Charts
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("io.coil-kt:coil:2.6.0")
+
+    // Google Sign-In & Ads
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.robolectric:robolectric:4.11.1")
+    debugImplementation("androidx.fragment:fragment-testing:1.6.2")
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation("androidx.test.ext:junit:1.1.5")
+}

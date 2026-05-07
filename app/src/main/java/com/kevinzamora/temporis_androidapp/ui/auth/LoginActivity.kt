@@ -31,7 +31,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.PermissionRequestErrorListener
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.kevinzamora.temporis_androidapp.SessionLifecycleManager
-import com.kevinzamora.temporis_androidapp.ui.auth.Login.ForgottenPassword
+import com.kevinzamora.temporis_androidapp.ui.auth.login.ForgottenPassword
 import com.kevinzamora.temporis_androidapp.ui.auth.login.RegisterFragment
 import java.util.*
 import java.util.concurrent.Executor
@@ -191,7 +191,7 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GOOGLE_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)

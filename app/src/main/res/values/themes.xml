@@ -12,6 +12,10 @@
         <item name="android:statusBarColor">@color/purple_700</item>
 
         <item name="materialButtonStyle">@style/Widget.App.Button.Rounded</item>
+
+        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_temporis</item>
+        <item name="postSplashScreenTheme">@style/Theme.TemporisAndroidApp</item>
     </style>
 
     <style name="Theme.Temporis.HighContrast" parent="Theme.Material3.DayNight">
