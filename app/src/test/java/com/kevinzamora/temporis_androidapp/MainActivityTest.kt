@@ -14,7 +14,7 @@ import org.robolectric.shadows.ShadowSystemClock
 
 // Indicamos que use nuestra clase TestApplication
 @RunWith(RobolectricTestRunner::class)
-@Config(application = TestApplication::class)
+@Config(application = TestApplication::class, sdk = [33])
 class MainActivityTest {
 
     private lateinit var context: Context

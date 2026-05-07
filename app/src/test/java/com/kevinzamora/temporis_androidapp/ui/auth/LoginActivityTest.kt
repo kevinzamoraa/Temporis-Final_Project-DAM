@@ -21,10 +21,7 @@ import android.view.View
 import org.hamcrest.Matcher
 
 @RunWith(RobolectricTestRunner::class)
-@Config(
-    sdk = [31],
-    application = TestApplication::class
-)
+@Config(application = TestApplication::class, sdk = [33])
 class LoginActivityTest {
 
     private lateinit var context: Context

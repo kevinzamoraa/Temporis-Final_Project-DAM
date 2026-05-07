@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("jacoco")
 }
 
 android {
@@ -14,7 +15,6 @@ android {
         targetSdk = 35
         versionCode = 2
         versionName = "2.1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,17 +28,12 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
     }
 
@@ -62,8 +57,36 @@ android {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+// CONFIGURACIÓN DE TESTS CORREGIDA
+tasks.withType<Test>().configureEach {
+    configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
+        // Mantenemos esto en false para evitar el error en Resources
+        isIncludeNoLocationClasses = false
+
+        // Exclusiones para que JaCoCo no toque nada del sistema Android
+        excludes = listOf(
+            "jdk.internal.*",
+            "android.*",
+            "com.android.*",
+            "org.robolectric.*",
+            "androidx.*",
+            "com.google.*"
+        )
+    }
+
+    // Argumentos de JVM simplificados y compatibles
+    jvmArgs(
+        "-Xmx2g",
+        "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*"
+    )
+}
+
 dependencies {
-    // Firebase BOM (Controla todas las versiones de Firebase automáticamente)
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
@@ -107,25 +130,10 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("org.robolectric:robolectric:4.12.2")
+    testImplementation("org.robolectric:robolectric:4.11.1")
     debugImplementation("androidx.fragment:fragment-testing:1.6.2")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    // --- TEST DEPENDENCIES ---
-    testImplementation("junit:junit:4.13.2")
-
-    // Robolectric para emular el framework de Android en la JVM
-    testImplementation("org.robolectric:robolectric:4.11.1")
-
-    // Para testear Fragmentos y LiveData
-    debugImplementation("androidx.fragment:fragment-testing:1.6.2")
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
-
-    // Espresso para unit tests (necesario con Robolectric)
     testImplementation("androidx.test.espresso:espresso-core:3.5.1")
     testImplementation("androidx.test.ext:junit:1.1.5")
 }
-
-// El plugin de Google Services debe ir al final
-apply(plugin = "com.google.gms.google-services")
