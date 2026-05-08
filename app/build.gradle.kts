@@ -100,10 +100,13 @@ sonar {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamora")
         property("sonar.host.url", "https://sonarcloud.io")
-        // Ruta al reporte XML de Jacoco que generará GitHub Actions
+
+        // Esta ruta es CRÍTICA
         property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+
+        // También indicamos dónde están los binarios para que Sonar los analice
+        property("sonar.java.binaries", "${layout.buildDirectory.get()}/tmp/kotlin-classes/debug")
         property("sonar.junit.reportPaths", "${layout.buildDirectory.get()}/test-results/testDebugUnitTest")
-        property("sonar.exclusions", "**/R.class, **/BuildConfig.*, **/Manifest*.*, **/*Test*.*, android/**/*.*, **/*Binding.*")
     }
 }
 
