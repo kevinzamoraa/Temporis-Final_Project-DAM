@@ -24,13 +24,19 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      run: ./gradlew testDebugUnitTest testDebugUnitTestCoverageReport
+      # Forzamos la creación del reporte antes que nada
+      run: ./gradlew testDebugUnitTest testDebugUnitTestCoverageReport --stacktrace
+
+    - name: Verify Coverage Report Existence
+      # Este paso es solo para depurar en el log de GitHub si el archivo se creó
+      run: ls -R app/build/reports/jacoco/ || echo "No se encontró la carpeta de reportes"
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew sonar
+      # Ejecutamos sonar de forma independiente para asegurar que los archivos ya existen
+      run: ./gradlew sonar --info
 
     - name: Upload Test Reports
       if: always()
