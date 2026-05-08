@@ -102,7 +102,7 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
 
         // Esta ruta es CRÍTICA
-        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
         // También indicamos dónde están los binarios para que Sonar los analice
         property("sonar.java.binaries", "${layout.buildDirectory.get()}/tmp/kotlin-classes/debug")
@@ -138,7 +138,10 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 
     // Aquí es donde JaCoCo guarda los datos en bruto de la ejecución
     executionData.setFrom(fileTree(layout.buildDirectory.get()) {
-        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        include(
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+        )
     })
 }
 
