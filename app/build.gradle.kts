@@ -112,28 +112,33 @@ sonar {
 
 // Tarea para generar el reporte XML de Jacoco (indispensable para Sonar)
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
+    // Aseguramos que se ejecuten los tests antes
     dependsOn("testDebugUnitTest")
     group = "Reporting"
-    description = "Generate Jacoco coverage reports for the debug build."
 
     reports {
         xml.required.set(true)
         html.required.set(true)
+        // Forzamos la salida al directorio que Sonar espera
+        xml.outputLocation.set(file("${layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
     }
 
     val fileFilter = listOf(
         "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
-        "**/*Test*.*", "android/**/*.*", "**/*Binding.*"
+        "**/*Test*.*", "android/**/*.*", "**/*Binding.*", "**/BR.*"
     )
-    val debugTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+
+    // Ubicación de las clases compiladas de Kotlin
+    val kotlinTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
-    val mainSrc = "${project.projectDir}/src/main/java"
 
-    sourceDirectories.setFrom(files(mainSrc))
-    classDirectories.setFrom(files(debugTree))
+    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
+    classDirectories.setFrom(files(kotlinTree))
+
+    // Aquí es donde JaCoCo guarda los datos en bruto de la ejecución
     executionData.setFrom(fileTree(layout.buildDirectory.get()) {
-        include("jacoco/testDebugUnitTest.exec")
+        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
     })
 }
 
