@@ -101,13 +101,11 @@ sonar {
         property("sonar.organization", "kevinzamora")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Usamos la ruta simplificada
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport.xml")
+        // Apuntamos al archivo EXACTO que definimos arriba
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/report.xml")
 
-        // Añadimos estas líneas para ayudar a Sonar a entender dónde está el código
         property("sonar.sources", "src/main/java")
         property("sonar.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.tests", "src/test/java")
         property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
     }
 }
@@ -120,8 +118,8 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Forzamos una ruta estándar sin subcarpetas extrañas
-        xml.outputLocation.set(file("${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport.xml"))
+        // Usamos la ruta absoluta del proyecto para no fallar en el servidor
+        xml.outputLocation.set(file("${project.projectDir}/build/reports/jacoco/report.xml"))
     }
 
     val fileFilter = listOf(
@@ -129,7 +127,6 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
         "**/*Test*.*", "android/**/*.*", "**/*Binding.*", "**/BR.*"
     )
 
-    // Ubicación de las clases compiladas de Kotlin
     val kotlinTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
@@ -137,8 +134,8 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
     classDirectories.setFrom(files(kotlinTree))
 
-    // Aquí es donde JaCoCo guarda los datos en bruto de la ejecución
-    executionData.setFrom(fileTree(project.buildDir) {
+    // IMPORTANTE: Ruta corregida para los datos de ejecución
+    executionData.setFrom(fileTree(layout.buildDirectory.get()) {
         include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
     })
 }
