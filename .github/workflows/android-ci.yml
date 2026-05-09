@@ -24,11 +24,13 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      # Añadimos --continue para que si un test falla, intente generar el reporte igual
       run: ./gradlew testDebugUnitTest testDebugUnitTestCoverageReport --continue
 
+    - name: Debug - List Coverage Files
+      # Esto nos dirá en el log exactamente dónde está el XML
+      run: find app/build/reports/jacoco/ -name "*.xml"
+
     - name: SonarQube Scan
-      if: success() || failure() # Intentar enviar incluso si fallan tests (opcional)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
