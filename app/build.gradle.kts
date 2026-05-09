@@ -101,26 +101,27 @@ sonar {
         property("sonar.organization", "kevinzamora")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Esta ruta es CRÍTICA
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // Usamos la ruta simplificada
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport.xml")
 
-        // También indicamos dónde están los binarios para que Sonar los analice
-        property("sonar.java.binaries", "${layout.buildDirectory.get()}/tmp/kotlin-classes/debug")
-        property("sonar.junit.reportPaths", "${layout.buildDirectory.get()}/test-results/testDebugUnitTest")
+        // Añadimos estas líneas para ayudar a Sonar a entender dónde está el código
+        property("sonar.sources", "src/main/java")
+        property("sonar.binaries", "build/tmp/kotlin-classes/debug")
+        property("sonar.tests", "src/test/java")
+        property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
     }
 }
 
 // Tarea para generar el reporte XML de Jacoco (indispensable para Sonar)
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
-    // Aseguramos que se ejecuten los tests antes
     dependsOn("testDebugUnitTest")
     group = "Reporting"
 
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Forzamos la salida al directorio que Sonar espera
-        xml.outputLocation.set(file("${layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+        // Forzamos una ruta estándar sin subcarpetas extrañas
+        xml.outputLocation.set(file("${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport.xml"))
     }
 
     val fileFilter = listOf(
@@ -137,11 +138,8 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     classDirectories.setFrom(files(kotlinTree))
 
     // Aquí es donde JaCoCo guarda los datos en bruto de la ejecución
-    executionData.setFrom(fileTree(layout.buildDirectory.get()) {
-        include(
-            "jacoco/testDebugUnitTest.exec",
-            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
-        )
+    executionData.setFrom(fileTree(project.buildDir) {
+        include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
     })
 }
 
