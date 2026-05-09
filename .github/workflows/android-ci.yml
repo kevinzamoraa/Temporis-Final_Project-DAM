@@ -24,17 +24,17 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      run: ./gradlew testDebugUnitTest testDebugUnitTestCoverageReport --continue
+      run: ./gradlew :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue
 
     - name: Debug - List Coverage Files
-      # Esto nos dirá en el log exactamente dónde está el XML
-      run: find app/build/reports/jacoco/ -name "*.xml"
+      # Buscamos en todo el proyecto para estar 100% seguros
+      run: find . -name "report.xml"
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew sonar --info
+      run: ./gradlew :app:sonar --info
 
     - name: Upload Test Reports
       if: always()
