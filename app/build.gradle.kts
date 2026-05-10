@@ -101,11 +101,18 @@ sonar {
         property("sonar.organization", "kevinzamora")
         property("sonar.host.url", "https://sonarcloud.io")
 
+        // 1. Indicar dónde está el código fuente y los tests (Rutas relativas al módulo app)
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+
+        // 2. Indicar dónde están los binarios compilados (Vital para Kotlin)
+        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+
+        // 3. Ruta al reporte XML (Usa el patrón comodín para evitar fallos de ruta absoluta)
         property("sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/**/*.xml")
 
-        property("sonar.sources", "src/main/java")
-        property("sonar.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.junit.reportPaths", "build/test-results/testDebugUnitTest")
+        // 4. IMPORTANTE: Para evitar el aviso de "no lines of code", asegúrate de que no se excluya todo
+        property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
     }
 }
 
