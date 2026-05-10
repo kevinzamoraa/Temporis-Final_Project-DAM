@@ -24,16 +24,20 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      run: ./gradlew :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue
+      # Añadimos clean para asegurar que no haya basura de builds previos
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue
 
-    - name: Debug - List Coverage Files
-      # Buscamos en todo el proyecto para estar 100% seguros
-      run: find . -name "report.xml"
+    - name: Debug - Locate Coverage Report
+      # Este comando es clave: busca cualquier XML en la carpeta de reportes y lo muestra
+      run: |
+        echo "Buscando reportes XML de Jacoco..."
+        find . -path "*/build/reports/jacoco/**/*.xml"
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Ejecutamos sonar. Si el archivo XML existe en app/build/reports/jacoco/... lo encontrará
       run: ./gradlew :app:sonar --info
 
     - name: Upload Test Reports
@@ -41,4 +45,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
-        path: app/build/reports/jacoco/testDebugUnitTestCoverageReport/
+        # Subimos toda la carpeta de reportes para que se pueda inspeccionar, si falla
+        path: app/build/reports/jacoco/
