@@ -101,8 +101,7 @@ sonar {
         property("sonar.organization", "kevinzamora")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Apuntamos al archivo EXACTO que definimos arriba
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/report.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/**/*.xml")
 
         property("sonar.sources", "src/main/java")
         property("sonar.binaries", "build/tmp/kotlin-classes/debug")
@@ -118,8 +117,8 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Usamos la ruta absoluta del proyecto para no fallar en el servidor
-        xml.outputLocation.set(file("${project.projectDir}/build/reports/jacoco/report.xml"))
+        // Deja que Gradle decida la ruta por defecto para evitar conflictos de permisos
+        // Sonar la buscará automáticamente en build/reports/jacoco/
     }
 
     val fileFilter = listOf(
