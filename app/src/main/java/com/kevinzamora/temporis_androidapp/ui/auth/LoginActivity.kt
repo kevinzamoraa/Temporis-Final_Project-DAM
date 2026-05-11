@@ -3,7 +3,6 @@ package com.kevinzamora.temporis_androidapp.ui.auth
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -16,24 +15,19 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.kevinzamora.temporis_androidapp.MainActivity
 import com.kevinzamora.temporis_androidapp.R
-import com.kevinzamora.temporis_androidapp.model.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.FirebaseDatabase
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.PermissionRequestErrorListener
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.kevinzamora.temporis_androidapp.SessionLifecycleManager
 import com.kevinzamora.temporis_androidapp.ui.auth.login.ForgottenPassword
 import com.kevinzamora.temporis_androidapp.ui.auth.login.RegisterFragment
-import java.util.*
 import java.util.concurrent.Executor
 
 class LoginActivity : AppCompatActivity() {
@@ -43,9 +37,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private lateinit var progressBarLogin: ProgressBar
 
-    private var biometricAttempted = false // Evita bucles si el usuario cancela
+    private var biometricAttempted = false
 
-    private val GOOGLE_SIGN_IN = 100
+    // Usamos el nombre que cumple con las convenciones de Sonar
+    private const val GOOGLE_SIGN_IN_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,16 +60,9 @@ class LoginActivity : AppCompatActivity() {
 
         setupBiometrics()
 
-        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
-        val savedEmail = prefs.getString("email", null)
-        val savedPass = prefs.getString("password", null)
-
+        // Si el usuario ya tiene sesión iniciada en Firebase, vamos directo al Main
         if (auth.currentUser != null) {
             goToMain()
-        } else if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty()) {
-            etLoginEmail.setText(savedEmail)
-            etLoginPassword.setText(savedPass)
-            // Ya no lo lanzamos en el post de onCreate, lo hará onWindowFocusChanged
         }
 
         btnBiometric.setOnClickListener {
@@ -97,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
                 .build()
             val googleClient = GoogleSignIn.getClient(this, googleConf)
             googleClient.signOut().addOnCompleteListener {
-                startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN)
+                startActivityForResult(googleClient.signInIntent, GOOGLE_SIGN_IN_CODE)
             }
         }
 
@@ -118,19 +106,9 @@ class LoginActivity : AppCompatActivity() {
         pedirMultiplesPermisos()
     }
 
-    // CLAVE PARA EL ACCESO AUTOMÁTICO: Se dispara cuando la vista es visible al 100%
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && !biometricAttempted) {
-            val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
-            val savedEmail = prefs.getString("email", null)
-            val savedPass = prefs.getString("password", null)
-
-            if (!savedEmail.isNullOrEmpty() && !savedPass.isNullOrEmpty() && auth.currentUser == null) {
-                biometricAttempted = true
-                biometricPrompt.authenticate(promptInfo)
-            }
-        }
+        // Ya no realizamos autologin con contraseñas guardadas por seguridad
     }
 
     private fun setupBiometrics() {
@@ -138,16 +116,15 @@ class LoginActivity : AppCompatActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    val prefs = getSharedPreferences(getString(R.string.prefs_file), MODE_PRIVATE)
-                    val email = prefs.getString("email", "") ?: ""
-                    val pass = prefs.getString("password", "") ?: ""
-                    if (email.isNotEmpty() && pass.isNotEmpty()) {
-                        performLogin(email, pass)
+                    // Una vez autenticado biométricamente, si Firebase tiene sesión, vamos a Main
+                    if (auth.currentUser != null) {
+                        goToMain()
+                    } else {
+                        Toast.makeText(applicationContext, getString(R.string.use_password), Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    // Si hay error o cancelación, permitimos que el botón manual siga funcionando
                 }
             })
 
@@ -163,15 +140,11 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit().apply {
-                        putString("email", email)
-                        putString("password", pass)
-                        apply()
-                    }
+                    // Por seguridad (SonarCloud), no guardamos la contraseña en SharedPreferences
                     goToMain()
                 } else {
                     progressBarLogin.visibility = View.GONE
-                    biometricAttempted = false // Reset para permitir reintentar si falló el login
+                    biometricAttempted = false
                     Toast.makeText(this, "Fallo: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                 }
             }
@@ -191,9 +164,10 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
+    @Suppress("DEPRECATION")
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GOOGLE_SIGN_IN) {
+        if (requestCode == GOOGLE_SIGN_IN_CODE) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
