@@ -39,9 +39,6 @@ class LoginActivity : AppCompatActivity() {
 
     private var biometricAttempted = false
 
-    // Usamos el nombre que cumple con las convenciones de Sonar
-    private const val GOOGLE_SIGN_IN_CODE = 100
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -194,5 +191,10 @@ class LoginActivity : AppCompatActivity() {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {}
                 override fun onPermissionRationaleShouldBeShown(p: List<PermissionRequest?>?, t: PermissionToken) { t.continuePermissionRequest() }
             }).check()
+    }
+
+    companion object {
+        // Usamos el nombre que cumple con las convenciones de Sonar
+        private const val GOOGLE_SIGN_IN_CODE = 100
     }
 }
