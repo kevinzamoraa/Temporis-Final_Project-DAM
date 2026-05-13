@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Importante para que Sonar vea el historial de ramas
+        fetch-depth: 0
 
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -24,28 +24,40 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      # Eliminamos el clean momentáneamente para ver si los archivos persisten
-      run: ./gradlew :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --info
-
-    - name: Debug - List All Files
-      # Esto nos dirá si la carpeta de reportes realmente se crea
-      run: |
-        ls -R app/build/reports || echo "No existe la carpeta de reportes"
+      # Importante: mantenemos el clean para asegurar que el reporte sea fresco
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --info
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        ./gradlew :app:sonar \
-          -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
-          -Dsonar.organization=kevinzamoraa \
-          -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml \
-          --info
+        # 1. Buscamos el archivo XML dinámicamente en todo el proyecto
+        REPORT_PATH=$(find . -name "testDebugUnitTestCoverageReport.xml" | head -n 1)
+        
+        echo "-------------------------------------------------------"
+        if [ -z "$REPORT_PATH" ]; then
+          echo "AVISO: No se encontró el archivo XML de JaCoCo."
+          echo "Ejecutando Sonar sin datos de cobertura para evitar fallos de instanciación."
+          ./gradlew :app:sonar \
+            -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
+            -Dsonar.organization=kevinzamoraa \
+            --info
+        else
+          echo "REPORTE LOCALIZADO EN: $REPORT_PATH"
+          echo "Enviando datos a SonarCloud..."
+          ./gradlew :app:sonar \
+            -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
+            -Dsonar.organization=kevinzamoraa \
+            -Dsonar.coverage.jacoco.xmlReportPaths=$REPORT_PATH \
+            --info
+        fi
+        echo "-------------------------------------------------------"
 
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
-        path: app/build/reports/jacoco/
+        # Subimos todos los reportes encontrados para debug
+        path: "**/build/reports/jacoco/"
