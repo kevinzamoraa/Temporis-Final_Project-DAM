@@ -103,16 +103,13 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
 
         // Forzamos el uso de rutas relativas simples para evitar errores de Casting
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+        property("sonar.sources", listOf("src/main/java"))
+        property("sonar.tests", listOf("src/test/java"))
+        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
         // Cobertura
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-
+        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
         property("sonar.scm.disabled", "true")
-        // Esta línea ayuda a Sonar a entender que es un proyecto Android/Kotlin
-        property("sonar.android.lint.report", "build/reports/lint-results-debug.xml")
     }
 }
 
