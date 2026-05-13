@@ -1,9 +1,9 @@
 name: Temporis CI
 on:
   push:
-    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
+    branches: [ "develop", "develop-testing-tofix", "main" ]
   pull_request:
-    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
+    branches: [ "develop", "develop-testing-tofix", "main" ]
 
 jobs:
   test:
@@ -24,19 +24,20 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      # Importante: mantenemos :app: para que Jacoco genere el XML donde toca
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue --info
+      # Añadimos :app: delante de las tareas para ser explícitos
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Cambiamos 'sonar' por ':app:sonar' para que use la config del build.gradle.kts (app)
-      run: ./gradlew :app:sonar --info
+      # Ejecutamos el sonar general del proyecto
+      run: ./gradlew sonar --info
 
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
+        # Subimos toda la carpeta de reportes para que se pueda inspeccionar, si falla
         path: app/build/reports/jacoco/
