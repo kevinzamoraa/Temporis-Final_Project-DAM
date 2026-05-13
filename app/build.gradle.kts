@@ -98,25 +98,20 @@ tasks.withType<Test>().configureEach {
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamora")
+        property("sonar.organization", "kevinzamoraa") // <--- Corregido: kevinzamoraa
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // 1. Indicar dónde está el código fuente y los tests (Rutas relativas al módulo app)
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
-
-        // 2. Indicar dónde están los binarios compilados (Vital para Kotlin)
         property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
-
-        // 3. Ruta al reporte XML (Usa el patrón comodín para evitar fallos de ruta absoluta)
-        property("sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/**/*.xml")
-
-        // 4. IMPORTANTE: Para evitar el aviso de "no lines of code", asegúrate de que no se excluya todo
         property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+
+        // Indicamos la ruta exacta donde la tarea JacocoReport guardará el XML
+        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
 
-// Tarea para generar el reporte XML de Jacoco (indispensable para Sonar)
+// Tarea para generar el reporte XML de Jacoco
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     dependsOn("testDebugUnitTest")
     group = "Reporting"
@@ -124,7 +119,7 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Esto asegura que el archivo se llame como esperamos
+        // Esta ruta debe coincidir exactamente con la de arriba en sonar.coverage.jacoco.xmlReportPaths
         xml.outputLocation.set(file("${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
     }
 
@@ -140,7 +135,6 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
     classDirectories.setFrom(files(kotlinTree))
 
-    // IMPORTANTE: Ruta corregida para los datos de ejecución
     executionData.setFrom(fileTree(layout.buildDirectory.get()) {
         include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
     })
