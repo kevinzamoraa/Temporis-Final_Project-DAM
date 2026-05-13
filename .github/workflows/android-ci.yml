@@ -40,7 +40,6 @@ jobs:
         ./gradlew :app:sonar \
           -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
           -Dsonar.organization=kevinzamoraa \
-          -Dsonar.branch.name=${{ github.ref_name }} \
           -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml \
           --info
 
