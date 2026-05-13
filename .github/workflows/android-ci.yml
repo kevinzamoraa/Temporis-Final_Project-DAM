@@ -36,11 +36,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Añadimos parámetros para ayudar a Sonar a identificar la rama
       run: |
         ./gradlew :app:sonar \
           -Dsonar.branch.name=${{ github.ref_name }} \
           -Dsonar.scm.provider=git \
+          -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml \
           --info
 
     - name: Upload Test Reports
