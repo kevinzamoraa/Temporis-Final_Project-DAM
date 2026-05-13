@@ -1,9 +1,9 @@
 name: Temporis CI
 on:
   push:
-    branches: [ "develop", "develop-testing-tofix", "main" ]
+    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
   pull_request:
-    branches: [ "develop", "develop-testing-tofix", "main" ]
+    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
 
 jobs:
   test:
