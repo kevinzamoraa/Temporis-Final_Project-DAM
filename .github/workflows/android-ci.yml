@@ -24,13 +24,14 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      # Usamos la sintaxis que te funcionó en main/develop
+      # Importante: mantenemos :app: para que Jacoco genere el XML donde toca
       run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue --info
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Cambiamos 'sonar' por ':app:sonar' para que use la config del build.gradle.kts (app)
       run: ./gradlew :app:sonar --info
 
     - name: Upload Test Reports
