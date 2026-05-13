@@ -194,7 +194,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     companion object {
-        // Usamos el nombre que cumple con las convenciones de Sonar
         private const val GOOGLE_SIGN_IN_CODE = 100
     }
 }
