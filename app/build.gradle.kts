@@ -124,8 +124,8 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Deja que Gradle decida la ruta por defecto para evitar conflictos de permisos
-        // Sonar la buscará automáticamente en build/reports/jacoco/
+        // Esto asegura que el archivo se llame como esperamos
+        xml.outputLocation.set(file("${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
     }
 
     val fileFilter = listOf(
