@@ -98,16 +98,21 @@ tasks.withType<Test>().configureEach {
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa") // <--- Corregido: kevinzamoraa
+        property("sonar.organization", "kevinzamoraa") // Asegúrate de que termine en 'a'
         property("sonar.host.url", "https://sonarcloud.io")
 
+        // Rutas de código
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
         property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
         property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
 
-        // Indicamos la ruta exacta donde la tarea JacocoReport guardará el XML
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // COBERTURA: Usamos la ruta relativa simple que es más compatible
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+
+        // SOLUCIÓN AL ERROR DE INSTANCIACIÓN:
+        // A veces el scanner falla intentando detectar el culpable del código (blame)
+        property("sonar.scm.disabled", "true")
     }
 }
 
