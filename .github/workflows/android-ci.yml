@@ -24,40 +24,25 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests and Generate Coverage
-      # Importante: mantenemos el clean para asegurar que el reporte sea fresco
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --info
+      # Usamos la sintaxis que te funcionó en main/develop
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue --info
 
     - name: SonarQube Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Volvemos al comando simple que te funcionaba, pero añadimos la clave del proyecto
+      # para asegurar que no se pierda en ramas secundarias
       run: |
-        # 1. Buscamos el archivo XML dinámicamente en todo el proyecto
-        REPORT_PATH=$(find . -name "testDebugUnitTestCoverageReport.xml" | head -n 1)
-        
-        echo "-------------------------------------------------------"
-        if [ -z "$REPORT_PATH" ]; then
-          echo "AVISO: No se encontró el archivo XML de JaCoCo."
-          echo "Ejecutando Sonar sin datos de cobertura para evitar fallos de instanciación."
-          ./gradlew :app:sonar \
-            -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
-            -Dsonar.organization=kevinzamoraa \
-            --info
-        else
-          echo "REPORTE LOCALIZADO EN: $REPORT_PATH"
-          echo "Enviando datos a SonarCloud..."
-          ./gradlew :app:sonar \
-            -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
-            -Dsonar.organization=kevinzamoraa \
-            -Dsonar.coverage.jacoco.xmlReportPaths=$REPORT_PATH \
-            --info
-        fi
-        echo "-------------------------------------------------------"
+        ./gradlew sonar \
+          -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
+          -Dsonar.organization=kevinzamoraa \
+          -Dsonar.host.url=https://sonarcloud.io \
+          --info
 
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
-        # Subimos todos los reportes encontrados para debug
-        path: "**/build/reports/jacoco/"
+        path: app/build/reports/jacoco/
