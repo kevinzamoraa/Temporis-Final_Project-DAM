@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
-    id("org.sonarqube") version "5.1.0.4882"
+    // CAMBIO 1: Versión más estable para Android
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 android {
@@ -54,7 +55,6 @@ android {
         unitTests {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
-            // Limpiamos este bloque para evitar errores de tipos (Casting)
         }
     }
 }
@@ -95,35 +95,37 @@ tasks.withType<Test>().configureEach {
 }
 
 // Configuración para SonarQube
+// CAMBIO 2: Configuración de SonarQube optimizada
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Usar rutas absolutas de Gradle es más seguro para evitar el error de 'provide'
-        val reportPath = "${project.layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"
-        property("sonar.coverage.jacoco.xmlReportPaths", reportPath)
+        // Usamos la nueva API de Gradle para evitar avisos de obsolescencia
+        val buildDir = layout.buildDirectory.get().asFile
+        property("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug")
-
-        // Desactivamos el SCM para evitar que intente leer los autores de Git en la rama
+        property("sonar.java.binaries", "$buildDir/tmp/kotlin-classes/debug")
         property("sonar.scm.disabled", "true")
     }
 }
 
 // Tarea para generar el reporte XML de Jacoco
+// CAMBIO 3: Tarea JaCoCo sin funciones obsoletas
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     dependsOn("testDebugUnitTest")
     group = "Reporting"
 
+    val buildDir = layout.buildDirectory.get().asFile
+
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Esta ruta debe coincidir exactamente con la de arriba en sonar.coverage.jacoco.xmlReportPaths
-        xml.outputLocation.set(file("${project.buildDir}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+        // Eliminamos project.buildDir por layout.buildDirectory
+        xml.outputLocation.set(file("$buildDir/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
     }
 
     val fileFilter = listOf(
@@ -131,14 +133,14 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
         "**/*Test*.*", "android/**/*.*", "**/*Binding.*", "**/BR.*"
     )
 
-    val kotlinTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+    val kotlinTree = fileTree("$buildDir/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
 
     sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
     classDirectories.setFrom(files(kotlinTree))
 
-    executionData.setFrom(fileTree(layout.buildDirectory.get()) {
+    executionData.setFrom(fileTree("$buildDir") {
         include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
     })
 }
