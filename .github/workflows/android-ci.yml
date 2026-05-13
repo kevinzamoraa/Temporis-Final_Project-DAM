@@ -31,9 +31,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Eliminamos los -Dsonar... manuales. 
-      # Dejamos que el plugin lea TODO desde el build.gradle.kts
-      run: ./gradlew :app:sonar --info
+      run: |
+        ./gradlew :app:sonar \
+          -Dsonar.branch.name=${{ github.ref_name }} \
+          --info
 
     - name: Upload Test Reports
       if: always()
