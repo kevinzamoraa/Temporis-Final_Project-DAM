@@ -31,10 +31,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        ./gradlew :app:sonar \
-          -Dsonar.branch.name=${{ github.ref_name }} \
-          --info
+      run: ./gradlew :app:sonar --info
 
     - name: Upload Test Reports
       if: always()
