@@ -1,24 +1,28 @@
 package com.kevinzamora.temporis_androidapp.ui.auth
 
 import android.content.Context
+import android.view.View
+import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.firebase.FirebaseApp
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.TestApplication
+import org.hamcrest.Matcher
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import android.view.View
-import org.hamcrest.Matcher
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class, sdk = [33])
@@ -39,19 +43,41 @@ class LoginActivityTest {
         ActivityScenario.launch(LoginActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
                 assertNotNull(activity)
-                assertNotNull(activity.findViewById(R.id.etLoginEmail))
-                assertNotNull(activity.findViewById(R.id.btnRegistroRegistrar))
+                assertNotNull(activity.findViewById<EditText>(R.id.etLoginEmail))
+                assertNotNull(activity.findViewById<View>(R.id.btnRegistroRegistrar))
             }
         }
     }
 
     @Test
-    fun testSharedPreferencesLoading() {
+    fun testSharedPreferencesSecurity() {
+        // ESCENARIO: Aunque existan datos antiguos en Prefs,
+        // la App ya NO debe cargarlos por seguridad (según lo que cambiamos en LoginActivity).
         val prefs = context.getSharedPreferences(context.getString(R.string.prefs_file), Context.MODE_PRIVATE)
         prefs.edit().putString("email", "test@test.com").putString("password", "123456").apply()
 
+        ActivityScenario.launch(LoginActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                val etEmail = activity.findViewById<EditText>(R.id.etLoginEmail)
+                val etPass = activity.findViewById<EditText>(R.id.etRegistroContra)
+
+                // Verificamos que los campos están VACÍOS a pesar de las Prefs
+                assertTrue("El email debe estar vacío por seguridad", etEmail.text.toString().isEmpty())
+                assertTrue("La password debe estar vacía por seguridad", etPass.text.toString().isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun testEmptyFieldsShowError() {
         ActivityScenario.launch(LoginActivity::class.java).use {
-            onView(withId(R.id.etLoginEmail)).check(matches(withText("test@test.com")))
+            // Limpiamos y clickamos
+            onView(withId(R.id.etLoginEmail)).perform(clearText())
+            onView(withId(R.id.etRegistroContra)).perform(clearText())
+            onView(withId(R.id.btnRegistroRegistrar)).perform(forceClick())
+
+            // Verificamos que el ProgressBar sigue oculto porque no pasó la validación
+            onView(withId(R.id.progressBarLogin)).check(matches(withEffectiveVisibility(Visibility.GONE)))
         }
     }
 
@@ -59,9 +85,7 @@ class LoginActivityTest {
     fun testOnWindowFocusChanged() {
         ActivityScenario.launch(LoginActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
-                // Forzamos el evento de cambio de foco
                 activity.onWindowFocusChanged(true)
-                // Verificamos que la actividad sigue activa y no ha crasheado al disparar biometría
                 assertNotNull(activity)
             }
         }
@@ -71,52 +95,21 @@ class LoginActivityTest {
     fun testOnActivityResultGoogle() {
         ActivityScenario.launch(LoginActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
-                // Simulamos la respuesta de Google Sign In (Request Code 100)
-                // Usamos un result code de CANCELED para verificar que el flujo no rompe la app
+                // Usamos 100 o GOOGLE_SIGN_IN_CODE (si es público)
                 activity.onActivityResult(100, android.app.Activity.RESULT_CANCELED, null)
-
-                val progressBar = activity.findViewById<android.widget.ProgressBar>(R.id.progressBarLogin)
-                // Al cancelar, el progress bar debería estar oculto (GONE)
-                assert(progressBar.visibility == android.view.View.GONE)
+                val progressBar = activity.findViewById<ProgressBar>(R.id.progressBarLogin)
+                assert(progressBar.visibility == View.GONE)
             }
-        }
-    }
-
-    @Test
-    fun testEmptyFieldsShowError() {
-        ActivityScenario.launch(LoginActivity::class.java).use {
-            // Usamos forceClick() en lugar de click() para evitar errores de visibilidad/scroll
-            onView(withId(R.id.btnRegistroRegistrar)).perform(forceClick())
-
-            assertNotNull(it)
         }
     }
 
     @Test
     fun testNavigationToRegister() {
         ActivityScenario.launch(LoginActivity::class.java).use { scenario ->
-            // Usamos forceClick() para navegar sin que importe el layout
             onView(withId(R.id.btnLoginRegistro)).perform(forceClick())
-
             scenario.onActivity { activity ->
-                // Si el error NoClassDefFoundError de antes persiste,
-                // asegúrate de que RegisterFragment esté bien importado en LoginActivity.kt
                 val fragmentCount = activity.supportFragmentManager.backStackEntryCount
-                assert(fragmentCount >= 0)
-            }
-        }
-    }
-
-    /**
-     * Función de ayuda para forzar un clic sin restricciones de visibilidad.
-     * Esto soluciona los errores de "view does not match constraints" en Robolectric.
-     */
-    fun forceClick(): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View> = isEnabled()
-            override fun getDescription(): String = "force click"
-            override fun perform(uiController: UiController, view: View) {
-                view.performClick()
+                assertTrue(fragmentCount >= 0)
             }
         }
     }
@@ -125,6 +118,19 @@ class LoginActivityTest {
     fun testOnCreateNotNull() {
         ActivityScenario.launch(LoginActivity::class.java).use { scenario ->
             assertNotNull(scenario)
+        }
+    }
+
+    /**
+     * Helper para clics forzados en Robolectric
+     */
+    private fun forceClick(): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isEnabled()
+            override fun getDescription(): String = "force click"
+            override fun perform(uiController: UiController, view: View) {
+                view.performClick()
+            }
         }
     }
 }
