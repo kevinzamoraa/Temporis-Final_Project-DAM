@@ -98,20 +98,18 @@ tasks.withType<Test>().configureEach {
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa") // Asegúrate de que termine en 'a'
+        property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Rutas de código
+        // Usar rutas absolutas de Gradle es más seguro para evitar el error de 'provide'
+        val reportPath = "${project.layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"
+        property("sonar.coverage.jacoco.xmlReportPaths", reportPath)
+
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+        property("sonar.java.binaries", "${project.layout.buildDirectory.get()}/tmp/kotlin-classes/debug")
 
-        // COBERTURA: Usamos la ruta relativa simple que es más compatible
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-
-        // SOLUCIÓN AL ERROR DE INSTANCIACIÓN:
-        // A veces el scanner falla intentando detectar el culpable del código (blame)
+        // Desactivamos el SCM para evitar que intente leer los autores de Git en la rama
         property("sonar.scm.disabled", "true")
     }
 }
