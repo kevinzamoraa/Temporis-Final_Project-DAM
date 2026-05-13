@@ -102,13 +102,14 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Forzamos el uso de rutas relativas simples para evitar errores de Casting
+        // Usa listOf para evitar el error de "String cannot be cast to Collection"
         property("sonar.sources", listOf("src/main/java"))
         property("sonar.tests", listOf("src/test/java"))
         property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
-        // Cobertura
-        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // Ruta corregida para que el plugin la encuentre
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+
         property("sonar.scm.disabled", "true")
     }
 }
