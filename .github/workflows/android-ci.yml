@@ -38,8 +38,9 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./gradlew :app:sonar \
+          -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
+          -Dsonar.organization=kevinzamoraa \
           -Dsonar.branch.name=${{ github.ref_name }} \
-          -Dsonar.scm.provider=git \
           -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml \
           --info
 
