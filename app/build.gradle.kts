@@ -102,20 +102,15 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-<<<<<<< HEAD
+
         // CORRECCIÓN CLAVE: Usamos listOf() para que el tipo sea Collection y no String
-=======
         // Usa listOf para evitar el error de "String cannot be cast to Collection"
->>>>>>> 91803ee3b6ebd22f961bc93be994a2b458b7201d
         property("sonar.sources", listOf("src/main/java"))
         property("sonar.tests", listOf("src/test/java"))
         property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
-<<<<<<< HEAD
         // Cobertura: Sonar acepta un String aquí, pero por seguridad usamos la ruta relativa limpia
-=======
         // Ruta corregida para que el plugin la encuentre
->>>>>>> 91803ee3b6ebd22f961bc93be994a2b458b7201d
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
         property("sonar.scm.disabled", "true")
