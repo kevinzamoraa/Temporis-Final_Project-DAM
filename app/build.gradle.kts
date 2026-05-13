@@ -98,21 +98,18 @@ tasks.withType<Test>().configureEach {
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamora")
+        property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // 1. Indicar dónde está el código fuente y los tests (Rutas relativas al módulo app)
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
+        // CORRECCIÓN CLAVE: Usamos listOf() para que el tipo sea Collection y no String
+        property("sonar.sources", listOf("src/main/java"))
+        property("sonar.tests", listOf("src/test/java"))
+        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
-        // 2. Indicar dónde están los binarios compilados (Vital para Kotlin)
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+        // Cobertura: Sonar acepta un String aquí, pero por seguridad usamos la ruta relativa limpia
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
-        // 3. Ruta al reporte XML (Usa el patrón comodín para evitar fallos de ruta absoluta)
-        property("sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/**/*.xml")
-
-        // 4. IMPORTANTE: Para evitar el aviso de "no lines of code", asegúrate de que no se excluya todo
-        property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+        property("sonar.scm.disabled", "true")
     }
 }
 
