@@ -31,8 +31,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Ejecutamos el sonar desde la raíz pero apuntando al módulo app
-      run: ./gradlew :app:sonar --info --stacktrace
+      # Ejecutamos el sonar raíz pero le pasamos explícitamente el módulo app
+      # Esto suele saltarse los errores de instanciación de Beans del sub-módulo
+      run: ./gradlew sonar -Dsonar.modules=:app --info --stacktrace
 
     - name: Upload Test Reports
       if: always()
