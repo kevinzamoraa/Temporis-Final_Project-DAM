@@ -102,16 +102,17 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Simplificamos al máximo para que no haya duplicados
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+        // USAMOS LISTAS EXPLÍCITAS (Colecciones)
+        property("sonar.sources", listOf("src/main/java"))
+        property("sonar.tests", listOf("src/test/java"))
+        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
-        // Esta ruta debe ser relativa a la raíz del proyecto para que GitHub Actions la encuentre
-        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // Cobertura: Aquí Sonar suele aceptar un String, pero lo ponemos como lista por si acaso
+        property("sonar.coverage.jacoco.xmlReportPaths", listOf("build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
 
         property("sonar.scm.disabled", "true")
         property("sonar.gradle.skipCompile", "true")
+        property("sonar.android.variant", "debug")
     }
 }
 
