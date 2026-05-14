@@ -31,7 +31,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew :app:sonar --info --stacktrace
+      # Ejecutamos el sonar raíz pero le decimos explícitamente que el proyecto está en :app
+      run: |
+        ./gradlew sonar \
+          -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
+          -Dsonar.organization=kevinzamoraa \
+          -Dsonar.modules=:app \
+          --info --stacktrace
 
     - name: Upload Test Reports
       if: always()
