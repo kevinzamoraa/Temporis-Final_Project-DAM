@@ -102,18 +102,20 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-
-        // CORRECCIÓN CLAVE: Usamos listOf() para que el tipo sea Collection y no String
-        // Usa listOf para evitar el error de "String cannot be cast to Collection"
+        // USAMOS LISTAS EXPLÍCITAS PARA EVITAR EL ERROR DE CASTING
         property("sonar.sources", listOf("src/main/java"))
         property("sonar.tests", listOf("src/test/java"))
         property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
-        // Cobertura: Sonar acepta un String aquí, pero por seguridad usamos la ruta relativa limpia
-        // Ruta corregida para que el plugin la encuentre
+        // COBERTURA: Usamos la ruta relativa que genera tu tarea JaCoCo
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
+        // Evitamos que Sonar intente compilar de nuevo (esto ahorra errores y tiempo)
+        property("sonar.gradle.skipCompile", "true")
         property("sonar.scm.disabled", "true")
+
+        // Forzamos el uso de la variante de debug
+        property("sonar.android.variant", "debug")
     }
 }
 
