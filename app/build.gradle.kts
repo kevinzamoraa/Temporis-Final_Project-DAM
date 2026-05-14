@@ -102,16 +102,22 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // USAMOS LISTAS EXPLÍCITAS (Colecciones)
+        // 1. Forzamos el análisis solo de este módulo
+        property("sonar.projectName", "Temporis-AndroidApp")
+
+        // 2. Definimos las fuentes como colecciones (listOf) para evitar el error de Casting
         property("sonar.sources", listOf("src/main/java"))
         property("sonar.tests", listOf("src/test/java"))
+
+        // 3. Binarios (clases compiladas)
         property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
 
-        // Cobertura: Aquí Sonar suele aceptar un String, pero lo ponemos como lista por si acaso
-        property("sonar.coverage.jacoco.xmlReportPaths", listOf("build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+        // 4. Ruta del reporte de JaCoCo (Relativa al módulo app)
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
-        property("sonar.scm.disabled", "true")
+        // 5. Configuraciones de estabilidad
         property("sonar.gradle.skipCompile", "true")
+        property("sonar.scm.disabled", "true")
         property("sonar.android.variant", "debug")
     }
 }
