@@ -55,6 +55,12 @@ android {
         unitTests {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
+            all {
+                // Forzamos a Robolectric a no dejar basura que bloquee el proceso
+                it.systemProperty("robolectric.offline", "true")
+                // Aumentamos la memoria para evitar fallos de instanciación de beans
+                it.maxHeapSize = "1024m"
+            }
         }
     }
 }
@@ -101,7 +107,12 @@ sonar {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
+
+        // Indicamos ÚNICAMENTE dónde está el reporte de cobertura
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+
+        // Evitamos que intente recompilar
+        property("sonar.gradle.skipCompile", "true")
     }
 }
 
