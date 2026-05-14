@@ -101,19 +101,7 @@ sonar {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
-
-        // CORRECCIÓN PARA EL ERROR DE CASTING:
-        // Forzamos que estas propiedades sean tratadas como colecciones
-        property("sonar.sources", listOf("src/main/java", "src/main/kotlin"))
-        property("sonar.tests", listOf("src/test/java", "src/test/kotlin"))
-        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
-
-        // RUTA DE COBERTURA (En teoría, esta ruta existe tras los tests)
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-
-        // ESTABILIDAD: Evitamos que el scanner intente recompilar
-        property("sonar.gradle.skipCompile", "true")
-        property("sonar.scm.disabled", "true")
     }
 }
 
