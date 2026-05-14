@@ -102,20 +102,16 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // USAMOS LISTAS EXPLÍCITAS PARA EVITAR EL ERROR DE CASTING
-        property("sonar.sources", listOf("src/main/java"))
-        property("sonar.tests", listOf("src/test/java"))
-        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
+        // Simplificamos al máximo para que no haya duplicados
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
 
-        // COBERTURA: Usamos la ruta relativa que genera tu tarea JaCoCo
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // Esta ruta debe ser relativa a la raíz del proyecto para que GitHub Actions la encuentre
+        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
-        // Evitamos que Sonar intente compilar de nuevo (esto ahorra errores y tiempo)
-        property("sonar.gradle.skipCompile", "true")
         property("sonar.scm.disabled", "true")
-
-        // Forzamos el uso de la variante de debug
-        property("sonar.android.variant", "debug")
+        property("sonar.gradle.skipCompile", "true")
     }
 }
 
