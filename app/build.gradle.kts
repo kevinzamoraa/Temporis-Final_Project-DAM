@@ -53,7 +53,6 @@ android {
 
     testOptions {
         unitTests {
-            isReturnDefaultValues = true
             isIncludeAndroidResources = true
             all {
                 // Forzamos a Robolectric a no dejar basura que bloquee el proceso
@@ -111,7 +110,7 @@ sonar {
         // Indicamos ÚNICAMENTE dónde está el reporte de cobertura
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
-        // Evitamos que intente recompilar
+        // Evitamos que intente recompilar (recomendado en el propio log [cite: 208, 210])
         property("sonar.gradle.skipCompile", "true")
     }
 }
