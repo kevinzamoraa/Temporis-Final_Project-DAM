@@ -47,20 +47,20 @@ class MainActivityTest {
     fun onStart_updatesLastLoginTime() {
         val sharedPref = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-        // 1. Guardamos un tiempo pasado manualmente (5 segundos atrás)
+        // 1. Guardamos una marca de tiempo de hace 5 segundos de forma persistente
         val oldTime = System.currentTimeMillis() - 5000
         sharedPref.edit().putLong("last_login_time", oldTime).commit()
 
-        // 2. Avanzamos el reloj simulado de Robolectric
+        // 2. Simulamos el avance del reloj global en Robolectric
         ShadowSystemClock.advanceBy(Duration.ofSeconds(2))
 
-        // 3. Iniciamos la actividad
+        // 3. Inicializamos el ciclo de vida de la actividad (pasa por onCreate y onStart)
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
 
-        // 4. Forzamos a que Robolectric procese el guardado en segundo plano
+        // 4. Sincronizamos de inmediato los hilos en segundo plano para asegurar el volcado a disco
         ShadowLooper.idleMainLooper()
 
-        // 5. Verificación
+        // 5. Verificación de los datos actualizados
         val updatedTime = sharedPref.getLong("last_login_time", 0)
 
         assertTrue(

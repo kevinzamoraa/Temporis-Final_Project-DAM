@@ -1,16 +1,12 @@
 package com.kevinzamora.temporis_androidapp.ui.general_settings
 
-import android.content.Context
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.ApplicationProvider
+import androidx.fragment.app.FragmentActivity
+import androidx.test.core.app.ActivityScenario
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.TestApplication
-
 import junit.framework.TestCase.assertNotNull
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -18,36 +14,43 @@ import org.robolectric.annotation.Config
 @Config(application = TestApplication::class, sdk = [33])
 class GeneralSettingsFragmentTest {
 
-    private lateinit var context: Context
-
-    @Before
-    fun setUp() {
-        context = ApplicationProvider.getApplicationContext<TestApplication>()
-
-        // ESTRATEGIA:
-        // Si tu LocalDependencyResolver tiene un método estático como "register" o "init",
-        // necesitamos pasarle el contexto o los mocks de los servicios que usa el Fragment.
-        // Ejemplo ficticio si tuviera un mapa:
-        // LocalDependencyResolver.register(Context::class.java, context)
-    }
-
     @Test
     fun testOnViewCreated() {
-        val scenario = launchFragmentInContainer<GeneralSettingsFragment>(
-            themeResId = R.style.Theme_TemporisAndroidApp
-        )
-        scenario.onFragment { fragment ->
+        // Lanzamos una FragmentActivity vacía que sí tiene soporte para FragmentManager
+        val scenario = ActivityScenario.launch(FragmentActivity::class.java)
+
+        scenario.onActivity { activity ->
+            // Aplicamos el tema visual de tu aplicación
+            activity.setTheme(R.style.Theme_TemporisAndroidApp)
+
+            // Instanciamos tu fragmento de ajustes
+            val fragment = GeneralSettingsFragment()
+
+            // Lo añadimos al contenedor principal de la actividad de pruebas
+            activity.supportFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment)
+                .commitNow()
+
+            // Verificamos que la vista se haya creado correctamente
             assertNotNull(fragment.view)
         }
+        scenario.close()
     }
 
     @Test
     fun testOnDestroyView() {
-        val scenario = launchFragmentInContainer<GeneralSettingsFragment>(
-            themeResId = R.style.Theme_TemporisAndroidApp
-        )
-        scenario.onFragment { fragment ->
+        val scenario = ActivityScenario.launch(FragmentActivity::class.java)
+
+        scenario.onActivity { activity ->
+            activity.setTheme(R.style.Theme_TemporisAndroidApp)
+            val fragment = GeneralSettingsFragment()
+
+            activity.supportFragmentManager.beginTransaction()
+                .add(android.R.id.content, fragment)
+                .commitNow()
+
             assertNotNull(fragment.view)
         }
+        scenario.close()
     }
 }
