@@ -55,8 +55,11 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all {
-                // Forzamos a Robolectric a no dejar basura que bloquee el proceso
-                it.systemProperty("robolectric.offline", "true")
+                // AJUSTE CRÍTICO: Permitimos que Robolectric se conecte para descargar el entorno simulado
+                it.systemProperty("robolectric.offline", "false")
+                // Aseguramos la URL del repositorio público directamente en la ejecución del test
+                it.systemProperty("robolectric.dependency.repo.url", "https://repo1.maven.org/maven2/")
+
                 // Aumentamos la memoria para evitar fallos de instanciación de beans
                 it.maxHeapSize = "1024m"
             }
@@ -110,7 +113,7 @@ sonar {
         // Indicamos ÚNICAMENTE dónde está el reporte de cobertura
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
-        // Evitamos que intente recompilar (recomendado en el propio log [cite: 208, 210])
+        // Evitamos que intente recompilar (recomendado en el propio log)
         property("sonar.gradle.skipCompile", "true")
     }
 }
