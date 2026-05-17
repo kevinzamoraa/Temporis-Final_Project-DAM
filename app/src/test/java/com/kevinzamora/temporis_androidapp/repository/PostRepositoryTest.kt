@@ -1,8 +1,10 @@
 package com.kevinzamora.temporis_androidapp.repository
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.kevinzamora.temporis_androidapp.TestApplication
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -11,7 +13,14 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLooper
 
+// CORREGIDO: Añadimos el Runner de Robolectric para soportar las llamadas asíncronas
+@RunWith(RobolectricTestRunner::class)
+@Config(application = TestApplication::class, sdk = [33])
 class PostRepositoryTest {
 
     @get:Rule
@@ -30,7 +39,6 @@ class PostRepositoryTest {
     fun setUp() {
         MockKAnnotations.init(this)
         every { mockFirestore.collection("posts") } returns mockCollection
-        // Mock de la ordenación
         every { mockCollection.orderBy("createdAt", Query.Direction.DESCENDING) } returns mockQuery
 
         postRepository = PostRepository(mockFirestore)
@@ -42,8 +50,8 @@ class PostRepositoryTest {
         every { mockQuery.addSnapshotListener(any()) } returns mockRegistration
 
         postRepository.getPosts()
+        ShadowLooper.idleMainLooper()
 
-        // Verificamos por partes para evitar errores de cadena de MockK
         verify { mockFirestore.collection("posts") }
         verify { mockCollection.orderBy("createdAt", Query.Direction.DESCENDING) }
         verify { mockQuery.addSnapshotListener(any()) }
@@ -51,17 +59,15 @@ class PostRepositoryTest {
 
     @Test
     fun testGetPosts_Error() {
-        // 1. Simulamos que el listener recibe un error en lugar de datos
         every { mockQuery.addSnapshotListener(any()) } answers {
             val callback = firstArg<com.google.firebase.firestore.EventListener<com.google.firebase.firestore.QuerySnapshot>>()
-            // Simulamos un error de Firebase
             callback.onEvent(null, mockk(relaxed = true))
             mockk()
         }
 
-        val result = postRepository.getPosts()
+        postRepository.getPosts()
+        ShadowLooper.idleMainLooper()
 
-        // Verificamos que la app no explote (puedes añadir asserts de LiveData aquí)
         verify { mockQuery.addSnapshotListener(any()) }
     }
 }

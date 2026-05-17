@@ -33,7 +33,7 @@ class LoginActivityTest {
 
     @Before
     fun setUp() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+        context = ApplicationProvider.getApplicationContext<TestApplication>()
 
         // BLINDAJE DE FIREBASE: Inicializamos una instancia Mock/Ficticia para que la actividad no colapse
         if (FirebaseApp.getApps(context).isEmpty()) {
