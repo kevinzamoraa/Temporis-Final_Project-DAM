@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
-    // CAMBIO 1: Versión más estable para Android
     id("org.sonarqube") version "4.4.1.3373"
 }
 
@@ -55,87 +54,33 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all {
-                // AJUSTE CRÍTICO: Permitimos que Robolectric se conecte para descargar el entorno simulado
                 it.systemProperty("robolectric.offline", "false")
-                // Aseguramos la URL del repositorio público directamente en la ejecución del test
                 it.systemProperty("robolectric.dependency.repo.url", "https://repo1.maven.org/maven2/")
-
-                // Aumentamos la memoria para evitar fallos de instanciación de beans
                 it.maxHeapSize = "1024m"
             }
         }
     }
 }
 
+// =============================================================================
+// CONFIGURACIÓN UNIFICADA DE JACOCO Y TESTING (OPTIMIZADA)
+// =============================================================================
+
 jacoco {
     toolVersion = "0.8.12"
 }
 
-// CONFIGURACIÓN UNIFICADA DE TEST (ESTA ES LA QUE FUNCIONA)
-tasks.withType<Test>().configureEach {
-    // 1. Configuración de la extensión de JaCoCo
-    extensions.configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
-        isIncludeNoLocationClasses = false
-        // Excluimos absolutamente todos los paquetes del sistema y de librerías
-        excludes = listOf(
-            "jdk.internal.*",
-            "android.*",
-            "com.android.*",
-            "org.robolectric.*",
-            "androidx.*",
-            "com.google.*",
-            "net.bytebuddy.*",
-            "org.mockito.*",
-            "io.mockk.*"
-        )
-    }
-
-    // 2. Forzamos un entorno limpio para cada test
-    forkEvery = 1
-    maxParallelForks = 1 // Bajamos a 1 para asegurar estabilidad total durante la suite completa
-
-    // 3. Argumentos de la JVM (El secreto está en el orden de los filtros)
-    jvmArgs(
-        "-Xmx2g",
-        "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*:com.google.*:jdk.internal.*",
-        "-Drobolectric.logging.enabled=true"
-    )
-}
-
-// Configuración para SonarQube
-sonar {
-    properties {
-        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa")
-        property("sonar.host.url", "https://sonarcloud.io")
-
-        // Indicamos dónde está el reporte de cobertura
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-
-        // CORREGIDO: Eliminamos o comentamos skipCompile para evitar que Sonar busque el reporte antes de que los tests lo creen
-        // property("sonar.gradle.skipCompile", "true")
-    }
-}
-
-// Tarea para generar el reporte XML de Jacoco
-// CONFIGURACIÓN UNIFICADA DE TEST (OPTIMIZADA PARA LOCAL Y CI)
+// 1. Configuración global para tareas de tipo Test
 tasks.withType<Test>().configureEach {
     extensions.configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
         isIncludeNoLocationClasses = false
         excludes = listOf(
-            "jdk.internal.*",
-            "android.*",
-            "com.android.*",
-            "org.robolectric.*",
-            "androidx.*",
-            "com.google.*",
-            "net.bytebuddy.*",
-            "org.mockito.*",
-            "io.mockk.*"
+            "jdk.internal.*", "android.*", "com.android.*",
+            "org.robolectric.*", "androidx.*", "com.google.*",
+            "net.bytebuddy.*", "org.mockito.*", "io.mockk.*"
         )
     }
 
-    // CORREGIDO: Evitamos crear un proceso por cada test en CI, pero mantenemos la ejecución secuencial estricta
     forkEvery = 0
     maxParallelForks = 1
 
@@ -144,6 +89,59 @@ tasks.withType<Test>().configureEach {
         "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*:com.google.*:jdk.internal.*",
         "-Drobolectric.logging.enabled=true"
     )
+}
+
+// 2. Registro físico de la tarea JacocoReport
+tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
+    dependsOn("testDebugUnitTest")
+    group = "Reporting"
+    description = "Genera el reporte de cobertura de JaCoCo para la variante Debug."
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+    }
+
+    // Mapeo de archivos compilados excluyendo clases autogeneradas (R, BuildConfig, etc.)
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*" + '$' + "Lambda" + '$' + "*.*",
+        "**/*Companion*.*",
+        "**/*Module*.*",
+        "**/_Dagger*.*",
+        "**/_Hilt*.*",
+        "**/*_Factory*.*",
+        "**/*_MembersInjector*.*"
+    )
+
+    val debugTree = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
+        exclude(fileFilter)
+    }
+
+    sourceDirectories.setFrom(files("$projectDir/src/main/java"))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(layout.buildDirectory) {
+        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+    })
+}
+
+// 3. Configuración para SonarQube con tipado corregido
+sonar {
+    properties {
+        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
+        property("sonar.organization", "kevinzamoraa")
+        property("sonar.host.url", "https://sonarcloud.io")
+
+        // CORRECCIÓN ABSOLUTA: Usamos la función nativa del proyecto para resolver la ruta de forma segura
+        val reportPath = file("${layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").absolutePath
+        property("sonar.coverage.jacoco.xmlReportPaths", reportPath)
+    }
 }
 
 dependencies {
