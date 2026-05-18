@@ -186,7 +186,6 @@ dependencies {
     // Google Sign-In & Ads
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.android.gms:play-services-ads:23.0.0")
-    implementation(libs.androidx.junit.ktx)
 
     // Testing
     testImplementation(libs.junit)
@@ -195,8 +194,12 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("org.robolectric:robolectric:4.11.1")
     debugImplementation("androidx.fragment:fragment-testing:1.6.2")
+
+    // Bloque de pruebas Android / JUnit unificado
+    testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("androidx.test.ext:junit-ktx:1.1.5")
+    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    testImplementation("androidx.test.ext:junit:1.1.5")
 }
