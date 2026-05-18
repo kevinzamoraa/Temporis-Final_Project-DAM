@@ -91,12 +91,14 @@ tasks.withType<Test>().configureEach {
     )
 }
 
-// 2. Registro físico de la tarea JacocoReport
+// 2. REGISTRO FÍSICO DE LA TAREA DE COBERTURA QUE LLAMA GITHUB ACTIONS
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
+    // Depende directamente de que los tests unitarios hayan finalizado con éxito
     dependsOn("testDebugUnitTest")
     group = "Reporting"
     description = "Genera el reporte de cobertura de JaCoCo para la variante Debug."
 
+    // Configuramos los formatos de salida del reporte
     reports {
         xml.required.set(true)
         html.required.set(true)
@@ -111,11 +113,11 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
         "**/Manifest*.*",
         "**/*Test*.*",
         "android/**/*.*",
-        "**/*" + '$' + "Lambda" + '$' + "*.*",
+        "**/*\$Lambda\$*.*",
         "**/*Companion*.*",
         "**/*Module*.*",
-        "**/_Dagger*.*",
-        "**/_Hilt*.*",
+        "**/*Dagger*.*",
+        "**/*Hilt*.*",
         "**/*_Factory*.*",
         "**/*_MembersInjector*.*"
     )
@@ -124,6 +126,7 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
         exclude(fileFilter)
     }
 
+    // Le decimos a JaCoCo dónde buscar el código fuente y las clases compiladas
     sourceDirectories.setFrom(files("$projectDir/src/main/java"))
     classDirectories.setFrom(files(debugTree))
     executionData.setFrom(fileTree(layout.buildDirectory) {
@@ -131,16 +134,16 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// 3. Configuración para SonarQube con tipado corregido
+// 3. Configuración para SonarQube (Segura para Gradle 8.x)
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // CORRECCIÓN ABSOLUTA: Usamos la función nativa del proyecto para resolver la ruta de forma segura
-        val reportPath = file("${layout.buildDirectory.get()}/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").absolutePath
-        property("sonar.coverage.jacoco.xmlReportPaths", reportPath)
+        // CORRECCIÓN SÓLIDA: Usamos el proveedor perezoso 'map' para evitar el uso de .get() o file() conflictivos
+        val xmlReportProvider = layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").map { it.asFile.absolutePath }
+        property("sonar.coverage.jacoco.xmlReportPaths", xmlReportProvider)
     }
 }
 
