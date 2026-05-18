@@ -103,18 +103,17 @@ tasks.withType<Test>().configureEach {
 }
 
 // Configuración para SonarQube
-// CAMBIO 2: Configuración de SonarQube optimizada
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Indicamos ÚNICAMENTE dónde está el reporte de cobertura
+        // Indicamos dónde está el reporte de cobertura
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
 
-        // Evitamos que intente recompilar (recomendado en el propio log)
-        property("sonar.gradle.skipCompile", "true")
+        // CORREGIDO: Eliminamos o comentamos skipCompile para evitar que Sonar busque el reporte antes de que los tests lo creen
+        // property("sonar.gradle.skipCompile", "true")
     }
 }
 
