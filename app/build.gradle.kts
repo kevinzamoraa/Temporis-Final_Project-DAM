@@ -87,7 +87,10 @@ tasks.withType<Test>().configureEach {
     jvmArgs(
         "-Xmx2g",
         "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*:com.google.*:jdk.internal.*",
-        "-Drobolectric.logging.enabled=true"
+        "-Drobolectric.logging.enabled=true",
+        // SOLUCCIÓN CRÍTICA PARA EL ERROR DE FIRESTORE:
+        "-Drobolectric.sqliteMode=LEGACY",
+        "-Drobolectric.scandir=none"
     )
 }
 
