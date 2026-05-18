@@ -24,20 +24,16 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run Tests and Generate Coverage
-      # CORREGIDO: Eliminamos el --continue para asegurar que el reporte Jacoco solo se compile si la suite es exitosa.
-      # Añadimos variables de entorno para que Robolectric corra de forma óptima en el servidor de GitHub.
-      env:
-        ROBOLECTRIC_OFFLINE: false
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --no-daemon
-
-    - name: SonarQube Scan
+    - name: Run Tests, Generate Coverage and SonarQube Scan
+      # UNIFICACIÓN CRÍTICA: Corremos todo en un solo ciclo de ejecución de Gradle.
+      # De esta forma, el reporte XML de JaCoCo se genera físicamente milisegundos antes
+      # de que el scanner de Sonar comience a buscarlo, manteniendo el mismo mapa de rutas.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # CORREGIDO: Pasamos de manera explícita la clave del proyecto para evitar desajustes en el scanner de SonarCloud
-      run: ./gradlew sonar -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM --info --no-daemon
-        
+        ROBOLECTRIC_OFFLINE: false
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport :app:sonar -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM --info --no-daemon
+
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
