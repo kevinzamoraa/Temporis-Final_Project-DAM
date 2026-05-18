@@ -119,35 +119,32 @@ sonar {
 }
 
 // Tarea para generar el reporte XML de Jacoco
-// CAMBIO 3: Tarea JaCoCo sin funciones obsoletas
-tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
-    dependsOn("testDebugUnitTest")
-    group = "Reporting"
-
-    val buildDir = layout.buildDirectory.get().asFile
-
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        // Eliminamos project.buildDir por layout.buildDirectory
-        xml.outputLocation.set(file("$buildDir/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+// CONFIGURACIÓN UNIFICADA DE TEST (OPTIMIZADA PARA LOCAL Y CI)
+tasks.withType<Test>().configureEach {
+    extensions.configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
+        isIncludeNoLocationClasses = false
+        excludes = listOf(
+            "jdk.internal.*",
+            "android.*",
+            "com.android.*",
+            "org.robolectric.*",
+            "androidx.*",
+            "com.google.*",
+            "net.bytebuddy.*",
+            "org.mockito.*",
+            "io.mockk.*"
+        )
     }
 
-    val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
-        "**/*Test*.*", "android/**/*.*", "**/*Binding.*", "**/BR.*"
+    // CORREGIDO: Evitamos crear un proceso por cada test en CI, pero mantenemos la ejecución secuencial estricta
+    forkEvery = 0
+    maxParallelForks = 1
+
+    jvmArgs(
+        "-Xmx2g",
+        "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*:com.google.*:jdk.internal.*",
+        "-Drobolectric.logging.enabled=true"
     )
-
-    val kotlinTree = fileTree("$buildDir/tmp/kotlin-classes/debug") {
-        exclude(fileFilter)
-    }
-
-    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
-    classDirectories.setFrom(files(kotlinTree))
-
-    executionData.setFrom(fileTree("$buildDir") {
-        include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
-    })
 }
 
 dependencies {
