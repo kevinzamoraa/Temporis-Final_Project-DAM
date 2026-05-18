@@ -74,8 +74,14 @@ class MainActivityTest {
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val activity = controller.get()
 
+        // 1. Destruimos pasándolo por el ciclo de vida de Robolectric
         controller.destroy()
 
-        assertTrue(activity.isFinishing)
+        // 2. Limpiamos cualquier microtarea del bucle principal
+        ShadowLooper.idleMainLooper()
+        org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle()
+
+        // 3. COMPROBACIÓN REAL: Validamos que la Activity se ha destruido por completo de memoria
+        assertTrue(activity.isDestroyed)
     }
 }

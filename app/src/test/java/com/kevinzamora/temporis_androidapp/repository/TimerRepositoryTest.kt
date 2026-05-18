@@ -85,12 +85,20 @@ class TimerRepositoryTest {
 
     @Test
     fun testAddTimer() {
+        // 1. Configuramos el mock del documento para que cuando el repositorio pida su ID, no lance excepción
+        every { mockDocument.id } returns "timer_mock_id"
+
+        // 2. Simulamos que la colección añade con éxito devolviendo la tarea del documento
         every { mockCollection.add(any()) } returns Tasks.forResult(mockDocument)
 
+        // 3. Ejecutamos la acción del repositorio
         timerRepository.addTimer("Test Timer", 10, true)
+
+        // 4. Vaciamos los hilos asíncronos del Looper
         ShadowLooper.idleMainLooper()
 
-        verify { mockCollection.add(any()) }
+        // 5. Verificamos que se llamó al método de añadir en Firebase
+        verify(exactly = 1) { mockCollection.add(any()) }
     }
 
     @Test
