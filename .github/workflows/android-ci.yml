@@ -25,9 +25,6 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests, Generate Coverage and SonarQube Scan
-      # CORREGIDO: Separamos físicamente las ejecuciones con un salto de línea multilinea (using |)
-      # El primer comando limpia, corre los 85 tests y escribe el XML de JaCoCo.
-      # El segundo comando levanta el escáner de SonarCloud leyendo el archivo ya creado con total seguridad.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
