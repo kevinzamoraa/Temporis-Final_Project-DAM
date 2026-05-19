@@ -30,8 +30,10 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         ROBOLECTRIC_OFFLINE: false
       run: |
-        ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --no-daemon
-        ./gradlew :app:sonar -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM --info --no-daemon
+        ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport :app:sonar \
+          -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+          --no-daemon
 
     - name: Upload Test Reports
       if: always()
