@@ -135,19 +135,15 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// 3. Configuración para SonarQube (Segura en Gradle 8.x)
+// Configuración para SonarQube (Corregida con String estático para evitar colapso en Gradle 8.13)
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Evitamos que Sonar intente re-evaluar o compilar el grafo en caliente
-        property("sonar.gradle.skipCompile", "true")
-
-        // Ruta perezosa al reporte de JaCoCo
-        val xmlReportProvider = layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").map { it.asFile.absolutePath }
-        property("sonar.coverage.jacoco.xmlReportPaths", xmlReportProvider)
+        // Al poner la ruta como un String directo, el plugin v4.4 no rompe el ciclo de vida de Gradle
+        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
 
