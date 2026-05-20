@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
-    // Usamos la versión compatible en local y estable en el portal
+    // Usamos la versión oficial estable indexada globalmente
     id("org.sonarqube") version "4.4.1.3373"
 }
 
@@ -71,7 +71,6 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
-// 1. Configuración global para tareas de tipo Test
 tasks.withType<Test>().configureEach {
     extensions.configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
         isIncludeNoLocationClasses = false
@@ -93,7 +92,6 @@ tasks.withType<Test>().configureEach {
     )
 }
 
-// 2. REGISTRO FÍSICO DE LA TAREA DE COBERTURA QUE LLAMA GITHUB ACTIONS
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     dependsOn("testDebugUnitTest")
     group = "Reporting"
@@ -133,7 +131,7 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 }
 
 // =============================================================================
-// CONFIGURACIÓN DE SONARQUBE (SOLUCIÓN COMPATIBILIDAD)
+// CONFIGURACIÓN DE SONARQUBE (COMPATIBILIDAD CON GRADLE 8.13 SIN EXCEPCIONES)
 // =============================================================================
 sonar {
     properties {
@@ -141,16 +139,14 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // 1. Evitamos que Sonar intente compilar de forma redundante en la CI
+        // 1. Desactivamos el escaneo perezoso automático que colapsaba la inyección de dependencias
         property("sonar.gradle.skipCompile", "true")
-
-        // 2. Desactivamos el proveedor intrusivo de Android para proteger el ciclo de vida en Gradle 8.13
         property("sonar.android.provider", "none")
 
-        // 3. ELIMINAMOS 'sonar.sources' y 'sonar.java.binaries' manuales.
-        // El plugin resolverá las colecciones de manera nativa sin excepciones de String a Collection.
+        // 2. NO DECLARAMOS 'sonar.sources' ni 'sonar.java.binaries' manualmente para evitar conflictos de Cast.
+        // El plugin v4.4.1 leerá los directorios por defecto del módulo sin intervención de Strings.
 
-        // 4. Mapeamos de forma directa y estática el reporte XML generado por JaCoCo
+        // 3. Pasamos la ruta del XML como un String crudo plano compatible con SonarCloud
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
