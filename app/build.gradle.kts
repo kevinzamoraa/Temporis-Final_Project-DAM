@@ -94,19 +94,16 @@ tasks.withType<Test>().configureEach {
 
 // 2. REGISTRO FÍSICO DE LA TAREA DE COBERTURA QUE LLAMA GITHUB ACTIONS
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
-    // Depende directamente de que los tests unitarios hayan finalizado con éxito
     dependsOn("testDebugUnitTest")
     group = "Reporting"
     description = "Genera el reporte de cobertura de JaCoCo para la variante Debug."
 
-    // Configuramos los formatos de salida del reporte
     reports {
         xml.required.set(true)
         html.required.set(true)
         xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
     }
 
-    // Mapeo de archivos compilados excluyendo clases autogeneradas (R, BuildConfig, etc.)
     val fileFilter = listOf(
         "**/R.class",
         "**/R$*.class",
@@ -127,7 +124,6 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
         exclude(fileFilter)
     }
 
-    // Le decimos a JaCoCo dónde buscar el código fuente y las clases compiladas
     sourceDirectories.setFrom(files("$projectDir/src/main/java"))
     classDirectories.setFrom(files(debugTree))
     executionData.setFrom(fileTree(layout.buildDirectory) {
@@ -135,22 +131,22 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// Configuración para SonarQube (Corregida con colecciones para evitar fallos de cast)
+// Configuración para SonarQube (Sintaxis nativa compatible con Gradle 8.13)
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Evitamos la introspección automática que colapsaba el ciclo de vida
+        // Desactivamos la compilación implícita redundante
         property("sonar.gradle.skipCompile", "true")
+
+        // Evitamos que use el AnalysisProvider automático de Android que rompe los Beans
         property("sonar.android.provider", "none")
 
-        // CORRECCIÓN CRÍTICA: Pasamos colecciones usando listOf() en lugar de Strings planos
-        property("sonar.sources", listOf("src/main/java"))
-        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
-
-        // El reporte XML de JaCoCo sí acepta un String estático simple
+        // SINTAXIS CORRECTA PARA METER RUTAS MANUALES EN EL PLUGIN V4.4 (Usa comas en un String único)
+        property("sonar.sources", "src/main/java")
+        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
@@ -203,7 +199,6 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.11.1")
     debugImplementation("androidx.fragment:fragment-testing:1.6.2")
 
-    // Bloque de pruebas Android / JUnit unificado
     testImplementation("androidx.test.ext:junit:1.1.5")
     testImplementation("androidx.test.ext:junit-ktx:1.1.5")
     testImplementation("androidx.test.espresso:espresso-core:3.5.1")
