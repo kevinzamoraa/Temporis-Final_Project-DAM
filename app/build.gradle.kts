@@ -135,20 +135,22 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// Configuración para SonarQube (Blindada contra la fase de configuración de Gradle 8.13)
+// Configuración para SonarQube (Corregida con colecciones para evitar fallos de cast)
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Bloqueamos la introspección automática de variantes que rompe los Beans de Gradle 8.13
+        // Evitamos la introspección automática que colapsaba el ciclo de vida
         property("sonar.gradle.skipCompile", "true")
         property("sonar.android.provider", "none")
 
-        // Indicamos las rutas de forma manual y estática
-        property("sonar.sources", "src/main/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+        // CORRECCIÓN CRÍTICA: Pasamos colecciones usando listOf() en lugar de Strings planos
+        property("sonar.sources", listOf("src/main/java"))
+        property("sonar.java.binaries", listOf("build/tmp/kotlin-classes/debug"))
+
+        // El reporte XML de JaCoCo sí acepta un String estático simple
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
