@@ -135,14 +135,17 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// 3. Configuración para SonarQube (Segura para Gradle 8.x)
+// 3. Configuración para SonarQube (Segura en Gradle 8.x)
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // CORRECCIÓN SÓLIDA: Usamos el proveedor perezoso 'map' para evitar el uso de .get() o file() conflictivos
+        // Evitamos que Sonar intente re-evaluar o compilar el grafo en caliente
+        property("sonar.gradle.skipCompile", "true")
+
+        // Ruta perezosa al reporte de JaCoCo
         val xmlReportProvider = layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").map { it.asFile.absolutePath }
         property("sonar.coverage.jacoco.xmlReportPaths", xmlReportProvider)
     }
