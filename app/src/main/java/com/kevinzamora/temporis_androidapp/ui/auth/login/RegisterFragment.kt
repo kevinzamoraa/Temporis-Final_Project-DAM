@@ -95,11 +95,12 @@ class RegisterFragment : Fragment() {
                                 lifecycleScope.launch {
                                     userRepository.saveUser(newUser).collect { result ->
                                         if (result.isSuccess) {
-                                            // PASO 4: Actualizar el DisplayName en el objeto Auth
-                                            val profileUpdates = com.google.firebase.auth.userProfileChangeRequest {
-                                                displayName = username
-                                                photoUri = android.net.Uri.parse(defaultPhoto)
-                                            }
+                                            // PASO 4: Actualizar el DisplayName utilizando el Builder oficial (Cambio Mínimo)
+                                            val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                                                .setDisplayName(username)
+                                                .setPhotoUri(android.net.Uri.parse(defaultPhoto))
+                                                .build()
+
                                             firebaseUser?.updateProfile(profileUpdates)?.addOnCompleteListener {
                                                 if (isAdded) {
                                                     Toast.makeText(context, "¡Registro completado con éxito!", Toast.LENGTH_SHORT).show()

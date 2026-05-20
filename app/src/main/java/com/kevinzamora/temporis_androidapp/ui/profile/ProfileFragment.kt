@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.databinding.FragmentProfileBinding
@@ -120,10 +119,12 @@ class ProfileFragment : Fragment() {
             userRepository.saveUser(userUpdates).collect { result ->
                 result.onSuccess {
                     try {
-                        val profileUpdates = userProfileChangeRequest {
-                            displayName = newDisplayName
-                            photoUri = Uri.parse(newPhotoUrl)
-                        }
+                        // Cambiamos al uso directo del Builder estático oficial (Cambio Mínimo)
+                        val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                            .setDisplayName(newDisplayName)
+                            .setPhotoUri(Uri.parse(newPhotoUrl))
+                            .build()
+
                         auth.currentUser?.updateProfile(profileUpdates)?.await()
                         if (isAdded) Toast.makeText(context, getString(R.string.successfully_updated_profile), Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
