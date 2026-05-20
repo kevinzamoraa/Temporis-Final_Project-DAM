@@ -24,13 +24,17 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run Tests, Generate Coverage and SonarQube Scan
+    - name: Run Tests and Generate Coverage Report
+      env:
+        ROBOLECTRIC_OFFLINE: false
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --no-daemon
+
+    - name: Run SonarQube Analysis
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        ROBOLECTRIC_OFFLINE: false
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport :app:sonar -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM -Dsonar.token=${{ secrets.SONAR_TOKEN }} --no-daemon
-
+      run: ./gradlew :app:sonar -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.gradle.skipCompile=true --no-daemon
+    
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
