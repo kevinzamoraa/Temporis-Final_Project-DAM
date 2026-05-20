@@ -9,7 +9,9 @@ import io.mockk.mockk
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.robolectric.annotation.SQLiteMode
 
+@SQLiteMode(SQLiteMode.Mode.LEGACY)
 class PostRepositoryTest {
 
     // 1. Declaramos los mocks de Firebase

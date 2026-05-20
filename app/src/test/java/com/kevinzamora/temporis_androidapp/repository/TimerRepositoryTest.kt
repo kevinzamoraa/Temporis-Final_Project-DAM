@@ -23,7 +23,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
+import org.robolectric.annotation.SQLiteMode
 
+@SQLiteMode(SQLiteMode.Mode.NATIVE)
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class, sdk = [33])
 class TimerRepositoryTest {
