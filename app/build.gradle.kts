@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
+    // Usamos la versión compatible en local y estable en el portal
     id("org.sonarqube") version "4.4.1.3373"
 }
 
@@ -131,25 +132,25 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// Configuración para SonarQube (Sintaxis nativa compatible con Gradle 8.13)
-// Configuración para SonarQube (Blindada con colecciones nativas de archivos para Gradle 8.13)
+// =============================================================================
+// CONFIGURACIÓN DE SONARQUBE (PASIVA PARA EVITAR ERRORES DE CICLO DE VIDA)
+// =============================================================================
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Desactivamos la introspección automática que colapsaba el ciclo de vida
+        // Evitamos que Sonar intente compilar o buscar Beans automáticos en Gradle 8.13
         property("sonar.gradle.skipCompile", "true")
         property("sonar.android.provider", "none")
 
-        // SOLUCIÓN AL ERROR DE CAST: Envolvemos las rutas en objetos files() de Gradle
-        property("sonar.sources", files("$projectDir/src/main/java"))
-        property("sonar.java.binaries", files(layout.buildDirectory.dir("tmp/kotlin-classes/debug")))
+        // PASAMOS LAS RUTAS COMO TEXTO PLANO (Evita el error de Cast de colecciones internas de Gradle)
+        property("sonar.sources", "src/main/java")
+        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
 
-        // El reporte XML de JaCoCo acepta un String con la ruta absoluta mapeada de forma segura
-        val xmlReportPath = layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").get().asFile.absolutePath
-        property("sonar.coverage.jacoco.xmlReportPaths", xmlReportPath)
+        // Mapeamos el reporte de cobertura generado por JaCoCo de forma estática
+        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
 
