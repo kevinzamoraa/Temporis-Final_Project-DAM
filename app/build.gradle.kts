@@ -130,27 +130,6 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     })
 }
 
-// =============================================================================
-// CONFIGURACIÓN DE SONARQUBE (COMPATIBILIDAD CON GRADLE 8.13 SIN EXCEPCIONES)
-// =============================================================================
-sonar {
-    properties {
-        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa")
-        property("sonar.host.url", "https://sonarcloud.io")
-
-        // 1. Desactivamos el escaneo perezoso automático que colapsaba la inyección de dependencias
-        property("sonar.gradle.skipCompile", "true")
-        property("sonar.android.provider", "none")
-
-        // 2. NO DECLARAMOS 'sonar.sources' ni 'sonar.java.binaries' manualmente para evitar conflictos de Cast.
-        // El plugin v4.4.1 leerá los directorios por defecto del módulo sin intervención de Strings.
-
-        // 3. Pasamos la ruta del XML como un String crudo plano compatible con SonarCloud
-        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-    }
-}
-
 dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
