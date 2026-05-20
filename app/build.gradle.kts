@@ -133,7 +133,7 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 }
 
 // =============================================================================
-// CONFIGURACIÓN DE SONARQUBE (PASIVA PARA EVITAR ERRORES DE CICLO DE VIDA)
+// CONFIGURACIÓN DE SONARQUBE (SOLUCIÓN COMPATIBILIDAD)
 // =============================================================================
 sonar {
     properties {
@@ -141,15 +141,16 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Evitamos que Sonar intente compilar o buscar Beans automáticos en Gradle 8.13
+        // 1. Evitamos que Sonar intente compilar de forma redundante en la CI
         property("sonar.gradle.skipCompile", "true")
+
+        // 2. Desactivamos el proveedor intrusivo de Android para proteger el ciclo de vida en Gradle 8.13
         property("sonar.android.provider", "none")
 
-        // PASAMOS LAS RUTAS COMO TEXTO PLANO (Evita el error de Cast de colecciones internas de Gradle)
-        property("sonar.sources", "src/main/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+        // 3. ELIMINAMOS 'sonar.sources' y 'sonar.java.binaries' manuales.
+        // El plugin resolverá las colecciones de manera nativa sin excepciones de String a Collection.
 
-        // Mapeamos el reporte de cobertura generado por JaCoCo de forma estática
+        // 4. Mapeamos de forma directa y estática el reporte XML generado por JaCoCo
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
