@@ -132,22 +132,24 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 }
 
 // Configuración para SonarQube (Sintaxis nativa compatible con Gradle 8.13)
+// Configuración para SonarQube (Blindada con colecciones nativas de archivos para Gradle 8.13)
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Desactivamos la compilación implícita redundante
+        // Desactivamos la introspección automática que colapsaba el ciclo de vida
         property("sonar.gradle.skipCompile", "true")
-
-        // Evitamos que use el AnalysisProvider automático de Android que rompe los Beans
         property("sonar.android.provider", "none")
 
-        // SINTAXIS CORRECTA PARA METER RUTAS MANUALES EN EL PLUGIN V4.4 (Usa comas en un String único)
-        property("sonar.sources", "src/main/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // SOLUCIÓN AL ERROR DE CAST: Envolvemos las rutas en objetos files() de Gradle
+        property("sonar.sources", files("$projectDir/src/main/java"))
+        property("sonar.java.binaries", files(layout.buildDirectory.dir("tmp/kotlin-classes/debug")))
+
+        // El reporte XML de JaCoCo acepta un String con la ruta absoluta mapeada de forma segura
+        val xmlReportPath = layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml").get().asFile.absolutePath
+        property("sonar.coverage.jacoco.xmlReportPaths", xmlReportPath)
     }
 }
 
