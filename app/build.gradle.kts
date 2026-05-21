@@ -207,3 +207,13 @@ configurations.all {
         }
     }
 }
+
+// =============================================================================
+// ENLACE INTERNO DE CONFIGURACIÓN DE SONARQUBE
+// =============================================================================
+sonar {
+    properties {
+        // Obliga a Gradle a omitir compilaciones repetitivas y evita el NullPointerException de JaCoCo
+        property("sonar.gradle.skipCompile", "true")
+    }
+}
