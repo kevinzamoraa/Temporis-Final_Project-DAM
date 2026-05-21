@@ -24,14 +24,18 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run Tests, Coverage and SonarQube Scan
+    - name: Run Unit Tests & Generate Coverage Report
       env:
         ROBOLECTRIC_OFFLINE: "false"
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --no-daemon
+
+    - name: Run SonarQube Scan Analysis
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Ejecutamos las tareas secuencialmente en el mismo daemon para asegurar que los binarios existan al instanciar Sonar
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport :app:sonar --no-daemon --info
-
+      # Apuntamos directamente al análisis del módulo :app para sincronizar el projectBaseDir
+      run: ./gradlew :app:sonar --no-daemon --info
+      
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
