@@ -208,17 +208,18 @@ configurations.all {
 }
 
 // =============================================================================
-// ENLACE INTERNO DE CONFIGURACIÓN DE SONARQUBE
+// ENLACE INTERNO DE CONFIGURACIÓN DE SONARQUBE (LIMPIO Y CORREGIDO)
 // =============================================================================
 sonar {
     properties {
+        // Indica que el directorio base de este análisis es la raíz física de este módulo
         property("sonar.projectBaseDir", projectDir.absolutePath)
 
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
 
-        // Al usar projectBaseDir, las rutas vuelven a ser relativas al módulo perfectamente
+        // Las rutas se vuelven relativas a la carpeta interna del módulo perfectamente
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
 
