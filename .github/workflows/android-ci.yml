@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
   pull_request:
-    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
+    branches: [ "develop", "develop-testing-tofix", "sonar-testing-tofix", "main" ]
 
 jobs:
   test:
@@ -33,14 +33,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        ./gradlew :app:sonar \
-          -Dsonar.projectKey=kevinzamoraa_Temporis-Final_Project-DAM \
-          -Dsonar.organization=kevinzamoraa \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.coverage.jacoco.xmlReportPaths=app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml \
-          -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-          --no-daemon
+      run: ./gradlew :app:sonar --no-daemon
         
     - name: Upload Test Reports
       if: always()
