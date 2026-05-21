@@ -213,7 +213,11 @@ configurations.all {
 // =============================================================================
 sonar {
     properties {
-        // Obliga a Gradle a omitir compilaciones repetitivas y evita el NullPointerException de JaCoCo
+        // Obliga a Gradle a omitir compilaciones repetitivas
         property("sonar.gradle.skipCompile", "true")
+
+        // SOLUCIÓN: Desactivar el escaneo automático del plugin de JaCoCo en Sonar
+        // Esto evita el NullPointerException al leer contextos vacíos en el entorno de CI
+        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
