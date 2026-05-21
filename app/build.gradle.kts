@@ -131,7 +131,7 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 }
 
 dependencies {
-    // Firebase - Entorno de la Aplicación (Forzamos versiones fijas estables con Kotlin 1.9)
+    // Firebase - Entorno de la Aplicación
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-firestore:25.0.0")
@@ -142,10 +142,12 @@ dependencies {
     }
     implementation("com.google.firebase:firebase-appcheck-debug")
 
-    // Firebase - Entorno de Tests Unitarios
+    // Firebase - Entorno de Tests Unitarios (Alineamos todos los módulos activos)
     testImplementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     testImplementation("com.google.firebase:firebase-auth:23.0.0")
     testImplementation("com.google.firebase:firebase-firestore:25.0.0")
+    testImplementation("com.google.firebase:firebase-database")
+    testImplementation("com.google.firebase:firebase-storage")
 
     // UI & Core
     implementation(libs.androidx.core.ktx)
@@ -191,4 +193,17 @@ dependencies {
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+// =============================================================================
+// ESCUDO DE RESOLUCIÓN: Fuerza a GitHub y Sonar a usar solo la rama Firebase 33.1.2
+// =============================================================================
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "com.google.firebase") {
+            // Esto obliga a que cualquier submódulo indirecto de Firebase no salte de versión
+            if (requested.name.contains("auth")) { useVersion("23.0.0") }
+            if (requested.name.contains("firestore")) { useVersion("25.0.0") }
+        }
+    }
 }
