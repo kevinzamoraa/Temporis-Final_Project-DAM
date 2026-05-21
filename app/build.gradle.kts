@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
-    // Usamos la versión oficial estable indexada globalmente
-    id("org.sonarqube") version "4.4.1.3373"
+    // Forzamos la versión 5.1.0.4882 que es la que se instanció correctamente sin errores de beans
+    id("org.sonarqube") version "5.1.0.4882"
 }
 
 android {
@@ -216,15 +216,19 @@ sonar {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.gradle.skipCompile", "true")
 
-        // Obliga a Gradle a omitir compilaciones repetitivas
-        property("sonar.gradle.skipCompile", "true")
+        // 1. Indicamos explícitamente dónde está el código y los tests (Rutas relativas al módulo app)
+        property("sonar.sources", "app/src/main/java")
+        property("sonar.tests", "app/src/test/java")
 
-        // Configuración estática y directa de la ruta del reporte de cobertura
-        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+        // 2. Indicamos los binarios compilados para evitar el error de instanciación de dependencias
+        property("sonar.java.binaries", "app/build/tmp/kotlin-classes/debug")
+        property("sonar.kotlin.binaries", "app/build/tmp/kotlin-classes/debug")
 
-        // MODIFICACIÓN CRUCIAL: Vincula el token del sistema directamente con el plugin
+        // 3. Ruta al reporte XML usando un 'comodín' para JaCoCo
+        property("sonar.coverage.jacoco.xmlReportPaths", "**/build/reports/jacoco/**/*.xml")
+
+        // 4. Inyección segura del token de entorno para la inicialización
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
