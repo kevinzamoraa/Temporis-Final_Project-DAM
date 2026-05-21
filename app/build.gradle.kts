@@ -131,10 +131,10 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 }
 
 dependencies {
-    // Firebase - Entorno de la Aplicación (BOM compatible con Kotlin 1.9.x)
+    // Firebase - Entorno de la Aplicación (Forzamos versiones fijas estables con Kotlin 1.9)
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.firebase:firebase-firestore:25.0.0")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-analytics") {
@@ -142,10 +142,10 @@ dependencies {
     }
     implementation("com.google.firebase:firebase-appcheck-debug")
 
-    // Firebase - Entorno de Tests Unitarios (Forzamos el mismo BOM seguro)
+    // Firebase - Entorno de Tests Unitarios
     testImplementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    testImplementation("com.google.firebase:firebase-auth")
-    testImplementation("com.google.firebase:firebase-firestore")
+    testImplementation("com.google.firebase:firebase-auth:23.0.0")
+    testImplementation("com.google.firebase:firebase-firestore:25.0.0")
 
     // UI & Core
     implementation(libs.androidx.core.ktx)
