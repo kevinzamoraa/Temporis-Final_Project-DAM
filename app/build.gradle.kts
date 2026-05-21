@@ -133,8 +133,8 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
 dependencies {
     // Firebase - Entorno de la Aplicación
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    implementation("com.google.firebase:firebase-auth:23.0.0")
-    implementation("com.google.firebase:firebase-firestore:25.0.0")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-analytics") {
@@ -142,12 +142,13 @@ dependencies {
     }
     implementation("com.google.firebase:firebase-appcheck-debug")
 
-    // Firebase - Entorno de Tests Unitarios (Alineamos todos los módulos activos)
+    // Librería de anuncios
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
+
+    // Firebase - Entorno de Tests Unitarios
     testImplementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    testImplementation("com.google.firebase:firebase-auth:23.0.0")
-    testImplementation("com.google.firebase:firebase-firestore:25.0.0")
-    testImplementation("com.google.firebase:firebase-database")
-    testImplementation("com.google.firebase:firebase-storage")
+    testImplementation("com.google.firebase:firebase-auth")
+    testImplementation("com.google.firebase:firebase-firestore")
 
     // UI & Core
     implementation(libs.androidx.core.ktx)
@@ -196,20 +197,13 @@ dependencies {
 }
 
 // =============================================================================
-// ESCUDO TOTAL DE RESOLUCIÓN: Bloquea las versiones de metadatos Kotlin 2.1.0 en GitHub
+// ESCUDO DE RESOLUCIÓN REFINADO: Evita metadatos Kotlin 2.1.0 sin romper Firebase
 // =============================================================================
 configurations.all {
     resolutionStrategy.eachDependency {
-        // 1. Blindamos por completo los submódulos de Firebase
-        if (requested.group == "com.google.firebase") {
-            if (requested.name.contains("auth")) { useVersion("23.0.0") }
-            if (requested.name.contains("firestore")) { useVersion("25.0.0") }
-        }
-        // 2. Blindamos los servicios de Google que arrastran el APK de medición conflictivo
-        if (requested.group == "com.google.android.gms") {
-            if (requested.name.contains("play-services-measurement")) {
-                useVersion("21.5.0") // Versión segura y 100% compatible con Kotlin 1.9.x
-            }
+        // Apuntamos únicamente al paquete de medición de Google, que es el que causa el conflicto
+        if (requested.group == "com.google.android.gms" && requested.name.contains("play-services-measurement")) {
+            useVersion("21.5.0")
         }
     }
 }
