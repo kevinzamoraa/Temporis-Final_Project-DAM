@@ -196,14 +196,20 @@ dependencies {
 }
 
 // =============================================================================
-// ESCUDO DE RESOLUCIÓN: Fuerza a GitHub y Sonar a usar solo la rama Firebase 33.1.2
+// ESCUDO TOTAL DE RESOLUCIÓN: Bloquea las versiones de metadatos Kotlin 2.1.0 en GitHub
 // =============================================================================
 configurations.all {
     resolutionStrategy.eachDependency {
+        // 1. Blindamos por completo los submódulos de Firebase
         if (requested.group == "com.google.firebase") {
-            // Esto obliga a que cualquier submódulo indirecto de Firebase no salte de versión
             if (requested.name.contains("auth")) { useVersion("23.0.0") }
             if (requested.name.contains("firestore")) { useVersion("25.0.0") }
+        }
+        // 2. Blindamos los servicios de Google que arrastran el APK de medición conflictivo
+        if (requested.group == "com.google.android.gms") {
+            if (requested.name.contains("play-services-measurement")) {
+                useVersion("21.5.0") // Versión segura y 100% compatible con Kotlin 1.9.x
+            }
         }
     }
 }

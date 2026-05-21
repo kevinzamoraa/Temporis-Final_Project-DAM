@@ -20,11 +20,6 @@
           <theme>@style/Theme.TemporisAndroidApp</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_dashboard.xml">
-        <config>
-          <theme>@style/Theme.TemporisAndroidApp</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_home.xml">
         <config>
           <theme>@style/Theme.TemporisAndroidApp</theme>
@@ -64,7 +59,6 @@
     <list default="true" id="0dc1f21a-3856-46e4-b29f-4b4ebc18623f" name="Changes" comment="in progress - partial feature - to fix / restructuring user's interface and adding functionalities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,31 +135,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.Temporis.executor": "Run",
-    "Gradle.MainActivityTest.executor": "Run",
-    "Gradle.Tests in 'com.kevinzamora.temporis_androidapp'.executor": "Run",
-    "Gradle.TimerRepositoryTest.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "android.gradle.sync.needed": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "com.google.services.firebase.aqiPopupShown": "true",
-    "git-widget-placeholder": "sonar-testing",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Kevin/AndroidStudioProjects/Temporis-Final_Project-DAM/app/src/main/java/com/kevinzamora/temporis_androidapp/ui",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.17",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.Temporis.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.MainActivityTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Tests in 'com.kevinzamora.temporis_androidapp'.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.TimerRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;sonar-testing&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Kevin/AndroidStudioProjects/Temporis-Final_Project-DAM/app/src/main/java/com/kevinzamora/temporis_androidapp/ui&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Kevin\AndroidStudioProjects\Temporis-Final_Project-DAM\app\src\main\java\com\kevinzamora\temporis_androidapp\ui" />
@@ -428,12 +421,12 @@
       <map>
         <entry key="com.kevinzamora.temporis_androidapp">
           <value>
-            <CheckInfo lastCheckTimestamp="1775053977286" />
+            <CheckInfo lastCheckTimestamp="1779313650974" />
           </value>
         </entry>
         <entry key="com.kevinzamora.temporis_androidapp.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1775053977285" />
+            <CheckInfo lastCheckTimestamp="1779313650962" />
           </value>
         </entry>
       </map>
