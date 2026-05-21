@@ -223,5 +223,8 @@ sonar {
 
         // Configuración estática y directa de la ruta del reporte de cobertura
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+
+        // MODIFICACIÓN CRUCIAL: Vincula el token del sistema directamente con el plugin
+        property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
