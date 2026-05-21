@@ -208,26 +208,17 @@ configurations.all {
 }
 
 // =============================================================================
-// ENLACE INTERNO DE CONFIGURACIÓN DE SONARQUBE (LIMPIO Y CORREGIDO)
+// CONFIGURACIÓN DE PROPIEDADES LOCALES PARA SONARQUBE
 // =============================================================================
 sonar {
     properties {
-        // Indica que el directorio base de este análisis es la raíz física de este módulo
-        property("sonar.projectBaseDir", projectDir.absolutePath)
-
-        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa")
-        property("sonar.host.url", "https://sonarcloud.io")
-
-        // Las rutas se vuelven relativas a la carpeta interna del módulo perfectamente
+        // Obligamos a mapear las rutas de forma interna y relativa al contenedor de CI
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
-
         property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
         property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
 
+        // Enlace directo al XML generado por tu tarea personalizada de JaCoCo
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-
-        property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
