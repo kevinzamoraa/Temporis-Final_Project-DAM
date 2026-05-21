@@ -213,11 +213,15 @@ configurations.all {
 // =============================================================================
 sonar {
     properties {
+        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
+        property("sonar.organization", "kevinzamoraa")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.gradle.skipCompile", "true")
+
         // Obliga a Gradle a omitir compilaciones repetitivas
         property("sonar.gradle.skipCompile", "true")
 
-        // SOLUCIÓN: Desactivar el escaneo automático del plugin de JaCoCo en Sonar
-        // Esto evita el NullPointerException al leer contextos vacíos en el entorno de CI
+        // Configuración estática y directa de la ruta del reporte de cobertura
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
