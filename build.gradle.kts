@@ -16,13 +16,14 @@ buildscript {
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
+        property("sonar.projectName", "Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
 
-// Centralizamos la indexación y propiedades del submódulo de forma segura
+// Vinculamos de manera explícita el submódulo coincidiendo con la jerarquía de Gradle
 project(":app") {
     sonar {
         properties {

@@ -193,7 +193,7 @@ dependencies {
 }
 
 // =============================================================================
-// ESCUDO DE RESOLUCIÓN REFINADO: Evita metadatos Kotlin 2.1.0 sin romper Firebase
+// ESCUDO DE RESOLUCIÓN REFINADO
 // =============================================================================
 configurations.all {
     resolutionStrategy.eachDependency {

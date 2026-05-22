@@ -59,6 +59,7 @@
     <list default="true" id="0dc1f21a-3856-46e4-b29f-4b4ebc18623f" name="Changes" comment="in progress - partial feature - to fix / restructuring user's interface and adding functionalities">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -421,12 +422,12 @@
       <map>
         <entry key="com.kevinzamora.temporis_androidapp">
           <value>
-            <CheckInfo lastCheckTimestamp="1779313650974" />
+            <CheckInfo lastCheckTimestamp="1779483029532" />
           </value>
         </entry>
         <entry key="com.kevinzamora.temporis_androidapp.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1779313650962" />
+            <CheckInfo lastCheckTimestamp="1779483029522" />
           </value>
         </entry>
       </map>
