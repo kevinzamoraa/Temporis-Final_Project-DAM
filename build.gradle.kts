@@ -20,12 +20,21 @@ sonar {
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
+    }
+}
 
-        // Mapeos y exclusiones globales unificados
-        property("sonar.sources", "app/src/main/java")
-        property("sonar.tests", "app/src/test/java")
-        property("sonar.java.binaries", "app/build/tmp/kotlin-classes/debug")
-        property("sonar.kotlin.binaries", "app/build/tmp/kotlin-classes/debug")
-        property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+// Vinculamos dinámicamente las propiedades del subproyecto para que el escáner raíz las indexe correctamente
+subprojects {
+    val subproject = this
+    if (subproject.name == "app") {
+        sonar {
+            properties {
+                property("sonar.sources", "src/main/java")
+                property("sonar.tests", "src/test/java")
+                property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+                property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+                property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+            }
+        }
     }
 }
