@@ -22,19 +22,3 @@ sonar {
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
-
-// Vinculamos dinámicamente las propiedades del subproyecto para que el escáner raíz las indexe correctamente
-subprojects {
-    val subproject = this
-    if (subproject.name == "app") {
-        sonar {
-            properties {
-                property("sonar.sources", "src/main/java")
-                property("sonar.tests", "src/test/java")
-                property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
-                property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
-                property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-            }
-        }
-    }
-}
