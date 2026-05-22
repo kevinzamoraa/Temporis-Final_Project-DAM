@@ -64,7 +64,6 @@ android {
 // =============================================================================
 // CONFIGURACIÓN UNIFICADA DE JACOCO Y TESTING (OPTIMIZADA)
 // =============================================================================
-
 jacoco {
     toolVersion = "0.8.12"
 }
@@ -176,7 +175,6 @@ dependencies {
 
     // Google Sign-In & Ads
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.gms:play-services-ads:23.0.0")
 
     // Testing
     testImplementation(libs.junit)
@@ -199,25 +197,8 @@ dependencies {
 // =============================================================================
 configurations.all {
     resolutionStrategy.eachDependency {
-        // Apuntamos únicamente al paquete de medición de Google, que es el que causa el conflicto
         if (requested.group == "com.google.android.gms" && requested.name.contains("play-services-measurement")) {
             useVersion("21.5.0")
         }
-    }
-}
-
-// =============================================================================
-// CONFIGURACIÓN DE PROPIEDADES LOCALES PARA SONARQUBE
-// =============================================================================
-sonar {
-    properties {
-        // Al ejecutarse desde la raíz, estas rutas relativas apuntarán perfectamente
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
-
-        // Enlace directo al reporte XML generado por tu tarea personalizada de JaCoCo
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }
