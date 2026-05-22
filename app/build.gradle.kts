@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
-    id("org.sonarqube") // Aplicamos el plugin localmente en el módulo
 }
 
 android {

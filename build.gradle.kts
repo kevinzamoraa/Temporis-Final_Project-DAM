@@ -22,3 +22,19 @@ sonar {
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
+
+// Inyección limpia y directa en el subproyecto para evitar excepciones de ClassLoader
+subprojects {
+    if (name == "app") {
+        // Configuramos Sonar de manera diferida sobre las propiedades del subproyecto
+        extensions.configure<org.sonarqube.gradle.SonarExtension> {
+            properties {
+                property("sonar.sources", "src/main/java")
+                property("sonar.tests", "src/test/java")
+                property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+                property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+                property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+            }
+        }
+    }
+}
