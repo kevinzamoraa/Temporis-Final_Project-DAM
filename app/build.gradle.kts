@@ -212,13 +212,13 @@ configurations.all {
 // =============================================================================
 sonar {
     properties {
-        // Obligamos a mapear las rutas de forma interna y relativa al contenedor de CI
+        // Al ejecutarse desde la raíz, estas rutas relativas apuntarán perfectamente
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
         property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
         property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
 
-        // Enlace directo al XML generado por tu tarea personalizada de JaCoCo
+        // Enlace directo al reporte XML generado por tu tarea personalizada de JaCoCo
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
     }
 }

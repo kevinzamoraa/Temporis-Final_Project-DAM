@@ -20,7 +20,7 @@ sonar {
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
 
-        // Le indicamos al motor que el análisis debe indexar el subproyecto :app
+        // Indicamos explícitamente al motor que analice e indexe el módulo :app
         property("sonar.projects", ":app")
     }
 }
