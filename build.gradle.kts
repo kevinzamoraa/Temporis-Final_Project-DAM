@@ -16,25 +16,21 @@ buildscript {
 sonar {
     properties {
         property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.projectName", "Temporis-Final_Project-DAM")
         property("sonar.organization", "kevinzamoraa")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
 
-// Inyección con rutas absolutas basadas en la ubicación del subproyecto
-subprojects {
-    if (name == "app") {
-        extensions.configure<org.sonarqube.gradle.SonarExtension> {
-            properties {
-                // Forzamos a Sonar a usar la ruta absoluta del módulo :app
-                property("sonar.sources", "${project.projectDir}/src/main/java")
-                property("sonar.tests", "${project.projectDir}/src/test/java")
-                property("sonar.java.binaries", "${project.projectDir}/build/tmp/kotlin-classes/debug")
-                property("sonar.kotlin.binaries", "${project.projectDir}/build/tmp/kotlin-classes/debug")
-                property("sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-            }
+// Centralizamos la indexación y propiedades del submódulo de forma segura
+project(":app") {
+    sonar {
+        properties {
+            property("sonar.sources", "src/main/java")
+            property("sonar.tests", "src/test/java")
+            property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+            property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+            property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
         }
     }
 }
