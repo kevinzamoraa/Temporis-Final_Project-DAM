@@ -13,6 +13,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import com.kevinzamora.temporis_androidapp.R
 import com.kevinzamora.temporis_androidapp.TestApplication
 import org.hamcrest.Matcher
@@ -31,10 +32,18 @@ class LoginActivityTest {
     private lateinit var context: Context
 
     @Before
-    fun setup() {
-        context = ApplicationProvider.getApplicationContext<Context>()
+    fun setUp() {
+        context = ApplicationProvider.getApplicationContext<TestApplication>()
+
+        // BLINDAJE DE FIREBASE: Inicializamos una instancia Mock/Ficticia para que la actividad no colapse
         if (FirebaseApp.getApps(context).isEmpty()) {
-            FirebaseApp.initializeApp(context)
+            FirebaseOptions.Builder()
+                .setApplicationId("1:1234567890:android:1234567890")
+                .setApiKey("fake_api_key_for_testing")
+                .setProjectId("temporis-fake-project")
+                .build().also { options ->
+                    FirebaseApp.initializeApp(context, options)
+                }
         }
     }
 

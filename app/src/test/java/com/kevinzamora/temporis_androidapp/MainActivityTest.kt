@@ -1,18 +1,20 @@
 package com.kevinzamora.temporis_androidapp
 
 import android.content.Context
-import org.junit.Assert.*
+import androidx.test.core.app.ApplicationProvider
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
 import org.robolectric.shadows.ShadowSystemClock
+import java.time.Duration
 
-// Indicamos que use nuestra clase TestApplication
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class, sdk = [33])
 class MainActivityTest {
@@ -21,26 +23,18 @@ class MainActivityTest {
 
     @Before
     fun setUp() {
-        context = RuntimeEnvironment.getApplication()
+        context = ApplicationProvider.getApplicationContext<TestApplication>()
     }
 
     @Test
-    fun onCreate_shouldSetCorrectTheme() {
-        val sharedPref = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        sharedPref.edit().putBoolean("high_contrast", true).commit()
-
-        // Usamos buildActivity para tener más control
-        val controller = Robolectric.buildActivity(MainActivity::class.java).create()
+    fun onCreate_initializesCorrectly() {
+        val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val activity = controller.get()
-
-        // Procesamos cualquier evento pendiente en el hilo principal (evita el error de Main Looper)
-        ShadowLooper.idleMainLooper()
-
         assertNotNull(activity)
     }
 
     @Test
-    fun onUserInteraction_shouldResetTimer() {
+    fun onUserInteraction_resetsInactivityTimer() {
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
         val activity = controller.get()
 
@@ -53,33 +47,41 @@ class MainActivityTest {
     fun onStart_updatesLastLoginTime() {
         val sharedPref = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
 
-        // 1. Guardamos un tiempo pasado manualmente
-        val oldTime = System.currentTimeMillis() - 5000 // 5 segundos atrás
+        // 1. Guardamos una marca de tiempo de hace 5 segundos de forma persistente
+        val oldTime = System.currentTimeMillis() - 5000
         sharedPref.edit().putLong("last_login_time", oldTime).commit()
 
-        // 2. Avanzamos el reloj simulado de Robolectric para asegurar que System.currentTimeMillis() devuelva algo nuevo
-        ShadowSystemClock.advanceBy(java.time.Duration.ofSeconds(2))
+        // 2. Simulamos el avance del reloj global en Robolectric
+        ShadowSystemClock.advanceBy(Duration.ofSeconds(2))
 
-        // 3. Iniciamos la actividad
-        // .setup() pasa por onCreate y onStart
+        // 3. Inicializamos el ciclo de vida de la actividad (pasa por onCreate y onStart)
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
 
-        // 4. Forzamos a que se procesen los mensajes del Looper (importante para SharedPreferences)
+        // 4. Sincronizamos de inmediato los hilos en segundo plano para asegurar el volcado a disco
         ShadowLooper.idleMainLooper()
 
-        // 5. Verificación
+        // 5. Verificación de los datos actualizados
         val updatedTime = sharedPref.getLong("last_login_time", 0)
 
-        assertTrue("El tiempo actualizado ($updatedTime) debería ser mayor al inicial ($oldTime)",
-            updatedTime > oldTime)
+        assertTrue(
+            "El tiempo actualizado ($updatedTime) debería ser mayor al inicial ($oldTime)",
+            updatedTime > oldTime
+        )
     }
 
     @Test
     fun onDestroy_removesCallbacks() {
         val controller = Robolectric.buildActivity(MainActivity::class.java).setup()
-        controller.pause().stop().destroy()
+        val activity = controller.get()
 
+        // 1. Destruimos pasándolo por el ciclo de vida de Robolectric
+        controller.destroy()
+
+        // 2. Limpiamos cualquier microtarea del bucle principal
         ShadowLooper.idleMainLooper()
-        assertTrue(true)
+        org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle()
+
+        // 3. COMPROBACIÓN REAL: Validamos que la Activity se ha destruido por completo de memoria
+        assertTrue(activity.isDestroyed)
     }
 }

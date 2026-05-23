@@ -1,9 +1,10 @@
 name: Temporis CI
+
 on:
   push:
     branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
   pull_request:
-    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
+    branches: [ "develop", "develop-testing-tofix", "sonar-testing-tofix", "main" ]
 
 jobs:
   test:
@@ -23,22 +24,18 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run Tests and Generate Coverage
-      # Añadimos :app: delante de las tareas para ser explícitos
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --continue
-
-    - name: SonarQube Scan
+    - name: Run Unit Tests, Coverage Report & Sonar Analysis
       env:
+        ROBOLECTRIC_OFFLINE: "false"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Ejecutamos el sonar raíz pero le pasamos explícitamente el módulo app
-      # Esto suele saltarse los errores de instanciación de Beans del sub-módulo
-      run: ./gradlew sonar -Dsonar.modules=:app --info --stacktrace
-
+      # Ejecutamos todo en una sola línea continua. Gradle compilará, testeará,
+      # guardará el reporte de JaCoCo y Sonar lo leerá directamente de la caché.
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport sonar --no-daemon --info
+      
     - name: Upload Test Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
-        # Subimos toda la carpeta de reportes para que se pueda inspeccionar, si falla
         path: app/build/reports/jacoco/

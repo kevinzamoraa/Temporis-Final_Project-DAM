@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
     id("jacoco")
-    // CAMBIO 1: Versión más estable para Android
-    id("org.sonarqube") version "4.4.1.3373"
 }
 
 android {
@@ -53,99 +51,101 @@ android {
 
     testOptions {
         unitTests {
-            isReturnDefaultValues = true
             isIncludeAndroidResources = true
+            all {
+                it.systemProperty("robolectric.offline", "false")
+                it.systemProperty("robolectric.dependency.repo.url", "https://repo1.maven.org/maven2/")
+                it.maxHeapSize = "1024m"
+            }
         }
     }
 }
 
+// =============================================================================
+// CONFIGURACIÓN UNIFICADA DE JACOCO Y TESTING (OPTIMIZADA)
+// =============================================================================
 jacoco {
     toolVersion = "0.8.12"
 }
 
-// CONFIGURACIÓN UNIFICADA DE TEST (ESTA ES LA QUE FUNCIONA)
 tasks.withType<Test>().configureEach {
-    // 1. Configuración de la extensión de JaCoCo
     extensions.configure<org.gradle.testing.jacoco.plugins.JacocoTaskExtension> {
         isIncludeNoLocationClasses = false
-        // Excluimos absolutamente todos los paquetes del sistema y de librerías
         excludes = listOf(
-            "jdk.internal.*",
-            "android.*",
-            "com.android.*",
-            "org.robolectric.*",
-            "androidx.*",
-            "com.google.*",
-            "net.bytebuddy.*",
-            "org.mockito.*",
-            "io.mockk.*"
+            "jdk.internal.*", "android.*", "com.android.*",
+            "org.robolectric.*", "androidx.*", "com.google.*",
+            "net.bytebuddy.*", "org.mockito.*", "io.mockk.*"
         )
     }
 
-    // 2. Forzamos un entorno limpio para cada test
-    forkEvery = 1
-    maxParallelForks = 1 // Bajamos a 1 para asegurar estabilidad total durante la suite completa
+    forkEvery = 0
+    maxParallelForks = 1
 
-    // 3. Argumentos de la JVM (El secreto está en el orden de los filtros)
     jvmArgs(
         "-Xmx2g",
         "-Djacoco-agent.excludes=android.*:com.android.*:org.robolectric.*:androidx.*:com.google.*:jdk.internal.*",
-        "-Drobolectric.logging.enabled=true"
+        "-Drobolectric.logging.enabled=true",
+        "-Drobolectric.scandir=none"
     )
 }
 
-// Configuración para SonarQube
-// CAMBIO 2: Configuración de SonarQube optimizada
-sonar {
-    properties {
-        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-    }
-}
-
-// Tarea para generar el reporte XML de Jacoco
-// CAMBIO 3: Tarea JaCoCo sin funciones obsoletas
 tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     dependsOn("testDebugUnitTest")
     group = "Reporting"
-
-    val buildDir = layout.buildDirectory.get().asFile
+    description = "Genera el reporte de cobertura de JaCoCo para la variante Debug."
 
     reports {
         xml.required.set(true)
         html.required.set(true)
-        // Eliminamos project.buildDir por layout.buildDirectory
-        xml.outputLocation.set(file("$buildDir/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
     }
 
     val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
-        "**/*Test*.*", "android/**/*.*", "**/*Binding.*", "**/BR.*"
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*\$Lambda\$*.*",
+        "**/*Companion*.*",
+        "**/*Module*.*",
+        "**/*Dagger*.*",
+        "**/*Hilt*.*",
+        "**/*_Factory*.*",
+        "**/*_MembersInjector*.*"
     )
 
-    val kotlinTree = fileTree("$buildDir/tmp/kotlin-classes/debug") {
+    val debugTree = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
         exclude(fileFilter)
     }
 
-    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
-    classDirectories.setFrom(files(kotlinTree))
-
-    executionData.setFrom(fileTree("$buildDir") {
-        include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
+    sourceDirectories.setFrom(files("$projectDir/src/main/java"))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(fileTree(layout.buildDirectory) {
+        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
     })
 }
 
 dependencies {
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-database-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    // Firebase - Entorno de la Aplicación
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-analytics") {
+        exclude(group = "com.google.android.gms", module = "play-services-measurement-api")
+    }
     implementation("com.google.firebase:firebase-appcheck-debug")
+
+    // Librería de anuncios
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
+
+    // Firebase - Entorno de Tests Unitarios
+    testImplementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    testImplementation("com.google.firebase:firebase-auth")
+    testImplementation("com.google.firebase:firebase-firestore")
 
     // UI & Core
     implementation(libs.androidx.core.ktx)
@@ -175,7 +175,6 @@ dependencies {
 
     // Google Sign-In & Ads
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.gms:play-services-ads:23.0.0")
 
     // Testing
     testImplementation(libs.junit)
@@ -184,8 +183,22 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("org.robolectric:robolectric:4.11.1")
     debugImplementation("androidx.fragment:fragment-testing:1.6.2")
+
+    testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation("androidx.test.ext:junit-ktx:1.1.5")
+    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    testImplementation("androidx.test.ext:junit:1.1.5")
+}
+
+// =============================================================================
+// ESCUDO DE RESOLUCIÓN REFINADO
+// =============================================================================
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "com.google.android.gms" && requested.name.contains("play-services-measurement")) {
+            useVersion("21.5.0")
+        }
+    }
 }
