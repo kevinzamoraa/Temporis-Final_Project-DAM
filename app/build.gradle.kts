@@ -61,17 +61,6 @@ android {
     }
 }
 
-// Configuración del escáner de Sonar enfocada de forma nativa en el submódulo
-sonar {
-    properties {
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
-    }
-}
-
 // =============================================================================
 // CONFIGURACIÓN UNIFICADA DE JACOCO Y TESTING (OPTIMIZADA)
 // =============================================================================
