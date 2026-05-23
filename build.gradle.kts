@@ -15,10 +15,27 @@ buildscript {
 
 sonar {
     properties {
-        property("sonar.projectKey", "kevinzamoraa_Temporis-Final_Project-DAM")
-        property("sonar.projectName", "Temporis-Final_Project-DAM")
-        property("sonar.organization", "kevinzamoraa")
+        // CORRECCIÓN: Clave exacta vinculada en tu panel de SonarCloud
+        property("sonar.projectKey", "kevinzamoraa_Temporis")
+        property("sonar.organization", "kevinzamora")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
+    }
+}
+
+// Inyección limpia y directa en el subproyecto usando rutas nativas
+subprojects {
+    if (name == "app") {
+        plugins.withId("com.android.application") {
+            extensions.configure<org.sonarqube.gradle.SonarExtension> {
+                properties {
+                    property("sonar.sources", "src/main/java")
+                    property("sonar.tests", "src/test/java")
+                    property("sonar.java.binaries", "build/tmp/kotlin-classes/debug")
+                    property("sonar.kotlin.binaries", "build/tmp/kotlin-classes/debug")
+                    property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml")
+                }
+            }
+        }
     }
 }
