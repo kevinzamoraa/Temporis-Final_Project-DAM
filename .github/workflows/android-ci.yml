@@ -24,17 +24,14 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Run Unit Tests & Generate Coverage Report
+    - name: Run Unit Tests, Coverage Report & Sonar Analysis
       env:
         ROBOLECTRIC_OFFLINE: "false"
-      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport --no-daemon
-
-    - name: Run SonarQube Scan Analysis
-      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      # Ejecutamos la tarea unificada raíz, que ahora mapeará el subproyecto limpiamente
-      run: ./gradlew sonar --no-daemon --info
+      # Ejecutamos todo en una sola línea continua. Gradle compilará, testeará,
+      # guardará el reporte de JaCoCo y Sonar lo leerá directamente de la caché.
+      run: ./gradlew clean :app:testDebugUnitTest :app:testDebugUnitTestCoverageReport sonar --no-daemon --info
       
     - name: Upload Test Reports
       if: always()
