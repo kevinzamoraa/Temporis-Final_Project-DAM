@@ -1,11 +1,9 @@
 name: Temporis CI
-
 on:
   push:
     branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
   pull_request:
-    branches: [ "develop", "develop-testing-tofix", "sonar-testing-tofix", "main" ]
-
+    branches: [ "develop", "develop-testing-tofix", "sonar-testing", "main" ]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,17 +11,14 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
         cache: gradle
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-
     - name: Run Unit Tests, Coverage Report & Sonar Analysis
       env:
         ROBOLECTRIC_OFFLINE: "false"
@@ -38,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
-        path: app/build/reports/jacoco/
+        path: app/build/reports/jacoco/testDebugUnitTestCoverageReport/
