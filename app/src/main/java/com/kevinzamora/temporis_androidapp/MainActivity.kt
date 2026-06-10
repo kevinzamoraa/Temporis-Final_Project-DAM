@@ -150,6 +150,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cerrarSesionForzada() {
+        logoutHandler.removeCallbacksAndMessages(null) // Evita fugas del Handler
         auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -159,20 +160,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Actualizar el tiempo de último acceso
         val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putLong("last_login_time", System.currentTimeMillis())
-            apply() // Usamos apply para que sea asíncrono pero persistente
-        }
         val lastLogin = sharedPref.getLong("last_login_time", 0)
         val currentTime = System.currentTimeMillis()
 
-        if (auth.currentUser != null) {
-            if (lastLogin != 0L && (currentTime - lastLogin > 1 * 60 * 60 * 1000)) {
+        // VALIDACIÓN CORRECTA DEL CIERRE AUTOMÁTICO DE SESIÓN:
+        if (auth.currentUser == null || lastLogin == 0L) {
+            cerrarSesionForzada()
+        } else {
+            if (currentTime - lastLogin > 0.5 * 60 * 60 * 1000) { // Media hora de inactividad máxima global
                 cerrarSesionForzada()
                 Toast.makeText(this, "Sesión caducada por inactividad", Toast.LENGTH_LONG).show()
             } else {
+                // Si la sesión sigue vigente, actualizamos la estampa de tiempo de último acceso
                 sharedPref.edit().putLong("last_login_time", currentTime).apply()
             }
         }
@@ -181,5 +181,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         logoutHandler.removeCallbacksAndMessages(null)
+
+        // Cierre de sesión cuando el usuario cierra o destruye la aplicación deliberadamente
+        if (isFinishing) {
+            val sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+            sharedPref.edit().remove("last_login_time").apply()
+            auth.signOut()
+        }
     }
 }

@@ -16,6 +16,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,9 +24,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
-import org.robolectric.annotation.SQLiteMode
 
-@SQLiteMode(SQLiteMode.Mode.NATIVE)
 @RunWith(RobolectricTestRunner::class)
 @Config(application = TestApplication::class, sdk = [33])
 class TimerRepositoryTest {
@@ -76,30 +75,27 @@ class TimerRepositoryTest {
 
     @Test
     fun testGetTimers_UserNull() {
+        // Forzamos que no haya ningún usuario logueado en el sistema
         every { mockAuth.currentUser } returns null
 
         val liveData = timerRepository.getTimers()
         ShadowLooper.idleMainLooper()
 
-        assert(liveData.value?.isEmpty() == true)
+        // Evaluamos de forma segura mediante aserciones estándar de JUnit
+        assertTrue("El LiveData debería contener una lista vacía cuando el usuario es nulo", liveData.value?.isEmpty() == true)
+
+        // Verificamos que Firebase no llegó a llamarse nunca
         verify(exactly = 0) { mockFirestore.collection(any()) }
     }
 
     @Test
     fun testAddTimer() {
-        // 1. Configuramos el mock del documento para que cuando el repositorio pida su ID, no lance excepción
         every { mockDocument.id } returns "timer_mock_id"
-
-        // 2. Simulamos que la colección añade con éxito devolviendo la tarea del documento
         every { mockCollection.add(any()) } returns Tasks.forResult(mockDocument)
 
-        // 3. Ejecutamos la acción del repositorio
         timerRepository.addTimer("Test Timer", 10, true)
-
-        // 4. Vaciamos los hilos asíncronos del Looper
         ShadowLooper.idleMainLooper()
 
-        // 5. Verificamos que se llamó al método de añadir en Firebase
         verify(exactly = 1) { mockCollection.add(any()) }
     }
 
