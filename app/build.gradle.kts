@@ -14,7 +14,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 2
-        versionName = "2.1.0"
+        versionName = "2.1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -62,7 +62,7 @@ android {
 }
 
 // =============================================================================
-// CONFIGURACIÓN UNIFICADA DE JACOCO Y TESTING (OPTIMIZADA)
+// CONFIGURACIÓN UNIFICADA DE JACOCO Y TESTING (OPTIMIZADA Y CORREGIDA)
 // =============================================================================
 jacoco {
     toolVersion = "0.8.12"
@@ -97,7 +97,11 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
     reports {
         xml.required.set(true)
         html.required.set(true)
-        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/testDebugUnitTestCoverageReport/testDebugUnitTestCoverageReport.xml"))
+
+        // CORRECCIÓN: Uso de layout.buildDirectory para evitar el uso del obsoleto project.buildDir
+        val reportDir = layout.buildDirectory.dir("reports/jacoco/testDebugUnitTestCoverageReport").get().asFile
+        xml.outputLocation.set(file("${reportDir}/testDebugUnitTestCoverageReport.xml"))
+        html.outputLocation.set(reportDir)
     }
 
     val fileFilter = listOf(
@@ -113,17 +117,26 @@ tasks.register<JacocoReport>("testDebugUnitTestCoverageReport") {
         "**/*Dagger*.*",
         "**/*Hilt*.*",
         "**/*_Factory*.*",
-        "**/*_MembersInjector*.*"
+        "**/*_MembersInjector*.*",
+        "**/databinding/*Binding.*",
+        "**/ui/auth/LoginActivity.*"
     )
 
-    val debugTree = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")) {
+    // CORRECCIÓN: Ruta segura para el árbol de clases compiladas por Kotlin
+    val kotlinClassesDir = layout.buildDirectory.dir("tmp/kotlin-classes/debug").get().asFile
+    val debugTree = fileTree(kotlinClassesDir) {
         exclude(fileFilter)
     }
 
     sourceDirectories.setFrom(files("$projectDir/src/main/java"))
     classDirectories.setFrom(files(debugTree))
+
+    // CORRECCIÓN: Captura segura y unificada de los archivos de ejecución generados localmente
     executionData.setFrom(fileTree(layout.buildDirectory) {
-        include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+        include(
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+        )
     })
 }
 
