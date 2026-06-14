@@ -55,7 +55,7 @@ El núcleo de Temporis está diseñado para romper barreras digitales, implement
 ## 📦 Instalación y Despliegue
 1. Clona el repositorio:
 ```bash
-   git clone [https://github.com/kevinzamoraa/Temporis-Final_Project-DAM.git](https://github.com/kevinzamoraa/Temporis-Final_Project-DAM.git)
+   git clone https://github.com/kevinzamoraa/Temporis-Final_Project-DAM.git
 ```
    
 2. Abre el proyecto en Android Studio.
