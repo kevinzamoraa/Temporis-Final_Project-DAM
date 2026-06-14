@@ -6,7 +6,7 @@ Temporis es una aplicación Android diseñada para gestionar la productividad me
 ## 🚀 Características Principales (Versiones anteriores)
 - **Gestión de Tiempos (CRUD):** Control total sobre tus tareas con persistencia en tiempo real.
 - **Analítica Visual:** Gráficos de contribución anual para monitorizar el progreso y rachas de productividad.
-- **Accesibilidad Total:** Interfaz dinámica con escalado de fuente, alto contraste y diseño reactivo que se adapta incluso con el teclado desplegado.
+- **Accesibilidad:** Interfaz dinámica con escalado de fuente, modos claro, oscuro y alto contraste y diseño reactivo.
 - **Seguridad Biométrica:** Autenticación de última generación mediante la Biometric API de Android.
 - **Sincronización Cloud:** Respaldado por el ecosistema de Google (**Firebase Auth, Firestore y Storage**).
 - **Multilingüe:** Traducido íntegramente a Castellano, Catalán e Inglés.
